@@ -1,0 +1,9 @@
+eclipse.preferences.version=1
+encoding//src/main/java=UTF-8
+encoding//src/main/resources/acp_sdk.properties=UTF-8
+encoding//src/main/resources/application.properties=UTF-8
+encoding//src/main/resources/beetl.properties=UTF-8
+encoding//src/main/resources/log4j2.xml=UTF-8
+encoding//src/main/resources/message.properties=UTF-8
+encoding//src/main/resources/wallet.properties=UTF-8
+encoding//src/test/java=UTF-8

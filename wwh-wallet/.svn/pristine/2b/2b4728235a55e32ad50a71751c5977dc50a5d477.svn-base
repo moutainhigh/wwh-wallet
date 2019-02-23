@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wwh.dao.IUnionPayDao" >
+	<insert id ="addPrepareWithdrawsCash" parameterType="com.wwh.vo.WithdrawalVO">
+   		<selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+	      SELECT LAST_INSERT_ID()
+	    </selectKey>
+   		INSERT INTO wallet_profit_withdrawal_detail_t 
+		(
+		  withdrawal_id,
+		  user_id,
+		  target_account,
+		  withdrawal_amount,
+		  withdrawal_way,
+		  withdrawal_status,
+		  active_flag,
+		  delete_flag,
+		  created_date,
+		  created_by,
+		  last_updated_date,
+		  last_updated_by
+		) 
+		VALUES (
+		#{withdrawalId,jdbcType=VARCHAR}, 
+		#{userId,jdbcType=BIGINT},
+		#{targetAccount,jdbcType=VARCHAR}, 
+		#{withdrawalAmount,jdbcType=DECIMAL},
+		#{withdrawalWay,jdbcType=CHAR}, 
+		#{withdrawalStatus,jdbcType=VARCHAR},      
+		'Y','N', 
+		now(), 
+		#{createdBy,jdbcType=BIGINT}, 
+		now(), 
+		#{lastUpdatedBy,jdbcType=BIGINT}
+		)
+	</insert>
+	<select id="queryPrepareWithdrawsCash" resultType="com.wwh.vo.WithdrawalVO" parameterType="java.util.Map" >
+		select  
+				  withdrawal_id withdrawalId,
+				  user_id userId,
+				  target_account targetAccount,
+				  withdrawal_amount withdrawalAmount,
+				  withdrawal_way withdrawalWay,
+				  withdrawal_status withdrawalStatus,
+				  active_flag activeFlag,
+				  delete_flag deleteFlag,
+				  created_date createdDate,
+				  created_by createdBy,
+				  last_updated_date lastUpdatedDate,
+				  last_updated_by lastUpdatedBy
+		from  wallet_profit_withdrawal_detail_t
+		where active_flag ='Y'
+		and   delete_flag ='N'
+		<if test="withdrawalStatus!=null and withdrawalId!=''">and   withdrawal_status =#{withdrawalStatus}</if>
+		<if test="withdrawalId!=null and withdrawalId!=''">and   withdrawal_id =#{withdrawalId}</if>
+		<if test="userId!=null and userId!=''">and   user_id =#{userId}</if>
+		order by createdDate asc
+    	limit #{startNumber},#{pageSize}
+	</select>
+	<select id="queryPrepareWithdrawsCashCount" resultType="java.lang.Integer" parameterType="java.util.Map" >
+		select  
+			  count(1) as total
+		from  wallet_profit_withdrawal_detail_t
+		where active_flag ='Y'
+		and   delete_flag ='N'
+		<if test="withdrawalStatus!=null and withdrawalId!=''">and   withdrawal_status =#{withdrawalStatus}</if>
+		<if test="withdrawalId!=null and withdrawalId!=''">and   withdrawal_id =#{withdrawalId}</if>
+		<if test="userId!=null and userId!=''">and   user_id =#{userId}</if>
+	</select>
+	<update id="updateWithdrawsCash" parameterType="java.util.Map">
+		update 
+				wallet_profit_withdrawal_detail_t 
+		set 
+				withdrawal_status = #{withdrawalStatus}, 
+				last_updated_date =  now(),
+				last_updated_by =#{lastUpdatedBy}
+		where 
+				withdrawal_id = #{withdrawalId}
+		and 	user_id = #{userId}
+	</update>
+	<insert id ="addFinanceDetailLog" parameterType="com.wwh.vo.WithdrawalLogVO">
+   		<selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+	      SELECT LAST_INSERT_ID()
+	    </selectKey>
+   		INSERT INTO wallet_profit_withdrawal_log_t 
+		(
+		  withdrawal_id,
+		  withdrawal_way,
+		  operation,
+		  active_flag,
+		  delete_flag,
+		  created_date,
+		  created_by,
+		  last_updated_date,
+		  last_updated_by
+		) 
+		VALUES (
+		#{withdrawalId,jdbcType=VARCHAR}, 
+		#{withdrawalWay,jdbcType=CHAR}, 
+		#{operation,jdbcType=VARCHAR}, 
+		'Y','N',  
+		now(), 
+		#{createdBy,jdbcType=BIGINT}, 
+		now(), 
+		#{lastUpdatedBy,jdbcType=BIGINT}
+		)
+	</insert>
+	<select id="queryFinanceDetailLog" resultType="com.wwh.vo.WithdrawalLogVO" parameterType="java.util.Map" >
+		select  
+				  withdrawal_id withdrawalId,
+				  withdrawal_way withdrawalWay,
+				  operation operation,
+				  active_flag activeFlag,
+				  delete_flag deleteFlag,
+				  created_date createdDate,
+				  created_by createdBy,
+				  last_updated_date ,
+				  last_updated_by lastUpdatedBy
+		from  wallet_profit_withdrawal_log_t
+		where active_flag ='Y'
+		and   delete_flag ='N'
+		<if test="withdrawalId!=null and withdrawalId!=''">and   withdrawal_id =#{withdrawalId}</if>
+		<if test="userId!=null and userId!=''">and   user_id =#{userId}</if>
+	</select>
+	<insert id ="addBankCard" parameterType="com.wwh.vo.BankCardVO">
+   		<selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+	      SELECT LAST_INSERT_ID()
+	    </selectKey>
+   		INSERT INTO wallet_bank_card_t 
+		(
+		  bank_card_id,
+		  bank_card_name,
+		  bank_card_number,
+		  bank_card_type,
+		  bank_name,
+		  phone_number,
+		  active_flag,
+		  delete_flag,
+		  created_date,
+		  created_by,
+		  last_updated_date,
+		  last_updated_by,
+		  real_name
+		) 
+		VALUES (
+		#{bankCardId,jdbcType=BIGINT}, 
+		#{bankCardName,jdbcType=VARCHAR}, 
+		#{bankCardNumber,jdbcType=VARCHAR},
+		#{bankCardType,jdbcType=VARCHAR}, 
+		#{bankName,jdbcType=VARCHAR}, 
+		#{phoneNumber,jdbcType=VARCHAR}, 
+		'Y','N',  
+		now(), 
+		#{createdBy,jdbcType=BIGINT}, 
+		now(), 
+		#{lastUpdatedBy,jdbcType=BIGINT},
+		#{realName,jdbcType=VARCHAR}
+		)
+	</insert>
+	<insert id ="addBindingBankCard" parameterType="com.wwh.vo.BankCardVO">
+   		<selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+	      SELECT LAST_INSERT_ID()
+	    </selectKey>
+   		INSERT INTO wallet_bind_bank_card_t 
+		(
+		  bank_card_id,
+		  user_id,
+		  active_flag,
+		  delete_flag,
+		  created_date,
+		  created_by,
+		  last_updated_date,
+		  last_updated_by
+		) 
+		VALUES (
+		#{bankCardId,jdbcType=BIGINT}, 
+		#{userId,jdbcType=VARCHAR}, 
+		'Y','N',  
+		now(), 
+		#{createdBy,jdbcType=BIGINT}, 
+		now(), 
+		#{lastUpdatedBy,jdbcType=BIGINT}
+		)
+	</insert>
+	<select id="queryBindingBankCard" resultType="com.wwh.vo.BankCardVO" parameterType="java.util.Map" >
+		select 
+				  t1.bank_card_id bankCardId,
+				  t2.user_id userId,
+				  t1.bank_card_name bankCardName,
+				  t1.bank_card_number bankCardNumber,
+				  t1.bank_card_type bankCardType,
+				  t1.bank_name bankName,
+				  t1.phone_number phoneNumber,
+				  t2.active_flag activeFlag,
+				  t1.delete_flag deleteFlag,
+				  t1.created_date createdDate,
+				  t1.created_by createdBy,
+				  t1.last_updated_date lastUpdatedDate,
+				  t1.last_updated_by lastUpdatedBy,
+				  t1.real_name realName
+		from 
+				 wallet_bank_card_t t1,
+				 wallet_bind_bank_card_t t2
+		where  t1.bank_card_id = t2.bank_card_id
+				 and t2.active_flag = 'Y'
+				 and t1.active_flag = 'Y'
+				 and t1.delete_flag = 'N'
+				 <if test="userId!=null and userId!=''">and t2.user_id = #{userId}</if>
+	</select>
+ </mapper>
+ 

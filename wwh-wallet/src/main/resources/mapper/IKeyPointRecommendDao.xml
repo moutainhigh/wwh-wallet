@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wwh.dao.IKeyPointRecommendDao">
+
+	<!-- 修改关键点 -->
+	<update id="updateByIdCardSelective" parameterType="com.wwh.vo.KeyPointRecommendVO">
+		update wallet_key_point_recommend_t
+		<set>
+			<if test="poinStatus != null">
+				poin_status = #{poinStatus,jdbcType=CHAR},
+			</if>
+			<if test="diskType != null">
+				disk_type = #{diskType,jdbcType=VARCHAR},
+			</if>
+			<if test="roleId != null">
+				role_id = #{roleId,jdbcType=BIGINT},
+			</if>
+			<if test="userId != null">
+				user_id = #{userId,jdbcType=BIGINT},
+			</if>
+			<!-- <if test="idCard != null" > -->
+			<!-- id_card = #{idCard,jdbcType=VARCHAR}, -->
+			<!-- </if> -->
+			<if test="isUsable != null">
+				is_usable = #{isUsable,jdbcType=VARCHAR},
+			</if>
+			<if test="activeFlag != null">
+				active_flag = #{activeFlag,jdbcType=CHAR},
+			</if>
+			<if test="deleteFlag != null">
+				delete_flag = #{deleteFlag,jdbcType=CHAR},
+			</if>
+			<if test="createdDate != null">
+				created_date = #{createdDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="createdBy != null">
+				created_by = #{createdBy,jdbcType=BIGINT},
+			</if>
+			<if test="lastUpdatedDate != null">
+				last_updated_date =
+				#{lastUpdatedDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="lastUpdatedBy != null">
+				last_updated_by = #{lastUpdatedBy,jdbcType=BIGINT},
+			</if>
+		</set>
+		where id_card = #{idCard,jdbcType=VARCHAR}
+		<!-- id = #{id,jdbcType=BIGINT} -->
+	</update>
+
+	<sql id="Base_Column_List">
+		id as id,
+		poin_status as poinStatus,
+		disk_type as diskType,
+		role_id as roleId,
+		user_id as userId,
+		id_card as idCard,
+		active_flag as
+		activeFlag,
+		delete_flag as deleteFlag,
+		created_date as createdDate,
+		created_by as createdBy,
+		last_updated_date as lastUpdatedDate,
+		last_updated_by as lastUpdatedBy
+	</sql>
+
+
+	<select id="selectByKeyPointRecommendWhereUserId" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from wallet_key_point_recommend_t
+		where 1=1
+
+		and user_id in
+		<foreach item="item" index="index" collection="list" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+
+		and poin_status=#{poinStatus} and disk_type=#{diskType}
+		ORDER BY
+		created_date DESC LIMIT 0,#{totalPointPhr}
+	</select>
+
+
+	<select id="selectByKeyPointRecommend" resultMap="BaseResultMap"
+		parameterType="com.wwh.vo.KeyPointRecommendVO">
+		select
+		<include refid="Base_Column_List" />
+		from wallet_key_point_recommend_t
+		where 1=1
+
+		<if test="id != null">
+			and id = #{id,jdbcType=BIGINT}
+		</if>
+		<if test="poinStatus != null">
+			and poin_status = #{poinStatus,jdbcType=CHAR}
+		</if>
+		<if test="diskType != null">
+			and disk_type = #{diskType,jdbcType=VARCHAR}
+		</if>
+		<if test="roleId != null">
+			and role_id = #{roleId,jdbcType=BIGINT}
+		</if>
+		<if test="userId != null">
+			and user_id = #{userId,jdbcType=BIGINT}
+		</if>
+		<if test="idCard != null">
+			and id_card = #{idCard,jdbcType=VARCHAR}
+		</if>
+		<if test="activeFlag != null">
+			and active_flag = #{activeFlag,jdbcType=CHAR}
+		</if>
+		<if test="deleteFlag != null">
+			and delete_flag = #{deleteFlag,jdbcType=CHAR}
+		</if>
+		<if test="createdDate != null">
+			and created_date = #{createdDate,jdbcType=TIMESTAMP}
+		</if>
+		<if test="createdBy != null">
+			and created_by = #{createdBy,jdbcType=BIGINT}
+		</if>
+		<if test="lastUpdatedDate != null">
+			and last_updated_date =
+			#{lastUpdatedDate,jdbcType=TIMESTAMP}
+		</if>
+		<if test="lastUpdatedBy != null">
+			and last_updated_by = #{lastUpdatedBy,jdbcType=BIGINT}
+		</if>
+	</select>
+
+	<insert id="insert" parameterType="com.wwh.vo.KeyPointRecommendVO">
+		<selectKey resultType="java.lang.Long" keyProperty="id"
+			order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		insert into wallet_key_point_recommend_t (poin_status, disk_type,
+		role_id,
+		user_id, id_card, active_flag,
+		delete_flag, created_date,
+		created_by,
+		last_updated_date, last_updated_by)
+		values (
+		#{poinStatus,jdbcType=CHAR},
+		#{diskType,jdbcType=VARCHAR},
+		#{roleId,jdbcType=BIGINT},
+		#{userId,jdbcType=BIGINT},
+		#{idCard,jdbcType=VARCHAR},
+		#{activeFlag,jdbcType=CHAR},
+		#{deleteFlag,jdbcType=CHAR},
+		now(),
+		#{createdBy,jdbcType=BIGINT},
+		now(),
+		#{lastUpdatedBy,jdbcType=BIGINT})
+	</insert>
+
+
+	<resultMap id="BaseResultMap" type="com.wwh.vo.KeyPointRecommendVO">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="poin_status" property="poinStatus" jdbcType="CHAR" />
+		<result column="disk_type" property="diskType" jdbcType="VARCHAR" />
+		<result column="role_id" property="roleId" jdbcType="BIGINT" />
+		<result column="user_id" property="userId" jdbcType="BIGINT" />
+		<result column="id_card" property="idCard" jdbcType="VARCHAR" />
+		<result column="active_flag" property="activeFlag" jdbcType="CHAR" />
+		<result column="delete_flag" property="deleteFlag" jdbcType="CHAR" />
+		<result column="created_date" property="createdDate" jdbcType="TIMESTAMP" />
+		<result column="created_by" property="createdBy" jdbcType="BIGINT" />
+		<result column="last_updated_date" property="lastUpdatedDate"
+			jdbcType="TIMESTAMP" />
+		<result column="last_updated_by" property="lastUpdatedBy"
+			jdbcType="BIGINT" />
+	</resultMap>
+
+	<select id="getKeyRecommendPointsByIdCard" resultType="com.wwh.vo.KeyPointRecommendVO">
+		SELECT
+		poin_status poinStatus,
+		disk_type diskType,
+		role_id roleId,
+		user_id
+		userId,
+		id_card idCard,
+		is_usable isUsable,
+		created_date createdDate,
+		last_updated_date lastUpdatedDate
+		FROM
+		wallet_key_point_recommend_t
+		WHERE
+		id_card = #{idCard}
+		AND
+		is_usable = 'Y'
+	</select>
+
+	<select id="getKeyRecommendPointsByUserId" resultType="com.wwh.vo.KeyPointRecommendVO">
+		SELECT
+		poin_status poinStatus,
+		disk_type diskType,
+		role_id roleId,
+		user_id
+		userId,
+		id_card idCard,
+		is_usable isUsable,
+		created_date createdDate,
+		last_updated_date lastUpdatedDate
+		FROM
+		wallet_key_point_recommend_t
+		WHERE
+		user_id = #{userId}
+		AND
+		is_usable = 'Y'
+		AND
+		poin_status = 'A'
+	</select>
+</mapper>

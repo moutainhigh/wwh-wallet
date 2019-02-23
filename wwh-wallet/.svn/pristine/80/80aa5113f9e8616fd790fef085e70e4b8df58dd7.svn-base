@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wwh.dao.IMsgContryCodeDao">
+    <!-- 查询用户当前在系统中活动盘身份  -->
+	<select id="getMsgContryCodeVO" resultType="com.wwh.vo.MsgContryCodeVO">
+			select 
+				id id,
+				contry_name contryName,
+				contry_code contryCode,
+				contry_item contryItem
+				from wwh_msg_code_t 
+				order by id
+	</select>
+</mapper>

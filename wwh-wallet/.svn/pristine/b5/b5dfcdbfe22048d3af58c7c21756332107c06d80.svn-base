@@ -1,0 +1,161 @@
+package com.wwh.service.impl;
+
+import java.math.BigDecimal;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.StringUtil;
+import com.wwh.common.PagedResult;
+import com.wwh.common.ResultMsg;
+import com.wwh.dao.IWithdrawReserveConfigDao;
+import com.wwh.enums.ActiveFlagEnum;
+import com.wwh.enums.DeleteFlagEnum;
+import com.wwh.enums.DiskEnum;
+import com.wwh.enums.WithdrawStatusEnum;
+import com.wwh.enums.WithdrawWayEnum;
+import com.wwh.service.IApplyWithdrawService;
+import com.wwh.util.BeanUtils;
+import com.wwh.util.SeqUtils;
+import com.wwh.vo.ApplyWithdrawVO;
+import com.wwh.vo.CountWithdrawalsVO;
+import com.wwh.vo.WithdrawDetilVO;
+import com.wwh.vo.WithdrawalVO;
+
+@Service
+public class ApplyWithdrawService implements IApplyWithdrawService {
+
+	private static Logger logger = LogManager.getLogger(ApplyWithdrawService.class);
+
+	@Autowired
+	private IWithdrawReserveConfigDao withdrawReserveConfigDao;
+
+	@Override
+	public ApplyWithdrawVO getApplyWithrawInfo(Long userId) {
+
+		return withdrawReserveConfigDao.getApplyWithrawInfo(userId);
+	}
+
+	@Override
+	public Integer insertApplyWithdrawDetilInfo(WithdrawalVO withdrawVo) {
+
+		withdrawVo.setWithdrawalId(SeqUtils.generateWithdrawSEQ());
+		withdrawVo.setActiveFlag(ActiveFlagEnum.Y.name());
+		withdrawVo.setDeleteFlag(DeleteFlagEnum.N.name());
+		withdrawVo.setWithdrawalStatus(WithdrawStatusEnum.NO.name());
+		withdrawVo.setWithdrawalWay(WithdrawWayEnum.BANK.name());
+		return withdrawReserveConfigDao.insertApplyWithdrawDetilInfo(withdrawVo);
+	}
+
+	@Override
+	public PagedResult<WithdrawDetilVO> getWithdrawDetilInfo(Long userId, Integer currentPage, Integer pageSize) {
+		currentPage = currentPage == null ? 1 : currentPage;
+		pageSize = pageSize == null ? 10 : pageSize;
+		// startPage是告诉拦截器说我要开始分页了
+		PageHelper.startPage(currentPage, pageSize);
+		return BeanUtils.toPagedResult(withdrawReserveConfigDao.getWithdrawDetilInfo(userId));
+	}
+
+	// 校验提现金额
+	public ResultMsg<Object> validWithdrawalAmount(WithdrawalVO withdrawVo) {
+		ResultMsg<Object> resultMsg = new ResultMsg<Object>();
+		resultMsg.setReturnCode("200");
+		resultMsg.setReturnMsg("sucess");
+		if (null == withdrawVo) {
+			resultMsg.setReturnCode("404");
+			resultMsg.setReturnMsg("提现信息不能为空");
+			return resultMsg;
+		}
+		// 盘类型
+		String diskType = withdrawVo.getDiskType();
+		// 当招商分红提现金额>0的时候 判断是否是100的整数倍
+		if (withdrawVo.getBusWithdrawAmount().compareTo(BigDecimal.valueOf(0.00)) == 1) {
+			int a = (int) withdrawVo.getBusWithdrawAmount().doubleValue() % 100;
+			if (0 != a) {
+				resultMsg.setReturnCode("404");
+				resultMsg.setReturnMsg("提现金额必须是100的整数倍");
+				return resultMsg;
+			}
+		}
+		// 当会员手机提现金额>0的时候 判断是否是100的整数倍
+		if (withdrawVo.getMemberWithdrawAmount().compareTo(BigDecimal.valueOf(0.00)) == 1) {
+			int a = (int) withdrawVo.getMemberWithdrawAmount().doubleValue() % 100;
+			if (0 != a) {
+				resultMsg.setReturnCode("404");
+				resultMsg.setReturnMsg("提现金额必须是100的整数倍");
+				return resultMsg;
+			}
+		}
+		CountWithdrawalsVO countWithdrawals = withdrawReserveConfigDao.countWithdrawals(withdrawVo.getUserId());
+		if (null == countWithdrawals) {
+			resultMsg.setReturnCode("404");
+			resultMsg.setReturnMsg("提现信息不能为空");
+			return resultMsg;
+		}
+		if (StringUtil.isNotEmpty(withdrawVo.getDiskType())) {
+			if (DiskEnum.TIYAN.name().equals(diskType)) {
+				if (withdrawVo.getSaveGoldWithdrawAmount().compareTo(countWithdrawals.getTiyanSaveAmount()) != 0) {
+					resultMsg.setReturnCode("404");
+					resultMsg.setReturnMsg("储备金提现金额不正确");
+					return resultMsg;
+				}
+			} else if (DiskEnum.HUIMIN.name().equals(diskType)) {
+				if (withdrawVo.getSaveGoldWithdrawAmount().compareTo(countWithdrawals.getHuiminSaveAmount()) != 0) {
+					resultMsg.setReturnCode("404");
+					resultMsg.setReturnMsg("储备金提现金额不正确");
+					return resultMsg;
+				}
+			} else if (DiskEnum.FUMIN.name().equals(diskType)) {
+				if (withdrawVo.getSaveGoldWithdrawAmount().compareTo(countWithdrawals.getFuminSaveAmount()) != 0) {
+					resultMsg.setReturnCode("404");
+					resultMsg.setReturnMsg("储备金提现金额不正确");
+					return resultMsg;
+				}
+			} else {
+				if (withdrawVo.getSaveGoldWithdrawAmount().compareTo(countWithdrawals.getXingminSaveAmount()) != 0) {
+					resultMsg.setReturnCode("404");
+					resultMsg.setReturnMsg("储备金提现金额不正确");
+					return resultMsg;
+				}
+			}
+		}
+		// 本次提现金额加上还没有处理的总提现金额 (招商分红)
+		BigDecimal totalBus = withdrawVo.getBusWithdrawAmount().add(countWithdrawals.getTotalBusWithdAmount());
+		// 本次提现的金额加上没有处理的会员收益 (会员收益)
+		BigDecimal totalMem = withdrawVo.getMemberWithdrawAmount().add(countWithdrawals.getTotalMeWithdAmount());
+
+		logger.info("加上本次提现的总金额信息  totalBus={},totalMem={},diskType={}", totalBus, totalMem, diskType);
+
+		if (totalBus.compareTo(countWithdrawals.getBuWithdAmount()) == 1) {
+			resultMsg.setReturnCode("404");
+			resultMsg.setReturnMsg("您的招商分红总提现金额已经超出拥有总金额");
+			return resultMsg;
+		}
+
+		if (totalMem.compareTo(countWithdrawals.getMeWithdAmount()) == 1) {
+			resultMsg.setReturnCode("404");
+			resultMsg.setReturnMsg("您的会员收益总提现金额已经超出可提现总金额");
+			return resultMsg;
+		}
+		return resultMsg;
+	}
+	/**
+	 * 校验是否还存在未处理完申请，有就不让申请
+	 */
+	@Override
+	public ResultMsg<Object> checkHaveRuninfo(Long userId) {
+		ResultMsg<Object> resultMsg = new ResultMsg<Object>();
+		resultMsg.setReturnCode("0");
+		resultMsg.setReturnMsg("sucess");
+		Long count=withdrawReserveConfigDao.checkHaveRuninfo(userId);
+		if (count>0) {
+			resultMsg.setReturnCode("1");
+			resultMsg.setReturnMsg("还有未处理完的申请，稍后重试");
+			return resultMsg;
+		}
+		return resultMsg;
+	}
+}

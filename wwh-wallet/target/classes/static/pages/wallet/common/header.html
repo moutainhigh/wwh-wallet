@@ -1,0 +1,200 @@
+﻿<header>
+    <div class="top-navbar">
+        <div class="m-box top-nav">
+            <ul class="w1 float-L">
+                <li>
+                    <div></div><a class="logo-home" href="http://www.vwhsc.com/">唯沃惠商城首页</a>
+                </li>
+            </ul>
+            <ul class="w2 float-R infologined">
+                <li><a href="#" id="nickname"></a></li>
+                <li><a class="loginout" href="#" onclick="logoutBtnClick();">退出</a><i></i></li>
+                <li><a href="#" onclick="createToken('0')">推荐商家</a><i></i></li>
+                <li><a href="#" onclick="createToken('1')">商家入驻</a><i></i></li>
+                <li><a href="#" onclick="createToken('2')">我的订单</a><i></i></li>
+                <li><a href="#" onclick="createToken('3')">我的关注</a><i></i></li>
+                <li><a href="javascript:void(0)" class="last" onClick="javascript:window.open('http://chat56.live800.com/live800/chatClient/chatbox.jsp?companyID=751027&configID=98651&jid=1307362398','','width=940,height=690')" style="cursor:hand">我的客服</a></li>
+            </ul>
+            <ul class="w2 float-R uninfologined">
+                <li><a class="loginout" href="http://www.vwhsc.com/register.do">注册</a><i></i></li>
+                <li><a href="#">登录</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="main-nav">
+        <div class="m-box nav-w">
+            <a class="logo-wollet" href="/wwh-wallet/index"></a>
+            <ul class="navbar-w">
+                <li id="indextabs"><a href="/wwh-wallet/index" target="_self">首页</a></li>
+                <li id="bonustabs"><a href="/wwh-wallet/score" target="_self">我的积分</a></li>
+                <li id="benifittabs"><a href="/wwh-wallet/earnings" target="_self">个人收益</a></li>
+                <li id="sharetabs"><a href="/wwh-wallet/business" target="_self">招商分红</a></li>
+                <li id="reservetabs"><a href="/wwh-wallet/savegold" target="_self">会员之路</a></li>
+            </ul>
+            <script type="text/javascript">
+                (function () {
+                    var navli = $('.navbar-w li');
+                    navli.click(function () {
+                        $(this).addClass('selected').siblings().removeClass('selected');
+                    });
+                    //首页input搜索框添加回车事件
+                    $("#indexSearchInput").bind("keypress", function (event) {
+                        if (event.keyCode == "13") {
+                            searchFormSub();
+                        }
+                    });
+                })();
+            </script>
+            <form id="searchForm" action="http://www.vwhsc.com/itemSearch/solrSearchItem.do" method="post">
+                <div class="search-box">
+                    <div class="search-w clearinput search-t-m">
+                        <div class="search-c">
+                            <input placeholder="关键字..." name="queryWord" id="indexSearchInput" />
+                        </div>
+                        <div class="search-btn" id="searchBtn" onclick="searchFormSub()">搜索</div>
+                    </div>
+                </div>
+            </form>
+            <div class="shopcart-box shop-c isplaylogin">
+                <a href="#" onclick="createToken('4')" class="spcarwrap">
+                    我的购物车 >
+                    <span id="shoppingNum" class="spcar"></span>
+                </a>
+            </div>
+        </div>
+    </div>
+</header>
+<script type="text/javascript">
+    (function () {
+        if ($('#selectedpage').val() == 'index') {
+            $('#indextabs').addClass('selected');
+        }
+        if ($('#selectedpage').val() == 'bonus') {
+            $('#bonustabs').addClass('selected');
+        }
+        if ($('#selectedpage').val() == 'benifit') {
+            $('#benifittabs').addClass('selected');
+        }
+        if ($('#selectedpage').val() == 'share') {
+            $('#sharetabs').addClass('selected');
+        }
+        if ($('#selectedpage').val() == 'reserve') {
+            $('#reservetabs').addClass('selected');
+        }
+    })()
+</script>
+<script type="text/javascript">
+    (function () {
+        var userLoginState = sessionStorage.islogined;
+        if (userLoginState == 'true') {
+            $('#nickname').text(sessionStorage.nickName);
+            $('.infologined').css('display', 'block');
+            $('.uninfologined').css('display', 'none');
+            $('.shop-c.isplaylogin').css('display', 'block');
+        } else {
+            $('.uninfologined').css('display', 'block');
+            $('.infologined').css('display', 'none');
+            $('.shop-c.isplaylogin').css('display', 'none');
+        }
+    })()
+    function myformSub(data,urlinx){
+    	var data = data.data;
+        if (urlinx == '5' || urlinx == '6') {
+            $.post('/wwh-wallet/noRedirect', { data: data.data, memberId: data.memberId, sign: data.sign, token: data.token, url: data.url, walletUrl: data.walletUrl }, function (repdata) {
+                console.log('repdata');
+                console.log(repdata);
+                if (urlinx == '5') {
+                    $('#shoppingNum').text(repdata.data.ShoppingCartCount)
+                } if (urlinx == '6') {
+                    console.log(repdata.data);
+                }
+            });
+        } else {
+            var jsonData = $.parseJSON(data.data);
+            var de_memberId = decodeURI(data.memberId);
+            var de_url = decodeURI(data.url);
+            var de_data = decodeURI(jsonData.data);
+            var form = $('<form id="formId" action="' + data.walletUrl + '" method="post" target="_blank"></form>');
+            form.append('<input type="hidden" name="memberId">');
+            form.append('<input type="hidden" name="token">');
+            form.append('<input type="hidden" name="url">');
+            form.append('<input type="hidden" name="data">');
+            form.append('<input type="hidden" name="sign">');
+            form.find("input[name=memberId]").val(de_memberId);
+            form.find("input[name=token]").val(data.token);
+            form.find("input[name=url]").val(de_url);
+            form.find("input[name=data]").val("{\"data\":\"" + de_data + "\"}");
+            form.find("input[name=sign]").val(data.sign);
+            $("header").append(form);
+            $("#formId").submit();
+            $("#formId").remove();
+        }
+    }
+    function createToken(urlinx) {
+    	$.ajax({
+            type: "POST",
+            url: "/wwh-wallet/createToken",
+            async: false,
+            cache: false,
+            data: "urlinx="+urlinx,
+            success: function(data){
+            	myformSub(data,urlinx);
+            }
+        });
+    }
+    function logoutBtnClick() {
+    	sessionStorage.islogined = false;
+        sessionStorage.nickName = '';
+    	$.post('/wwh-wallet/logout', function (data) {
+            //window.location.href="http://vip.vwhsc.com";
+    		window.location.href="../../index.html";
+        });
+    }
+    function searchFormSub() {
+        var formObj = $("#searchForm");
+        formObj.attr("method", "post");
+        formObj.submit();
+    }
+    if ($('#shoppingNum').text() == '') {
+        $('#shoppingNum').css('display', 'none');
+    }
+    $.get('/wwh-wallet/unauthorized', function (data) {
+        console.log(data);
+        sessionStorage.outerUserID = data.data;
+        if (data.returnCode == '200') {
+            $('.infologined').css('display', 'block');
+            $('.uninfologined').css('display', 'none');
+            $('.shop-c.isplaylogin').css('display', 'block');
+            $.ajax({
+                url: "/wwh-wallet/getuserinfo/" + sessionStorage.outerUserID, success: function (result) {
+                    if (result != null && result.length > 0) {
+                        console.log(result[0]['nickName']);
+                        console.log("1111");
+                        console.dir(result[0]);
+                        if (result[0]['picUrl'] == 'default') {
+                            sessionStorage.picUrl = '/wwh-wallet/images/avtar.png';
+                        } else {
+                            sessionStorage.picUrl = result[0]['picUrl'];
+                        }
+                        sessionStorage.fromShopUserID = result[0]['memberId'];
+                        if(result[0]['nickName']=== undefined){
+                       	 result[0]['nickName'] = result[0]['mobilePhone'];
+                        }
+                        sessionStorage.nickName = result[0]['nickName'];
+                        if(result[0]['nickName']!=undefined){
+                       	 $('#nickname').text(result[0]['nickName']);
+                       } else {
+                       	 $('#nickname').text(result[0]['mobilePhone']);
+                       }
+                        sessionStorage.firsttime = 1;
+                        createToken('5');
+                    }    //  sessionStorage.outerUserID = GetCookie('user_id').substring(0, GetCookie('user_id').indexOf('_'));                //   /getuserinfo/{memberId}
+                }
+            });
+        } else {// 不是走商城过来的  
+            sessionStorage.firsttime = 0;
+        }
+
+    });
+
+</script>

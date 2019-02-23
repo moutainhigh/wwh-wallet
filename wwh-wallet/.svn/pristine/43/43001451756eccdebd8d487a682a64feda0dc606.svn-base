@@ -1,0 +1,43 @@
+package com.wwh.loginwx.util;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import com.alibaba.fastjson.JSONException;
+import com.wwh.loginwx.config.WeixinConfig;
+import com.wwh.loginwx.vo.AccessTokenVO;
+
+import net.sf.json.JSONObject;
+
+public class WeiXinUtil {
+	private static Logger logger = LogManager.getLogger(WeiXinUtil.class);
+	private static String GET_MENTHOD = "GET";
+
+	/**
+	 * 获取accessToken
+	 * 
+	 * @param appid
+	 * @param appsecret
+	 * @return
+	 */
+	public static AccessTokenVO getAccessToken(String appid, String appsecret) {
+		AccessTokenVO accessToken = null;
+		String requestUrl = WeixinConfig.access_token_url.replace("APPID", appid).replace("APPSECRET", appsecret);
+		JSONObject jsonObject = HttpRequestUtil.httpRequestJSONObject(requestUrl, GET_MENTHOD, null);
+		// 如果请求成功
+		if (null != jsonObject) {
+			try {
+				accessToken = new AccessTokenVO();
+				accessToken.setToken(jsonObject.getString("access_token"));
+				accessToken.setExpiresIn(jsonObject.getInt("expires_in"));
+			} catch (JSONException e) {
+				accessToken = null;
+				// 获取token失败
+				logger.info("获取token失败 errcode:" + jsonObject.getInt("errcode") + ",errmsg:"
+						+ jsonObject.getString("errmsg"));
+			}
+		}
+		return accessToken;
+	}
+
+}

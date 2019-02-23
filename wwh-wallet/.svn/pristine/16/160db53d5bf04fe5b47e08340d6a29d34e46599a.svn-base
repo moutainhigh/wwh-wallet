@@ -1,0 +1,705 @@
+package com.wwh.service.impl;
+
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.wwh.common.DatabaseContextHolder;
+import com.wwh.common.ResultMsg;
+import com.wwh.dao.IExternalDao;
+import com.wwh.dao.IUserDao;
+import com.wwh.enums.DatabaseType;
+import com.wwh.enums.ProfitScoreTypeEnum;
+import com.wwh.service.IExternalService;
+import com.wwh.util.CommonConstant;
+import com.wwh.util.DESUtils;
+import com.wwh.util.DateUtils;
+import com.wwh.util.MD5Utils;
+import com.wwh.util.ReturnConstant;
+import com.wwh.util.StringUtils;
+import com.wwh.vo.ExternalVO;
+import com.wwh.vo.OrderVO;
+import com.wwh.vo.UserVO;
+
+@Service
+public class ExternalService implements IExternalService {
+
+	private static Logger logger = LogManager.getLogger(ExternalService.class);
+
+	@Autowired
+	private IExternalDao externalDao;
+
+	@Autowired
+	private MemberService memberService;
+
+	@Autowired
+	private UserService userService;
+
+	@Autowired
+	private IUserDao userDao;
+
+	/**
+	 * 注册记录用户和推荐人关系
+	 */
+	@Override
+	@Transactional
+	public ResultMsg<Object> relation(ExternalVO externalVO) throws Exception {
+		// DES解密
+		Long memberId = Long.parseLong(DESUtils.getDecryptString(externalVO.getMemberId()));
+		Long referenceId = Long.parseLong(DESUtils.getDecryptString(externalVO.getReferenceId()));
+		String referenId = DESUtils.getDecryptString(externalVO.getReferenceId());
+		Long refId = referenceId;
+		String mobilePhone = userDao.getUserByUserId(referenceId).getMobilePhone();
+		if (mobilePhone != null && !"".equals(mobilePhone)) {
+			referenceId = Long.parseLong(mobilePhone);
+			externalVO.setReferenceId(DESUtils.getEncryptString(mobilePhone));
+		}
+		ResultMsg<Object> rs = new ResultMsg<Object>();
+		logger.info("商城注册referenceId"+refId);
+		rs = doRelation(externalVO,refId);
+		if (!"-999999".equals(referenId)) {
+			// 添加会员地区关系
+			rs = addAgentUser(mobilePhone, memberId);
+		}
+		return rs;
+	}
+
+	/**
+	 * 注册
+	 */
+	@Override
+	public synchronized ResultMsg<Object> registerMember(ExternalVO externalVO) throws Exception {
+		String condition = externalVO.getMobilePhone();
+		String remobilePhone = externalVO.getReferenceId();
+		List<Map<String, Object>> memberlist = memberService.getMemberByCondition(condition);
+		ResultMsg<Object> rs = new ResultMsg<Object>();
+		if (memberlist.size() > 0) {
+			rs.setReturnCode(ReturnConstant.RETURN_STATUS_FAIL);
+			rs.setReturnMsg("手机号:" + condition + "已经注册");
+			return rs;
+		}
+		List<Map<String, Object>> userList = userService.getUserByCondition(condition);
+		if (userList.size() > 0) {
+			rs.setReturnCode(ReturnConstant.RETURN_STATUS_FAIL);
+			rs.setReturnMsg("手机号:" + condition + "已经注册");
+			return rs;
+		}
+		// 默认系统用户
+		String referenceId = "-999999";
+		if (!StringUtils.isEmpty(externalVO.getReferenceId())) {
+			referenceId = externalVO.getReferenceId();
+			logger.info("param[referenceId] :" + referenceId);
+			UserVO uv = userDao.getUserByMobilePhone(referenceId);
+			Map<String, Object> param = new HashMap<String, Object>();
+			param.put("mobilephone", referenceId);
+			// 推荐手机号查询代理地区，先从代理商地区表查询无结果再从会员地区关系标志查询。referenceId 推荐人手机号码
+			List<Map<String, Object>> AgentRegionlist = externalDao.queryAgentInfoById(param);
+			long refId = 0;
+			if (AgentRegionlist.size() > 0) {
+				Map<String, Object> AgentRegionMap = AgentRegionlist.get(0);
+				Object agentId = AgentRegionMap.get("agentid");
+				if (agentId != null && !"".equals(agentId)) {
+					refId = Long.parseLong(agentId.toString());
+					referenceId = String.valueOf(refId);
+					logger.info("param[referenceId] :" + referenceId);
+				}
+			} else {
+				if (StringUtils.isObjEmpty(uv)) {
+					rs.setReturnCode(ReturnConstant.RETURN_STATUS_FAIL);
+					rs.setReturnMsg("推荐手机号:" + referenceId + "不存在");
+					return rs;
+				} else {
+					refId = uv.getUserId();
+					referenceId = String.valueOf(refId);
+					logger.info("param[referenceId] :" + referenceId);
+				}
+			}
+
+		}
+		Map<String, Object> map = new HashMap<String, Object>();
+		long memberId=-1;
+		if(null!=externalVO.getUserId()&&externalVO.getUserId()>0){ 
+			memberId=externalVO.getUserId();
+		}else{
+			memberId= System.currentTimeMillis();
+		}
+		DatabaseContextHolder.setDatabaseType(DatabaseType.mallDataSource);
+		map.put("memberId", memberId);
+		map.put("password", MD5Utils.encryptMD5(externalVO.getPassword()));
+		map.put("referenceId", referenceId);
+		map.put("mobilePhone", condition);
+		map.put("isblackList", 0);
+		map.put("gender", 2);
+		map.put("memberName", externalVO.getUserName());
+		int count = externalDao.registerMemberForWallet(map);
+		DatabaseContextHolder.setDatabaseType(DatabaseType.walletdataSource);
+		if (count > 0) {
+			externalVO.setMemberId(DESUtils.getEncryptString(String.valueOf(memberId)));
+			externalVO.setReferenceId(DESUtils.getEncryptString(remobilePhone));
+			externalVO.setMobilePhone(DESUtils.getEncryptString(externalVO.getMobilePhone()));
+			externalVO.setPassword(MD5Utils.encryptMD5(externalVO.getPassword()));
+			String userName = externalVO.getUserName();
+			userName = userName == null ? "" : userName;
+			externalVO.setUserName(DESUtils.getEncryptString(userName));
+			String realName = externalVO.getRealName();
+			realName = realName == null ? "" : realName;
+			externalVO.setRealName(DESUtils.getEncryptString(realName));
+			rs = doRelation(externalVO,Long.parseLong(referenceId));
+			logger.info("移动端注册referenceId"+referenceId);
+			if (!"-999999".equals(referenceId)) {
+				rs = addAgentUser(remobilePhone, memberId);
+			}
+		} else {
+			rs = ResultMsg.returnMsg500();
+		}
+		return rs;
+	}
+
+	private ResultMsg<Object> doRelation(ExternalVO externalVO,Long refIdCard) {
+		try {
+			logger.info("relation service start");
+			// DES解密
+			Long memberId = Long.parseLong(DESUtils.getDecryptString(externalVO.getMemberId()));
+			String rId = DESUtils.getDecryptString(externalVO.getReferenceId());
+			if (rId == null || "".equals(rId)) {
+				rId = "-999999";
+			}
+			Long referenceId = Long.parseLong(rId);
+			logger.info("relation service start param[memberId]:" + memberId + "param[referenceId]:" + referenceId);
+			String condition = referenceId + "";
+			List<Map<String, Object>> userList = userService.getUserByCondition(condition);
+			if (userList.size() > 0) {
+				referenceId = Long.parseLong(userList.get(0).get("userId").toString());
+			} else {
+				referenceId = Long.parseLong("-999999");
+			}
+			OrderVO orderVO = new OrderVO();
+			orderVO.setMemberId(memberId);
+			orderVO.setReferenceId(refIdCard);
+			if (!StringUtils.isEmpty(externalVO.getMobilePhone())) {
+				orderVO.setMobilePhone(DESUtils.getDecryptString(externalVO.getMobilePhone()));
+			}
+			orderVO.setPassword(externalVO.getPassword());
+			orderVO.setUserName(DESUtils.getDecryptString(externalVO.getUserName()));
+			if (!StringUtils.isEmpty(externalVO.getEmail())) {
+				orderVO.setEmail(DESUtils.getDecryptString(externalVO.getEmail()));
+			}
+			orderVO.setRealName(DESUtils.getDecryptString(externalVO.getRealName()));
+			Integer gender = externalVO.getGender();
+			if (gender != null) {
+				orderVO.setGender(Integer.parseInt(DESUtils.getDecryptString(gender.toString())));
+			} else {
+				// 默认设置性别男
+				orderVO.setGender(2);
+			}
+			// 记录钱包用户信息
+			recordWalletUser(orderVO);
+			// 记录钱包用户角色关系
+			recordWalletUserRole(memberId, CommonConstant.MEMBER_ROLE_ID);
+			// 记录邀请者关系流水信息
+			recordUserRelation(refIdCard, memberId);
+			// 计算邀请者一级用户数量
+			calcInvitationNum(refIdCard, memberId);
+			if (!CommonConstant.SYSTEM_USER_ID.equals(refIdCard)) {
+				// 计算邀请者上级的二级用户数量
+				calcParentInvitationNum(refIdCard, memberId);
+			}
+
+			logger.info("relation end");
+		
+			ExternalVO externalVo2= new ExternalVO();
+			externalVo2.setMemberId(memberId+"");
+			externalVo2.setReferenceId(refIdCard+"");
+			this.giveScoreMethod(externalVo2); // 注册送积分
+			return ResultMsg.returnMsg200(null);
+		} catch (Exception e) {
+			logger.error("relation error:" + e);
+			return ResultMsg.returnMsg500();
+		}
+	}
+
+	private ResultMsg<Object> addAgentUser(String referenceId, Long memberId) throws Exception {
+		Map<String, Object> param = new HashMap<String, Object>();
+		param.put("userId", referenceId);
+		// 推荐手机号查询代理地区，先从代理商地区表查询无结果再从会员地区关系标志查询。referenceId 推荐人手机号码
+		List<Map<String, Object>> list = externalDao.queryRegionUserByAgent(param);
+		int i = 0;
+		if (list.size() > 0) {
+			Map<String, Object> map = list.get(0);
+			map.put("userid", memberId);
+			i = externalDao.addRegionUser(map);
+		} else {
+			List<Map<String, Object>> lt = externalDao.queryRegionUserByUser(param);
+			if (lt.size() > 0) {
+				Map<String, Object> map = lt.get(0);
+				map.put("userid", memberId);
+				i = externalDao.addRegionUser(map);
+			}
+		}
+		logger.info("添加用户区域关系referenceId=" + referenceId + "memberId=" + memberId);
+		if (i > 0) {
+			logger.info("添加用户区域关系成功");
+			return ResultMsg.returnMsg200(null);
+		} else {
+			logger.info("无用户区域关系");
+			// 无用户区域关系不报错正常情况
+			return ResultMsg.returnMsg200(null);
+		}
+	}
+
+	/**
+	 * 注册实名认证后赠送积分
+	 */
+	@Override
+	public ResultMsg<Object> giveScore(ExternalVO externalVO) throws Exception {
+		try {
+			logger.info("giveScore service start");
+			Long memberId = Long.parseLong(DESUtils.getDecryptString(externalVO.getMemberId()));
+			String rId = DESUtils.getDecryptString(externalVO.getReferenceId());
+			if (rId == null || "".equals(rId)) {
+				rId = "-999999";
+			}
+			Long referenceId = Long.parseLong(rId);
+			logger.info("relation service start param[memberId]:" + memberId + "param[referenceId]:" + referenceId);
+
+			BigDecimal score = getRegisterAwardScore();
+			BigDecimal totalScore = new BigDecimal(0);
+			// 系统用户就不用计算了
+			if (!CommonConstant.SYSTEM_USER_ID.equals(referenceId)) {
+				// 记录邀请者所得收益积分流水信息
+				recordInviteProfitScore(referenceId, memberId, score, ProfitScoreTypeEnum.INVIITEREGISTERPROFIT.name(),
+						CommonConstant.PROFIT_REGISTER_SCORE_REMARK);
+				// 计算邀请者钱包收益积分
+				calcInviteWalletProfitScore(referenceId, memberId, score);
+				totalScore = score.add(score);
+			}
+			// 记录被邀请者所得收益积分流水信息
+			recordReceiveProfitScore(referenceId, memberId, score, ProfitScoreTypeEnum.REGISTERPROFIT.name(),
+					CommonConstant.PROFIT_REGISTER_SCORE_REMARK);
+			// 计算被邀请者钱包收益积分
+			calcReceiveWalletProfitScore(referenceId, memberId, score);
+			// 计算系统钱包支出积分
+			calcSystemScore(CommonConstant.SYSTEM_USER_ID, totalScore);
+
+			logger.info("giveScore service end");
+			return ResultMsg.returnMsg200(null);
+		} catch (Exception e) {
+			logger.error("giveScore error:" + e);
+			return ResultMsg.returnMsg500();
+		}
+	}
+
+	/**
+	 * 注册实名认证后赠送积分
+	 */
+	@Override
+	public void giveScoreMethod(ExternalVO externalVO) throws Exception {
+		try {
+			logger.info("giveScore service start");
+			Long memberId = Long.parseLong(externalVO.getMemberId());
+			Long referenceId = Long.parseLong(externalVO.getReferenceId());
+			logger.info("relation service start param[memberId]:" + memberId + "param[referenceId]:" + referenceId);
+
+			BigDecimal score = getRegisterAwardScore();
+			BigDecimal totalScore = new BigDecimal(0);
+			// 系统用户就不用计算了
+			if (!CommonConstant.SYSTEM_USER_ID.equals(referenceId)) {
+				// 记录邀请者所得收益积分流水信息
+				recordInviteProfitScore(referenceId, memberId, score, ProfitScoreTypeEnum.INVIITEREGISTERPROFIT.name(),
+						CommonConstant.PROFIT_REGISTER_SCORE_REMARK);
+				// 计算邀请者钱包收益积分
+				calcInviteWalletProfitScore(referenceId, memberId, score);
+				totalScore = score.add(score);
+			}
+			// 记录被邀请者所得收益积分流水信息
+			recordReceiveProfitScore(referenceId, memberId, score, ProfitScoreTypeEnum.REGISTERPROFIT.name(),
+					CommonConstant.PROFIT_REGISTER_SCORE_REMARK);
+			// 计算被邀请者钱包收益积分
+			calcReceiveWalletProfitScore(referenceId, memberId, score);
+			// 计算系统钱包支出积分
+			calcSystemScore(CommonConstant.SYSTEM_USER_ID, totalScore);
+			logger.info("giveScore service end");
+		} catch (Exception e) {
+			logger.error("giveScore error:" + e);
+		}
+	}
+
+	/**
+	 * 获取用户剩余积分
+	 */
+	@Override
+	public ResultMsg<Object> getRemainScore(String memberId) throws Exception {
+		Long userId = Long.parseLong(DESUtils.getDecryptString(memberId));
+		logger.info("getRemainScore service start param[userId]:" + userId);
+		try {
+			BigDecimal remainScore = externalDao.getRemainScore(userId);
+			Map<String, Object> map = new HashMap<>();
+			map.put("memberId", userId);
+			map.put("remainScore", remainScore);
+			logger.info("param[remainScore]:" + remainScore);
+			logger.info("getRemainScore end");
+			return ResultMsg.returnMsg200(map);
+		} catch (Exception e) {
+			logger.error("getRemainScore error:" + e);
+			return ResultMsg.returnMsg500();
+		}
+	}
+
+	/**
+	 * 返还用户积分
+	 */
+	@Override
+	public ResultMsg<Object> returnScore(ExternalVO externalVO) throws Exception {
+		Long userId = Long.parseLong(DESUtils.getDecryptString(externalVO.getMemberId()));
+		BigDecimal returnScore = new BigDecimal(DESUtils.getDecryptString(externalVO.getReturnScore())).setScale(2,
+				BigDecimal.ROUND_HALF_UP);
+		logger.info("returnScore service start param[userId]:" + userId + "param[returnScore]:" + returnScore);
+		try {
+			// 剩余积分
+			BigDecimal remainScore = externalDao.getRemainScore(userId);
+			externalDao.returnScore(userId, returnScore);
+			// 记录返还积分
+			recordInviteProfitScore(userId, userId, returnScore, CommonConstant.PROFIT_RETURN_SCORE_TYPE,
+					CommonConstant.PROFIT_RETURN_SCORE_REMARK);
+			// 充值后总积分
+			BigDecimal totalScore = remainScore.add(returnScore);
+			Map<String, Object> map = new HashMap<>();
+			map.put("memberId", userId);
+			map.put("returnScore", returnScore);
+			map.put("totalScore", totalScore);
+			logger.info("param[totalScore]:" + totalScore);
+			logger.info("returnScore end");
+			return ResultMsg.returnMsg200(map);
+		} catch (Exception e) {
+			logger.error("returnScore error:" + e);
+			return ResultMsg.returnMsg500();
+		}
+	}
+
+	/**
+	 * 扣除积分
+	 */
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public ResultMsg<Object> subScore(List<ExternalVO> exList, String memberId) throws Exception {
+		try {
+			Long userId = Long.parseLong(DESUtils.getDecryptString(memberId));
+			BigDecimal uasgeScore = new BigDecimal(0);
+			for (ExternalVO externalVO : exList) {
+				BigDecimal currentScore = new BigDecimal(DESUtils.getDecryptString(externalVO.getUasgeScore()))
+						.setScale(2, BigDecimal.ROUND_HALF_UP);
+				uasgeScore = uasgeScore.add(currentScore);
+				String orderNumber = DESUtils.getDecryptString(externalVO.getOrderNumber());
+				BigDecimal orderAmount = new BigDecimal(DESUtils.getDecryptString(externalVO.getOrderAmount()))
+						.setScale(2, BigDecimal.ROUND_HALF_UP);
+
+				// 记录已使用积分流水信息
+				recordUsageScore(userId, currentScore, orderNumber, orderAmount);
+			}
+			logger.info("subScore service start param[userId]:" + userId + "param[uasgeScore]:" + uasgeScore);
+			// 扣除前剩余积分
+			BigDecimal remainScore = externalDao.getRemainScore(userId);
+			// 扣除后剩余总积分
+			BigDecimal totalScore = remainScore.subtract(uasgeScore);
+			if (totalScore.doubleValue() < 0) {
+				return ResultMsg.returnMsg999(CommonConstant.PLATFORM_SCORE_REMAIN);
+			} else {
+				// 扣除积分
+				externalDao.subScore(userId, uasgeScore);
+
+				Map<String, Object> map = new HashMap<>();
+				map.put("memberId", userId);
+				map.put("uasgeScore", uasgeScore);
+				map.put("totalScore", totalScore);
+				logger.info("param[totalScore]:" + totalScore);
+				logger.info("subScore end");
+				return ResultMsg.returnMsg200(null);
+			}
+		} catch (Exception e) {
+			logger.error("subScore error:" + e);
+			return ResultMsg.returnMsg500();
+		}
+	}
+
+	@Override
+	public void recordWalletUser(OrderVO orderVO) throws Exception {
+		externalDao.recordWalletUser(orderVO);
+	}
+
+	@Override
+	public void recordWalletUserRole(Long userId, Long roleId) throws Exception {
+		externalDao.recordWalletUserRole(userId, roleId);
+	}
+
+	@Override
+	public void recordUserRelation(Long inviteUserId, Long receiveUserId) throws Exception {
+		externalDao.recordUserRelation(inviteUserId, receiveUserId);
+	}
+
+	@Override
+	public void calcInvitationNum(Long inviteUserId, Long receiveUserId) throws Exception {
+		externalDao.calcInvitationNum(inviteUserId, receiveUserId);
+	}
+
+	@Override
+	public void calcParentInvitationNum(Long inviteUserId, Long receiveUserId) throws Exception {
+		externalDao.calcParentInvitationNum(inviteUserId, receiveUserId);
+	}
+
+	@Override
+	public void recordInviteProfitScore(Long inviteUserId, Long receiveUserId, BigDecimal score, String profitScoretype,
+			String scoreRemark) throws Exception {
+		externalDao.recordInviteProfitScore(inviteUserId, receiveUserId, score, profitScoretype, scoreRemark);
+	}
+
+	@Override
+	public void recordReceiveProfitScore(Long inviteUserId, Long receiveUserId, BigDecimal score,
+			String profitScoretype, String scoreRemark) throws Exception {
+		externalDao.recordReceiveProfitScore(inviteUserId, receiveUserId, score, profitScoretype, scoreRemark);
+	}
+
+	@Override
+	public void calcInviteWalletProfitScore(Long inviteUserId, Long receiveUserId, BigDecimal score) throws Exception {
+		externalDao.calcInviteWalletProfitScore(inviteUserId, receiveUserId, score);
+	}
+
+	@Override
+	public void calcReceiveWalletProfitScore(Long inviteUserId, Long receiveUserId, BigDecimal score) throws Exception {
+		externalDao.calcReceiveWalletProfitScore(inviteUserId, receiveUserId, score);
+	}
+
+	@Override
+	@Transactional(propagation = Propagation.NOT_SUPPORTED, readOnly = true)
+	public BigDecimal getRegisterAwardScore() throws Exception {
+		return externalDao.getRegisterAwardScore();
+	}
+
+	@Override
+	public void recordUsageScore(Long userId, BigDecimal uasgeScore, String orderNumber, BigDecimal orderAmount)
+			throws Exception {
+		externalDao.recordUsageScore(userId, uasgeScore, orderNumber, orderAmount);
+	}
+
+	@Override
+	public ResultMsg<Object> bonus(List<ExternalVO> exList, String memberId) throws Exception {
+		logger.info("bonus service start");
+		try {
+			OrderVO orderVO = null;
+			Long userId = Long.parseLong(DESUtils.getDecryptString(memberId));
+			logger.info("param[userId]" + userId);
+			// 查询系统配置商家交易金额
+			float percentage = getSaleAmount();
+			BigDecimal profitAmount = new BigDecimal(0);
+			String orderStatus = null;
+			for (ExternalVO externalVO : exList) {
+				orderVO = new OrderVO();
+				orderVO.setMemberId(userId);
+				orderVO.setSellderId(Long.parseLong(DESUtils.getDecryptString(externalVO.getSellderId())));
+				orderVO.setReferenceId(Long.parseLong(DESUtils.getDecryptString(externalVO.getReferenceId())));
+				orderVO.setOrderNumber(DESUtils.getDecryptString(externalVO.getOrderNumber()));
+				orderVO.setUasgeScore(new BigDecimal(DESUtils.getDecryptString(externalVO.getUasgeScore())).setScale(2,
+						BigDecimal.ROUND_HALF_UP));
+				orderVO.setRealPayableAmount(
+						new BigDecimal(DESUtils.getDecryptString(externalVO.getRealPayableAmount())).setScale(2,
+								BigDecimal.ROUND_HALF_UP));
+				orderStatus = DESUtils.getDecryptString(externalVO.getOrderStatus());
+				orderVO.setOrderStatus(orderStatus);
+				orderVO.setSaleTime(DateUtils.parse(DESUtils.getDecryptString(externalVO.getSaleTime())));
+
+				BigDecimal currProfitAmount = orderVO.getRealPayableAmount().multiply(new BigDecimal(percentage / 100))
+						.setScale(2, BigDecimal.ROUND_HALF_UP);
+				// SUCCESSED：表示用户分润 REFUNDMENT：表示用户分润退还
+				if (CommonConstant.MALL_ORDER_STATUS_REFUNDMENT.equals(orderStatus)) {
+					currProfitAmount = currProfitAmount.multiply(new BigDecimal(-1));
+				}
+				orderVO.setBusinessAmount(currProfitAmount);
+				profitAmount = profitAmount.add(currProfitAmount);
+
+				// 记录商家交易销售收益
+				recordBonus(orderVO);
+			}
+			// 总收益
+			orderVO.setBusinessAmount(profitAmount);
+			// 计算推广人用户收益
+			calcPlatformAmount(orderVO);
+			calcWalletAmount(orderVO);
+
+			// 计算平台收入支出收益-(收益人增加平台就要支出)
+			orderVO.setReferenceId(CommonConstant.SYSTEM_USER_ID);
+			orderVO.setProfitAmount(profitAmount.multiply(new BigDecimal(-1)));
+			// 记录平台支出记录
+			recordExpenditureAmount(orderVO);
+			// 计算系统钱包金额
+			calcSystemAmount(orderVO);
+			logger.info("bonus service end");
+			return ResultMsg.returnMsg200(null);
+		} catch (Exception e) {
+			logger.error("bonus error:" + e);
+			return ResultMsg.returnMsg500();
+		}
+	}
+
+	@Override
+	public void recordBonus(OrderVO orderVO) throws Exception {
+		externalDao.recordBonus(orderVO);
+	}
+
+	@Override
+	public void recordUserProfit(OrderVO orderVO) throws Exception {
+		externalDao.recordUserProfit(orderVO);
+	}
+
+	@Override
+	@Transactional(propagation = Propagation.NOT_SUPPORTED, readOnly = true)
+	public float getSaleAmount() throws Exception {
+		return externalDao.getSaleAmount();
+	}
+
+	@Override
+	public void calcPlatformAmount(OrderVO orderVO) throws Exception {
+		externalDao.calcPlatformAmount(orderVO);
+	}
+
+	@Override
+	public void calcWalletAmount(OrderVO orderVO) throws Exception {
+		externalDao.calcWalletAmount(orderVO);
+	}
+
+	/**
+	 * 商家注册和推荐人建立关系，并且记录在钱包的用户信息
+	 */
+	@Override
+	public ResultMsg<Object> recordBusiness(ExternalVO externalVO) throws Exception {
+		try {
+			logger.info("recordBusiness service start");
+			OrderVO orderVO = new OrderVO();
+			// DES解密
+			Long sellderId = Long.parseLong(DESUtils.getDecryptString(externalVO.getSellderId()));
+			Long referenceId = Long.parseLong(DESUtils.getDecryptString(externalVO.getReferenceId()));
+			logger.info(
+					"recordBusiness service start param[sellderId]:" + sellderId + "param[referenceId]:" + referenceId);
+
+			orderVO.setMemberId(sellderId);
+			orderVO.setReferenceId(referenceId);
+			orderVO.setMobilePhone(DESUtils.getDecryptString(externalVO.getMobilePhone()));
+			orderVO.setPassword(externalVO.getPassword());
+			orderVO.setUserName(DESUtils.getDecryptString(externalVO.getUserName()));
+			// orderVO.setEmail(DESUtils.getDecryptString(externalVO.getEmail()));
+			orderVO.setRealName(DESUtils.getDecryptString(externalVO.getRealName()));
+
+			// 记录商家钱包用户信息
+			// recordWalletUser(orderVO);
+			// 记录商家钱包用户角色关系
+			// recordWalletUserRole(sellderId, CommonConstant.SELLER_ROLE_ID);
+			// 记录邀请者关系流水信息
+			recordUserRelation(referenceId, sellderId);
+			// 计算邀请者一级用户数量
+			calcInvitationNum(referenceId, sellderId);
+			// 计算邀请者上级的二级用户数量
+			calcParentInvitationNum(referenceId, sellderId);
+
+			orderVO.setSellderId(Long.parseLong(DESUtils.getDecryptString(externalVO.getSellderId())));
+			orderVO.setSellderName(DESUtils.getDecryptString(externalVO.getSellderName()));
+			orderVO.setSellderRegisterType(DESUtils.getDecryptString(externalVO.getSellderRegisterType()));
+			orderVO.setSellderConfigType(CommonConstant.BUSINESS_CONFIT_PLATFORM_DEFAULT);
+			externalDao.recordBusiness(orderVO);
+
+			logger.info("recordBusiness service end");
+			return ResultMsg.returnMsg200(null);
+		} catch (Exception e) {
+			logger.error("recordBusiness error:" + e);
+			return ResultMsg.returnMsg500();
+		}
+	}
+
+	/**
+	 * 用户分润接口
+	 */
+	@Override
+	public ResultMsg<Object> returnAmount(List<ExternalVO> exList, String memberId) throws Exception {
+		logger.info("returnAmount service start");
+		try {
+			OrderVO orderVO = null;
+			Long userId = Long.parseLong(DESUtils.getDecryptString(memberId));
+			logger.info("param[userId]:" + userId);
+			// 查询系统配置商家交易金额
+			float percentage = getSaleAmount();
+			BigDecimal profitAmount = new BigDecimal(0);
+			String orderStatus = null;
+			for (ExternalVO externalVO : exList) {
+				orderVO = new OrderVO();
+				orderVO.setMemberId(userId);
+				orderVO.setReferenceId(Long.parseLong(DESUtils.getDecryptString(externalVO.getReferenceId())));
+				orderVO.setOrderNumber(DESUtils.getDecryptString(externalVO.getOrderNumber()));
+				orderVO.setUasgeScore(new BigDecimal(DESUtils.getDecryptString(externalVO.getUasgeScore())).setScale(2,
+						BigDecimal.ROUND_HALF_UP));
+				orderVO.setRealPayableAmount(
+						new BigDecimal(DESUtils.getDecryptString(externalVO.getRealPayableAmount())).setScale(2,
+								BigDecimal.ROUND_HALF_UP));
+
+				orderStatus = DESUtils.getDecryptString(externalVO.getOrderStatus());
+				orderVO.setOrderStatus(orderStatus);
+				orderVO.setSaleTime(DateUtils.parse(DESUtils.getDecryptString(externalVO.getSaleTime())));
+
+				BigDecimal currProfitAmount = orderVO.getRealPayableAmount().multiply(new BigDecimal(percentage / 100))
+						.setScale(2, BigDecimal.ROUND_HALF_UP);
+				// SUCCESSED：表示用户分润 REFUNDMENT：表示用户分润退还
+				if (CommonConstant.MALL_ORDER_STATUS_REFUNDMENT.equals(orderStatus)) {
+					currProfitAmount = currProfitAmount.multiply(new BigDecimal(-1));
+				}
+				orderVO.setProfitAmount(currProfitAmount);
+				profitAmount = profitAmount.add(currProfitAmount);
+
+				// 记录用户分润明细
+				recordUserProfit(orderVO);
+			}
+			logger.info("param[profitAmount]:" + profitAmount);
+			// 用户分润总收益
+			orderVO.setProfitAmount(profitAmount);
+			// 计算推广人用户收益
+			calcPlatformAmount(orderVO);
+			calcWalletAmount(orderVO);
+
+			// 计算平台收入支出收益-(收益人增加平台就要支出)
+			orderVO.setReferenceId(CommonConstant.SYSTEM_USER_ID);
+			orderVO.setProfitAmount(profitAmount.multiply(new BigDecimal(-1)));
+			// 记录平台支出记录
+			recordExpenditureAmount(orderVO);
+			// 计算系统钱包金额
+			calcSystemAmount(orderVO);
+			logger.info("returnAmount service end");
+			return ResultMsg.returnMsg200(null);
+		} catch (Exception e) {
+			logger.error("returnAmount error:" + e);
+			return ResultMsg.returnMsg500();
+		}
+	}
+
+	@Override
+	public void recordExpenditureAmount(OrderVO orderVO) throws Exception {
+		externalDao.recordExpenditureAmount(orderVO);
+	}
+
+	@Override
+	public void calcSystemAmount(OrderVO orderVO) throws Exception {
+		externalDao.calcSystemAmount(orderVO);
+	}
+
+	@Override
+	public void calcSystemScore(Long systemId, BigDecimal score) throws Exception {
+		externalDao.calcSystemScore(systemId, score);
+	}
+
+	@Override
+	public int modifyMobilePhoneByUserId(UserVO vo) throws Exception {
+		return externalDao.modifyMobilePhoneByUserId(vo);
+	}
+}

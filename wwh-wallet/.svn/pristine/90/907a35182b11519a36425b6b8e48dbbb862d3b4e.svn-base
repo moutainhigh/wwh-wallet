@@ -1,0 +1,28 @@
+package com.wwh.dao;
+
+import java.util.List;
+import java.util.Map;
+
+public interface IMsgDao {
+	
+	/**
+	 * 查询短信
+	 * @param map
+	 * @return
+	 */
+	public List<Map<String,Object>> queryMsgInfoByCondition(Map<String,Object> map);
+	
+	/**
+	 * 增加短信记录
+	 * @param map
+	 * @return
+	 */
+	public int addMsg(Map<String,Object> map);
+	
+	/**
+	 * 修改短信记录
+	 * @param map
+	 * @return
+	 */
+	public int modifyMsg(Map<String,Object> map);
+}

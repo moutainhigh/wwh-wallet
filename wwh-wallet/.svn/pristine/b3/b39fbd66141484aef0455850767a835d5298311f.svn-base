@@ -1,0 +1,888 @@
+﻿<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>储备金</title>
+    <meta charset="utf-8" />
+    <meta name="renderer" content="webkit" />
+    <meta name="description" content="金融、钱包、理财、高收益">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="/wwh-wallet/css/bootstrap.css">
+    <link rel="stylesheet" href="/wwh-wallet/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/wwh-wallet/css/plugin.css">
+    <link rel="stylesheet" href="/wwh-wallet/css/landing.css">
+    <link rel="stylesheet" href="/wwh-wallet/css/common.css">
+    <link rel="stylesheet" href="/wwh-wallet/css/mall/animation.css">
+    <link href="/wwh-wallet/css/mall/private-benefit.css" rel="stylesheet" />
+    <link href="/wwh-wallet/css/style.css" rel="stylesheet" />
+    <script type="text/javascript" src="/wwh-wallet/js/jquery.min.js"></script>
+    <script src="/wwh-wallet/js/angular.js"></script>
+    <script src="/wwh-wallet/js/tm.paginationcbj.js"></script>
+    <script src="/wwh-wallet/js/bootstrap.js"></script>
+</head>
+<body class="rev-body reservepage" ng-controller="MainCtrl">
+    <div ng-include src="'/wwh-wallet/pages/wallet/common/header.html'"></div>
+    <input id="selectedpage" type="hidden" value="reserve" />
+    <div class="rev-navbar" style="display:none;">
+        <ul>
+            <li><a id="topmao1">惠民系统</a><i></i></li>
+            <li><a id="topmao2">富民系统</a><i></i></li>
+            <li><a id="topmao3">兴民系统</a><i></i></li>
+            <li><a id="topmao4">富人俱乐部</a></li>
+        </ul>
+    </div>
+    <div class="reserve-box">
+        <div class="rev-title rev-title01 fixed">[ 我的会员之路 ]</div>
+        <div class="rev-sub-box">
+            <div>
+                <div class="rev-pos-box rev-pos-box01">
+                    <div class="rev-stle rev-stle01">
+                        储备金：<label ng-bind="bigdata.tiyanSaveAmount==null ? 0 : bigdata.tiyanSaveAmount"></label>个
+                    </div>
+                    <!--
+                    <div class="rev-stle rev-stle01">
+                        参与人数：<label ng-bind="data1.platformInviteVO.invitePayCounter ? data1.platformInviteVO.invitePayCounter : 0 "></label>人
+                    </div>
+
+                    <div class="rev-stle rev-stle01">
+                        充值资金：<label ng-bind="data1.tiyanRcg == null ? '0' : data1.tiyanRcg"></label>个
+                    </div>
+                    <div class="rev-stle rev-stle01">
+                        总收益：<label ng-bind="data1.tiyanProfit == null ? '0.00' : data1.tiyanProfit"></label>个金币
+                    </div>
+                     -->
+                </div>
+                <form id="tiyan_goto_chargeStep1" action="/wwh-wallet/choose" method="post">
+                    <input id="diskType" type="hidden" name="amount" value="500" />
+                    <a class="rev-btn rev-btn01 selected" ng-click="gotoChargeStep1(500)"
+                       target="_self">立即充值</a>
+                </form>
+                <div class="locationico locationico01"></div>
+                <div class="dottedico dottedico01"></div>
+                <a class="sysbtnre01" style="" data-toggle="modal" href="#modal1">惠民系统</a>
+            </div>
+
+            <div>
+                <div class="rev-pos-box rev-pos-box02">
+                    <div class="rev-stle rev-stle01">
+                        储备金：<label ng-bind="bigdata.huiminSaveAmount==null ? 0 : bigdata.huiminSaveAmount"></label>个
+                    </div>
+                    <!--
+                    <div class="rev-stle rev-stle01">
+                        参与人数：<label ng-bind="data2.platformInviteVO.invitePayCounter ? data2.platformInviteVO.inviteTotalCounter :0 "></label>人
+                    </div>
+
+                    <div class="rev-stle rev-stle01">
+                        充值资金：<label ng-bind="data2.huiminRcg == null ? '0' : data2.huiminRcg"></label>个
+                    </div>
+                    <div class="rev-stle rev-stle01">
+                        总收益：<label ng-bind="data2.huiminProfit == null ? '0.00' : data2.huiminProfit"></label>个金币
+                    </div>
+                    -->
+                </div>
+                <form id="tiyan_goto_chargeStep2" action="/wwh-wallet/choose" method="post">
+                    <input id="diskType" type="hidden" name="amount" value="5000" />
+                    <a class="rev-btn rev-btn02 selected" ng-click='gotoChargeStep1(5000)' target="_self">立即充值</a>
+                </form>
+                <div class="locationico locationico02"></div>
+                <div class="dottedico dottedico02"></div>
+                <a class="sysbtnre02" data-toggle="modal" href="#modal2">富民系统</a>
+            </div>
+
+            <div>
+                <div class="rev-pos-box rev-pos-box03">
+                    <div class="rev-stle rev-stle01">
+                        储备金：<label ng-bind="bigdata.fuminSaveAmount ==null ? 0 : bigdata.fuminSaveAmount"></label>个
+                    </div>
+                    <!--
+                    <div class="rev-stle rev-stle01">
+                        参与人数：<label ng-bind="data3.platformInviteVO.invitePayCounter ? data3.platformInviteVO.invitePayCounter :0"></label>人
+                    </div>
+
+                    <div class="rev-stle rev-stle01">
+                        充值资金：<label ng-bind="data3.fuminRcg == null ? '0' : data3.fuminRcg"></label>个
+                    </div>
+                    <div class="rev-stle rev-stle01">
+                        总收益：<label ng-bind="data3.fuminProfit == null ? '0.00' : data3.fuminProfit"></label>个金币
+                    </div>
+                    -->
+                </div>
+                <form id="tiyan_goto_chargeStep3" action="/wwh-wallet/choose" method="post">
+                    <input id="diskType" type="hidden" name="amount" value="50000" />
+                    <a class="rev-btn rev-btn03 selected" ng-click="gotoChargeStep1(50000)" target="_self">立即充值</a>
+                </form>
+                <div class="locationico locationico03"></div>
+                <div class="dottedico dottedico03"></div>
+                <a class="sysbtnre03" data-toggle="modal" href="#modal3">兴民系统</a>
+            </div>
+
+            <div>
+                <div class="rev-pos-box rev-pos-box04">
+                    <div class="rev-stle rev-stle01">
+                        分享人数：<label ng-bind="bigdata.xingminSaveAmount == null ? 0 : bigdata.xingminSaveAmount"></label>个
+                    </div>
+                    <!--
+                    <div class="rev-stle rev-stle01">
+                        参与人数：<label ng-bind="data4.platformInviteVO.invitePayCounter ? data4.platformInviteVO.invitePayCounter : 0"></label>人
+                    </div>
+
+                    <div class="rev-stle rev-stle01">
+                        充值资金：<label ng-bind="data4.xingminRcg == null ? '0' : data4.xingminRcg"></label>个
+                    </div>
+                    <div class="rev-stle rev-stle01">
+                        总收益：<label ng-bind="data4.xingminProfit == null ? '0.00' : data4.xingminProfit"></label>个金币
+                    </div>
+                     -->
+                </div>
+                <a class="rev-btn rev-btn04 selected"
+                   href=""
+                   target="_self''">暂未开放</a>
+                <div class="locationico locationico04"></div>
+                <div class="dottedico dottedico04"></div>
+                <a class="sysbtnre04" data-toggle="modal" href="#modal4">富人俱乐部</a>
+            </div>
+        </div>
+        <div class="rev-title rev-title01" style="display:none;">
+            <a class="mao1"></a>[ 惠民系统 ]
+        </div>
+        <div id="modal1" class="modal fade">
+            <div class="openT" ng-controller="siteCtrl1">
+                <div class="rev-cy-box rev-cy-box01 sehidden fixed">
+                    <div class="rev-table-wrap fixed">
+                        <div class="fixed">
+                            <div class="rev-cysub-box01 fixed">
+                                <div class="cys-box01">
+                                    <div class="cys-01">
+                                        <div class="cys-t">我的金币</div>
+                                        <div class="cys-t2">
+                                            <label ng-bind="tiyanWithdrawalsAmount == null ? '0' : tiyanWithdrawalsAmount"></label>个<span>可提现金</span>
+                                        </div>
+                                    </div>
+                                    <div class="cys-02">
+                                        <a href="/wwh-wallet/applywithdrawl"
+                                           class="cyo01" target="_self">立即提现</a>
+                                    </div>
+                                </div>
+                                <div class="cys-box02">
+                                    <div class="cys-01">
+                                        <div class="cys-t">我的储备金币</div>
+                                        <div class="cys-t2">
+                                            <label ng-bind="tiyanSaveAmount == null ? '0' : tiyanSaveAmount" id="tiyanSaveAmount"></label>个
+                                        </div>
+                                    </div>
+                                    <form id="tiyanwithdrawlForm" action="/wwh-wallet/withraw/towithdrawlhtml" method="post">
+                                        <input id="tiyandiskType" type="hidden" name="diskType" />
+                                        <input id="tiyanamount" type="hidden" name="amount" />
+                                        <div class="cys-02">
+                                            <div class="cyo">
+                                                <a id="tiyan" class="cyo01" ng-click="withdrawl('TIYAN','tiyan')">提现</a>
+                                                <div class="keyn cyo02 selected">
+                                                    <div id="tiyanCountrId"> 已加入<span ng-bind="tiyanCountter == null ? '0' : tiyanCountter">2</span>人<br /></div>
+                                                    <span style="color:#FFF;font-size: 10px;display: block;width: 130px;" id="tiyanConfirmMsg"> 满27人可提现</span>
+                                                </div>
+                                                <div class="key27 cyo02">
+                                                    已满<span>27</span>人<br /> 可提现
+                                                </div>
+                                            </div>
+                                            <!--
+                                            <div class="cyf">
+                                                满5千个自动进入惠民系统
+                                            </div> -->
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="rev-table-box">
+                                <div class="rev-contain">
+                                    <div class="title-eo">收益记录</div>
+                                    <div style="height:250px;" ng-class="currentGradeCss">
+                                        <table>
+                                            <tr>
+                                                <th>时间</th>
+                                                <th>用户名</th>
+                                                <th>当前人数</th>
+                                                <th>充值金额</th>
+                                                <th>我的提成</th>
+                                            </tr>
+                                            <tr ng-repeat="x in tableTdata">
+                                                <td width="240">
+                                                    <div style="width:240px;font-size:20px;" ng-bind="x.createdDate"></div>
+                                                </td>
+                                                <td><label ng-bind="x.payNickName"></label></td>
+                                                <td>
+                                                    <label ng-bind="x.diskCounter"></label>人
+                                                </td>
+                                                <td>
+                                                    500.00元
+                                                </td>
+                                                <td>
+                                                    <label ng-bind="x.profitAmount"></label>个金币
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div class="page-position fixed">
+                                        <div class="fixed float-R">
+                                            <tm-pagination conf="paginationConf"></tm-pagination>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="rev-cy-box rev-cy-box02 sehidden fixed">
+                    很遗憾，您还未参与
+                    <form id="tiyan_chargeStep1" action="/wwh-wallet/choose" method="post">
+                        <input id="diskType" type="hidden" name="amount" value="500" />
+                        <a class="imc-btn" target="_self" ng-click="gotoChargeStep(500)">立即充值</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="rev-title rev-title01" style="display:none;">
+            <a class="mao2"></a>[ 富民系统 ]
+        </div>
+        <div id="modal2" class="modal fade">
+            <div class="openH" ng-controller="siteCtrl2">
+                <div class="rev-cy-box rev-cy-box01 sehidden fixed">
+                    <div class="rev-table-wrap fixed">
+                        <div class="fixed">
+                            <div class="rev-cysub-box01 fixed">
+                                <div class="cys-box01">
+                                    <div class="cys-01">
+                                        <div class="cys-t">我的金币</div>
+                                        <div class="cys-t2">
+                                            <label ng-bind="huiminWithdrawalsAmount == null ? '0' : huiminWithdrawalsAmount">160.00</label>个<span>可提现金</span>
+                                        </div>
+                                    </div>
+                                    <div class="cys-02">
+                                        <a href="/wwh-wallet/applywithdrawl"
+                                           class="cyo01" target="_self">立即提现</a>
+                                    </div>
+                                </div>
+                                <div class="cys-box02">
+                                    <div class="cys-01">
+                                        <div class="cys-t">我的储备金币</div>
+                                        <div class="cys-t2">
+                                            <label id="huiminSaveAmount" ng-bind="huiminSaveAmount == null ? '0' : huiminSaveAmount"></label>个
+                                        </div>
+                                    </div>
+                                    <form id="huiminwithdrawlForm" action="/wwh-wallet/withraw/towithdrawlhtml" method="post">
+                                        <input id="huimindiskType" type="hidden" name="diskType" />
+                                        <input id="huiminamount" type="hidden" name="amount" />
+                                        <div class="cys-02">
+                                            <div class="cyo">
+                                                <a id="huimin" class="cyo01" ng-click="withdrawl('HUIMIN','huimin')">提现</a>
+                                                <div class="keyn cyo02 selected">
+                                                    <div id="huimingCountrId"> 已加入<span ng-bind="huiminCountter == null ? '0' : huiminCountter">2</span>人<br /></div>
+
+                                                    <span style="color:#FFF;font-size: 10px;display: block;width: 130px;" id="huiminConfirmMsg"> 满27人可提现</span>
+                                                </div>
+                                                <div class="key27 cyo02">
+                                                    已满<span>27</span>人<br /> 可提现
+                                                </div>
+                                            </div>
+                                            <!--
+                                            <div class="cyf">
+                                                满5千个自动进入富民系统
+                                            </div> -->
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="rev-table-box">
+                                <div class="rev-contain">
+                                    <div class="title-eo">收益记录</div>
+                                    <div style="height:250px;" ng-class="currentGradeCss">
+                                        <table>
+                                            <tr>
+                                                <th>时间</th>
+                                                <th>用户名</th>
+                                                <th>当前人数</th>
+                                                <th>充值金额</th>
+                                                <th>我的提成</th>
+                                            </tr>
+                                            <tr ng-repeat="x in tableHdata">
+                                                <td width="240">
+                                                    <div style="width:240px;font-size:20px;"
+                                                         ng-bind="x.createdDate"></div>
+                                                </td>
+                                                <td><label ng-bind="x.payNickName"></label></td>
+                                                <td> <label ng-bind="x.diskCounter"></label>人
+                                                <td> 50000.00元 </td>
+                                                <td>
+                                                    <label ng-bind="x.profitAmount"></label>个金币
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div class="page-position fixed">
+                                        <div class="fixed float-R">
+                                            <tm-pagination conf="paginationConf"></tm-pagination>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="rev-cy-box rev-cy-box02 sehidden fixed">
+                    很遗憾，您还未参与
+
+                    <form id="tiyan_chargeStep2" action="/wwh-wallet/choose" method="post">
+                        <input id="diskType" type="hidden" name="amount" value="5000" />
+                        <a class="imc-btn" target="_self" ng-click="gotoChargeStep(5000)">立即充值</a>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+        <div class="rev-title rev-title02" style="display:none;">
+            <a class="mao3"></a>[ 兴民系统 ]
+        </div>
+        <div id="modal3" class="modal fade">
+            <div class="openF" ng-controller="siteCtrl3">
+                <div class="rev-cy-box rev-cy-box01 sehidden fixed">
+                    <div class="rev-table-wrap fixed">
+                        <div class="fixed">
+                            <div class="rev-cysub-box01 fixed">
+                                <div class="cys-box01">
+                                    <div class="cys-01">
+                                        <div class="cys-t">我的金币</div>
+                                        <div class="cys-t2">
+                                            <label ng-bind="fuminWithdrawalsAmount == null ? '0' : fuminWithdrawalsAmount">160.00</label>个<span>可提现金</span>
+                                        </div>
+                                    </div>
+                                    <div class="cys-02">
+                                        <a target="_self''"
+                                           href="/wwh-wallet/applywithdrawl"
+                                           class="cyo01">立即提现</a>
+                                    </div>
+                                </div>
+                                <div class="cys-box02">
+                                    <div class="cys-01">
+                                        <div class="cys-t">我的储备金币</div>
+                                        <div class="cys-t2">
+                                            <label id="fuminSaveAmount" ng-bind="fuminSaveAmount == null ? '0' : fuminSaveAmount"></label>个
+                                        </div>
+                                    </div>
+                                    <form id="fuminwithdrawlForm" action="/wwh-wallet/withraw/towithdrawlhtml" method="post">
+                                        <input id="fumindiskType" type="hidden" name="diskType" />
+                                        <input id="fuminamount" type="hidden" name="amount" />
+                                        <div class="cys-02">
+                                            <div class="cyo">
+                                                <a id="fumin" class="cyo01" ng-click="withdrawl('FUMIN','fumin')">提现</a>
+                                                <div class="keyn cyo02 selected">
+                                                    <div>已加入<span ng-bind="fuminCountter == null ? '0' : fuminCountter">2</span>人<br /></div>
+
+
+                                                    <span style="color:#FFF;font-size: 10px;display: block;width: 130px;" id="fuminConfirmMsg"> 满27人可提现</span>
+
+
+                                                </div>
+                                                <div class="key27 cyo02">
+                                                    已满<span>27</span>人<br /> 可提现
+                                                </div>
+                                            </div>
+                                            <!--
+                                            <div class="cyf">
+                                                满5千个自动进入富民系统
+                                            </div> -->
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="rev-table-box">
+                                <div class="rev-contain">
+                                    <div class="title-eo">收益记录</div>
+                                    <div style="height:250px;" ng-class="currentGradeCss">
+                                        <table>
+                                            <tr>
+                                                <th>时间</th>
+                                                <th>用户名</th>
+                                                <th>当前人数</th>
+                                                <th>充值金额</th>
+                                                <th>我的提成</th>
+                                            </tr>
+                                            <tr ng-repeat="x in tableFdata">
+                                                <td width="240">
+                                                    <div style="width:240px;font-size:20px;"
+                                                         ng-bind="x.createdDate"></div>
+                                                </td>
+                                                <td><label ng-bind="x.payNickName"></label></td>
+                                                <td><label ng-bind="x.diskCounter"></label>人
+                                                <td>50000.00元 </td>
+                                                <td>
+                                                    <label ng-bind="x.profitAmount"></label>个金币
+                                                </td>
+                                            </tr>
+
+                                        </table>
+                                    </div>
+                                    <div class="page-position fixed">
+                                        <div class="fixed float-R">
+                                            <tm-pagination conf="paginationConf"></tm-pagination>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="rev-cy-box rev-cy-box02 sehidden fixed">
+                    很遗憾，您还未参与
+                    <form id="tiyan_chargeStep3" action="/wwh-wallet/choose" method="post">
+                        <input id="diskType" type="hidden" name="amount" value="50000" />
+                        <a class="imc-btn" target="_self" ng-click="gotoChargeStep(50000)">立即充值</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div id="modal4" class="modal fade" style="display:none;">
+                <div class="rev-cy-box rev-cy-box02 fixed">
+                    暂未开放充值,敬请期待
+                    <!-- <div class="imc-btn">立即充值</div> -->
+                </div>
+            </div>
+            <div class="rev-title rev-title03">[ 股东系统 ]</div>
+            <div class="rev-cy-box rev-cy-box03 fixed">建设中，敬请期待......</div>
+        </div>
+    </div>
+
+    <div ng-include src="'/wwh-wallet/pages/wallet/common/footer.html'"></div>
+    <script type="text/javascript">
+        var app = angular.module('myApp', ['tm.pagination']);
+        app.controller('siteCtrl1', function ($scope, $timeout, $http) {
+            $scope.paginationConf = {
+                currentPage: 1,
+                itemsPerPage: 5,
+                pagesLength: 5,
+                perPageOptions: [10, 20, 30, 40, 50],
+                onChange: function () {
+                    $http.get("/wwh-wallet/savegold/savegoldcustromlist/TIYAN/" + $scope.paginationConf.currentPage + "/5")
+						.success(function (response) {
+						    if (response.data != null) {
+						        $scope.tableTdata = response.data.tiyanList.dataList;
+						        $scope.paginationConf.totalItems = response.data.tiyanList.total;
+						        $scope.tiyanCountter = response.data.tiyanMemberCurrentCounter;
+						        $scope.tiyanWithdrawalsAmount = response.data.tiyanWithdrawalsAmount;
+						        $scope.tiyanSaveAmount = response.data.tiyanSaveAmount;
+						        console.log($scope.tableTdata);
+						        function getCssNum() {
+						            if (response.data.tiyanList.dataList.length == 0) {
+						                return 'tablenodataselected';
+						            }
+						        }
+						        $scope.currentGradeCss = getCssNum();
+						    }
+						});
+                }
+            };
+        })
+        app.controller('siteCtrl2', function ($scope, $timeout, $http) {
+            $scope.paginationConf = {
+                currentPage: 1,
+                itemsPerPage: 5,
+                pagesLength: 5,
+                onChange: function () {
+                    $http.get("/wwh-wallet/savegold/savegoldcustromlist/HUIMIN/" + $scope.paginationConf.currentPage + "/5")
+						.success(function (response) {
+						    if (response.data != null) {
+						        $scope.tableHdata = response.data.huiminList.dataList;
+						        $scope.huiminCountter = response.data.huiminMemberCurrentCounter;
+						        $scope.huiminWithdrawalsAmount = response.data.huiminWithdrawalsAmount;
+						        $scope.huiminSaveAmount = response.data.huiminSaveAmount;
+						        console.log($scope.tableHdata);
+						        function getCssNum() {
+						            if (response.data.huiminList.dataList.length == 0) {
+						                return 'tablenodataselected';
+						            }
+						        }
+						        $scope.currentGradeCss = getCssNum();
+						    }
+						});
+                }
+            };
+        })
+        app.controller('siteCtrl3', function ($scope, $timeout, $http) {
+            $scope.paginationConf = {
+                currentPage: 1,
+                itemsPerPage: 5,
+                pagesLength: 6,
+                perPageOptions: [1],
+                onChange: function () {
+                    $http.get("/wwh-wallet/savegold/savegoldcustromlist/FUMIN/" + $scope.paginationConf.currentPage + "/5")
+						.success(function (response) {
+						    if (response.data != null) {
+						        $scope.tableFdata = response.data.fuminList.dataList;
+						        $scope.fuminCountter = response.data.fuminMenberCurrentCounter;
+						        $scope.fuminWithdrawalsAmount = response.data.fuminWithdrawalsAmount;
+						        $scope.fuminSaveAmount = response.data.fuminSaveAmount;
+						        console.log($scope.tableFdata);
+						        function getCssNum() {
+						            if (response.data.fuminList.dataList.length == 0) {
+						                return 'tablenodataselected';
+						            }
+						        }
+						        $scope.currentGradeCss = getCssNum();
+						    }
+						});
+                }
+            };
+        })
+
+        app.controller('MainCtrl', ['$scope', '$http', function ($scope, $http) {
+            // http://localhost:8080/wwh-wallet/savegold/savegoldcustromlist/{currentPage}/{pageSize}
+            $http.get("/wwh-wallet/savegold/savegoldcustromlist/1/5")
+				.success(function (response) {
+				    if (response.data != null) {
+				        $scope.bigdata = response.data;
+				        //惠民系统 
+				        if (response.data.tiyan) {
+				            //点亮会员之路
+				            angular.element('.rev-pos-box01').addClass('selected');
+				            angular.element('.dottedico01').addClass('selected');
+				            angular.element('.locationico01').addClass('selected');
+				            angular.element('.rev-btn01').removeClass('selected');
+				            $scope.data1 = response.data;
+
+
+				            angular.element('.openT .rev-cy-box01').removeClass('sehidden');
+				            angular.element('.openT .rev-cy-box02').addClass('sehidden');
+
+				            //提现按钮的可点控制
+				            if (response.data.tiyanDiskStatus == null) {
+				                angular.element("#tiyan").addClass("forbden");
+				                angular.element("#tiyan").attr("href", "");
+				            } else if (response.data.tiyanDiskStatus == "RUNNING") {
+				                angular.element("#tiyan").addClass("forbden");
+				                angular.element("#tiyan").attr("href", "");
+				            } else if (response.data.tiyanDiskStatus == "FINISHED") {
+				                if (response.data.tiyanUpWaittingRecords = 0 && response.data.tiyanARecommentPoint < 6) {
+				                    angular.element("#tiyan").addClass("forbden");
+				                    angular.element("#tiyan").attr("href", "");
+				                } else if (response.data.tiyanUpWaittingRecords > 0 && response.data.tiyanSaveAmount > response.data.tiyanUpWaittingSaveGold) {
+				                    angular.element("#tiyan").addClass("forbden");
+				                    angular.element("#tiyan").attr("href", "");
+				                } else if (response.data.tiyanARecommentPoin == undefined) {
+				                    angular.element("#tiyan").addClass("forbden");
+				                    angular.element("#tiyan").attr("href", "");
+				                }
+				            }
+				            //提示信息的控制
+				            if (response.data.tiyanDiskStatus == null) {
+				                angular.element("#tiyanConfirmMsg").html("哎呦，您当前身份还处在等待中...");
+				            } else if (response.data.tiyanDiskStatus == "RUNNING") {
+				                if (response.data.tiyanRoleId != '1') {
+				                    angular.element("#tiyanConfirmMsg").html("很遗憾，您还不是总监");
+				                } else if (response.data.tiyanRoleId == '1' && response.data.tiyanSaveAmount >= 6) {
+				                    angular.element("#tiyanConfirmMsg").html("当盘满27可进入惠民系统");
+				                }
+				            } else {
+				                if (response.data.tiyanARecommentPoint >= 6 && response.data.tiyanSaveAmount == response.data.tiyanUpWaittingSaveGold) {
+				                    angular.element("#tiyanConfirmMsg").html("恭喜！您已进入惠民系统");
+				                } else if (response.data.tiyanARecommentPoint < 6) {
+				                    angular.element("#tiyanConfirmMsg").html("很遗憾，您已出局");
+				                } else if (response.data.tiyanARecommentPoint >= 6 && response.data.tiyanSaveAmount > response.data.tiyanUpWaittingSaveGold) {
+				                    angular.element("#tiyanConfirmMsg").html("您有身份处于等待中..暂不可提现");
+				                } else if (response.data.tiyanARecommentPoint == undefined) {
+				                    angular.element("#tiyanConfirmMsg").html("恭喜！您已进入惠民系统");
+				                }
+				            }
+				        } else {
+				            angular.element('.openT .rev-cy-box02').removeClass('sehidden');
+				            angular.element('.openT .rev-cy-box01').addClass('sehidden');
+				        }
+
+				        //富民系统
+				        if (response.data.huimin) {
+				            //点亮会员之路
+				            angular.element('.rev-pos-box02').addClass('selected');
+				            angular.element('.dottedico02').addClass('selected');
+				            angular.element('.locationico02').addClass('selected');
+				            angular.element('.rev-btn02').removeClass('selected');
+				            $scope.data2 = response.data;
+
+				            //
+				            angular.element('.openH .rev-cy-box02').addClass('sehidden');
+				            angular.element('.openH .rev-cy-box01').removeClass('sehidden');
+
+
+				            //提现按钮的可点控制
+				            if (response.data.huiminDiskStatus == null) {
+				                angular.element("#huimin").addClass("forbden");
+				                angular.element("#huimin").attr("href", "");
+				            } else if (response.data.huiminDiskStatus == "RUNNING") {
+				                angular.element("#huimin").addClass("forbden");
+				                angular.element("#huimin").attr("href", "");
+				            } else if (response.data.huiminDiskStatus == "FINISHED") {
+				                if (response.data.huiminUpWaittingRecords = 0 && response.data.huiminARecommentPoint < 6) {
+				                    angular.element("#huimin").addClass("forbden");
+				                    angular.element("#huimin").attr("href", "");
+				                } else if (response.data.huiminUpWaittingRecords > 0 && response.data.huiminSaveAmount > response.data.huiminUpWaittingSaveGold) {
+				                    angular.element("#huimin").addClass("forbden");
+				                    angular.element("#huimin").attr("href", "");
+				                } else if (response.data.tiyanARecommentPoin == undefined) {
+				                    angular.element("#huimin").addClass("forbden");
+				                    angular.element("#huimin").attr("href", "");
+				                }
+				            }
+
+				            //提示信息的控制
+				            if (response.data.huiminDiskStatus == null) {
+				                angular.element("#huiminConfirmMsg").html("哎呦，您当前身份还处在等待中...");
+				            } else if (response.data.huiminDiskStatus == "RUNNING") {
+				                if (response.data.huiminRoleId != '1') {
+				                    angular.element("#huiminConfirmMsg").html("很遗憾，您还不是总监");
+				                } else if (response.data.huiminRoleId == '1' && response.data.fuminMenberCurrentCounter >= 6) {
+				                    angular.element("#huiminConfirmMsg").html("当盘满27可进入惠民系统");
+				                }
+				            } else {
+				                if (response.data.huiminARecommentPoint >= 6 && response.data.huiminSaveAmount == response.data.huiminUpWaittingSaveGold) {
+				                    angular.element("#huiminConfirmMsg").html("恭喜！您已进入惠民系统");
+				                } else if (response.data.huiminARecommentPoint < 6) {
+				                    angular.element("#huiminConfirmMsg").html("很遗憾，您已出局");
+				                } else if (response.data.huiminARecommentPoint >= 6 && response.data.huiminSaveAmount > response.data.huiminUpWaittingSaveGold) {
+				                    angular.element("#huiminConfirmMsg").html("您有身份处于等待中..暂不可提现");
+				                } else if (response.data.huiminARecommentPoint == undefined) {
+				                    angular.element("#huiminConfirmMsg").html("恭喜！您已进入惠民系统");
+				                }
+				            }
+
+				        } else {
+				            angular.element('.openH .rev-cy-box02').removeClass('sehidden');
+				            angular.element('.openH .rev-cy-box01').addClass('sehidden');
+				        }
+
+
+				        //富民系统
+				        if (response.data.fumin) {
+				            angular.element('.rev-pos-box03').addClass('selected');
+				            angular.element('.dottedico03').addClass('selected');
+				            angular.element('.locationico03').addClass('selected');
+				            angular.element('.rev-btn03').removeClass('selected');
+				            $scope.data3 = response.data;
+
+				            //
+				            angular.element('.openF .rev-cy-box02').addClass('sehidden');
+				            angular.element('.openF .rev-cy-box01').removeClass('sehidden');
+
+
+
+				            if (response.data.fuminDiskStatus == "RUNNING") {
+				                angular.element("#fumin").addClass("forbden");
+				                angular.element("#fumin").attr("href", "");
+				            }
+				            //提示信息的控制
+				            if (response.data.fuminDiskStatus == null) {
+				                angular.element("#fuminConfirmMsg").html("哎呦，您当前身份还处在等待中...");
+				            } else if (response.data.fuminDiskStatus == "RUNNING") {
+				                if (response.data.huiminRoleId != '1') {
+				                    angular.element("#fuminConfirmMsg").html("很遗憾，您还不是总监");
+				                } else if (response.data.huiminRoleId == '1' && response.data.fuminMenberCurrentCounter >= 6) {
+				                    angular.element("#fuminConfirmMsg").html("当盘满27可进入惠民系统");
+				                }
+				            } else {
+				                if (6 <= response.data.fuminARecommentPoint) {
+				                    angular.element("#fuminConfirmMsg").html("恭喜！您已获得总监全部收益");
+				                } else if (response.data.fuminARecommentPoint == undefined) {
+				                    angular.element("#fuminConfirmMsg").html("恭喜！您已获得总监全部收益");
+				                } else {
+				                    angular.element("#fuminConfirmMsg").html("很遗憾，您已出局");
+				                }
+				            }
+
+
+				        } else {
+				            angular.element('.openF .rev-cy-box02').removeClass('sehidden');
+				            angular.element('.openF .rev-cy-box01').addClass('sehidden');
+				        }
+
+				        if (response.data.xingmin) {
+				            angular.element('.rev-pos-box04').addClass('selected');
+				            angular.element('.dottedico04').addClass('selected');
+				            angular.element('.locationico04').addClass('selected');
+				            angular.element('.rev-btn04').removeClass('selected');
+				            $scope.data4 = response.data;
+
+				            if (response.data.xingminDiskStatus == "RUNNING") {
+				                angular.element("#xingmin").addClass("forbden");
+				                angular.element("#xingmin").attr("href", "");
+				            }
+
+				            if (response.data.xingminDiskStatus == null) {
+				                angular.element("#xingminConfirmMsg").html("哎呦，您当前身份还处在等待中...");
+				            } else if (response.data.xingminDiskStatus == "RUNNING") {
+				                if (response.data.xingminRoleId != '1') {
+				                    angular.element("#xingminConfirmMsg").html("很遗憾，您还不是总监");
+				                } else if (response.data.xingminRoleId == '1' && response.data.xingminMenberCurrentCounter >= 6) {
+				                    angular.element("#xingminConfirmMsg").html("当盘满27可进入惠民系统");
+				                }
+				            } else {
+				                if (6 <= response.data.xingminARecommentPoint) {
+				                    angular.element("#xingminConfirmMsg").html("恭喜！您已进入兴民系统");
+				                } else {
+				                    angular.element("#xingminConfirmMsg").html("很遗憾，您已出局");
+				                }
+				            }
+				        }
+				    } else {
+				        angular.element('.openT .rev-cy-box02').removeClass('sehidden');
+				        angular.element('.openT .rev-cy-box01').addClass('sehidden');
+				        angular.element('.openH .rev-cy-box02').removeClass('sehidden');
+				        angular.element('.openH .rev-cy-box01').addClass('sehidden');
+				        angular.element('.openF .rev-cy-box02').removeClass('sehidden');
+				        angular.element('.openF .rev-cy-box01').addClass('sehidden');
+				    }
+
+				    //用于页面跳转
+				    $scope.gotoChargeStep1 = function (amount) {
+				        var formObj = $("#tiyan_goto_chargeStep1");
+				        if (amount == "5000") {
+				            formObj = $("#tiyan_goto_chargeStep2");
+				        } else if (amount == "50000") {
+				            formObj = $("#tiyan_goto_chargeStep3");
+				        }
+				        formObj.attr("method", "post");
+				        formObj.submit();
+				    }
+
+
+				    //用于页面跳转
+				    $scope.gotoChargeStep = function (amount) {
+				        var formObj = $("#tiyan_chargeStep1");
+				        if (amount == "5000") {
+				            formObj = $("#tiyan_chargeStep2");
+				        } else if (amount == "50000") {
+				            formObj = $("#tiyan_chargeStep3");
+				        }
+				        formObj.attr("method", "post");
+				        formObj.submit();
+				    }
+
+				});
+
+            $scope.withdrawl = function (diskType, domId) {
+                if (!$("#" + domId).hasClass("forbden")) {
+                    var amount = '';
+                    if (diskType == "TIYAN") {
+                        amount = $("#tiyanSaveAmount").html();
+                        $("#tiyandiskType").val(diskType);
+                        $("#tiyanamount").val(amount);
+                        var formObj = $("#tiyanwithdrawlForm");
+                        formObj.attr("method", "post");
+                        formObj.submit();
+                    } else if (diskType == "HUIMIN") {
+                        amount = $("#huiminSaveAmount").html();
+                        $("#huimindiskType").val(diskType);
+                        $("#huiminamount").val(amount);
+                        var formObj = $("#huiminwithdrawlForm");
+                        formObj.attr("method", "post");
+                        formObj.submit();
+                    } else if (diskType == "FUMIN") {
+                        amount = $("#fuminSaveAmount").html();
+                        $("#fumindiskType").val(diskType);
+                        $("#fuminamount").val(amount);
+                        var formObj = $("#fuminwithdrawlForm");
+                        formObj.attr("method", "post");
+                        formObj.submit();
+                    }
+
+                }
+            }
+        }]);
+    </script>
+    <style>
+        .page-total {
+            display: none;
+        }
+
+        .page-list .pagination {
+            float: left;
+        }
+
+            .page-list .pagination span {
+                cursor: pointer;
+            }
+
+            .page-list .pagination .separate span {
+                cursor: default;
+                border-top: none;
+                border-bottom: none;
+            }
+
+                .page-list .pagination .separate span:hover {
+                    background: none;
+                }
+
+        .page-list .page-total {
+            float: left;
+            margin: 7px 20px;
+        }
+
+            .page-list .page-total input, .page-list .page-total select {
+                height: 26px;
+                border: 1px solid #ddd;
+            }
+
+            .page-list .page-total input {
+                width: 40px;
+                padding-left: 3px;
+            }
+
+            .page-list .page-total select {
+                width: 50px;
+            }
+
+        .pagination > li > a:hover, .pagination > li > a:focus, .pagination > .active > a,
+        .pagination > .active > span {
+            background: none;
+        }
+
+        .pagination > li > a, .pagination > li > span {
+            background: none;
+            color: #FFF;
+            border: none;
+        }
+
+        .pagination > .active > a, .pagination > .active > span {
+            color: #FFF;
+        }
+
+        .pagination > .disabled > span, .pagination > .disabled > a, .pagination > .disabled > a:hover,
+        .pagination > .disabled > a:focus {
+            background: none;
+            color: #FFF;
+        }
+
+        .pagination > .active > a, .pagination > .active > span {
+            color: #e94949;
+        }
+    </style>
+    <script type="text/javascript">
+        $('#topmao1').click(function () {
+            $('body,html').animate({
+                scrollTop: 1700
+            }, 100);
+        });
+        $('#topmao2').click(function () {
+            $('body,html').animate({
+                scrollTop: 2500
+            }, 100);
+        });
+        $('#topmao3').click(function () {
+            $('body,html').animate({
+                scrollTop: 3310
+            }, 100);
+        });
+        $('#topmao4').click(function () {
+            $('body,html').animate({
+                scrollTop: 4140
+            }, 100);
+        });
+
+    </script>
+</body>
+</html>

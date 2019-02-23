@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wwh.dao.IUserDao">
+	
+	<!-- 根据充值唯一编号和充值类型，获取用户ID -->
+	<select id="getUserIdByPaySeq" resultType="java.lang.Long">
+		SELECT
+			user_id
+		FROM
+		<choose>
+			<when test="payType == 'TIYAN'">
+				wallet_platform_pay_detail_tiyan_t
+			</when>
+			<when test="payType == 'HUIMIN'">
+				wallet_platform_pay_detail_huimin_t
+			</when>
+			<when test="payType == 'FUMIN'">
+				wallet_platform_pay_detail_fumin_t
+			</when>
+			<when test="payType == 'XINGMIN'">
+				wallet_platform_pay_detail_xingmin_t
+			</when>
+			<otherwise>
+				wallet_platform_pay_detail_other_t
+			</otherwise>
+		</choose>
+		WHERE
+			id_card = #{paySeq}
+		AND active_flag = 'Y'
+		AND delete_flag = 'N'
+	</select>
+	<select id="getReceiveUserId" resultType="java.lang.Long">
+		SELECT
+			receive_user_id
+		FROM
+			wallet_platform_invite_detail_t
+		WHERE
+			invite_user_id =#{userId}
+	</select>
+	<select id="queryUserIdByLogin" parameterType="java.util.Map"  resultType="java.util.Map">
+		SELECT
+				user_id userId
+		FROM
+				wwh_user_t t  
+		where 
+		 		active_flag = 'Y'
+		AND 	delete_flag = 'N'
+		AND		(t.user_name = #{userName} or t.mobile_phone = #{userName}  or  t.email = #{userName})
+	</select>
+	<!-- 根据用户ID和充值类型，点亮对应里程碑 -->
+	<update id="updateMilestone">
+		INSERT INTO wallet_member_milestone_t (
+			user_id,
+			disk_type,
+			is_arrived,
+			active_flag,
+			delete_flag,
+			created_date,
+			created_by,
+			last_updated_date,
+			last_updated_by
+		)
+		VALUES
+			(
+				#{userId},
+				#{diskType},
+				'Y',
+				'Y',
+				'N',
+				NOW(),
+				#{userId},
+				NOW(),
+				#{userId}
+			) 
+		ON DUPLICATE KEY UPDATE 
+			is_arrived = 'Y',
+			last_updated_date = NOW(),
+			last_updated_by = #{userId}
+	</update>
+	<!-- 判断用户是否有推荐人 -->
+	<select id="getUserReferenceIdByUserId" resultType="java.lang.Long">
+		SELECT
+			REFERENCE_ID
+		FROM
+			wwh_user_t
+		WHERE
+			user_id = #{userId}
+	</select>
+	
+	<resultMap id="userResultMap" type="com.wwh.vo.UserVO">   
+        <id property="userId" column="user_id"  />  
+        <result property="userName" column="user_name" />  
+        <result property="password" column="password" />  
+        <collection property="roleList" column="user_id" ofType="com.wwh.vo.RoleVO">    
+            <id property="roleID" column="role_id" />    
+            <result property="roleName" column="role_name"/>    
+        </collection>    
+    </resultMap>
+     
+    <select id="getUserRole" parameterType="long"  resultMap="userResultMap" >  
+        select u.user_id ,u.user_name ,u.password,r.role_id ,r.role_name   from wwh_user_t u,wwh_user_role_t ur,wwh_role_t r 
+        where u.user_id=ur.user_id and ur.role_id = r.role_id and u.user_id=#{userId}   
+    </select>
+    
+    <select id="getRolePrivilege" parameterType="java.util.Map"  resultType="java.util.Map">
+    	select  rp.role_id roleId,p.privilege_id privilegeId,p.privilege_name privilegeName from wallet_role_privilege_t rp,wallet_privilege_t p,
+    	where rp.privilege_id = p.privilege_id and rp.role_id in 
+    	 <foreach item="item" index="index" collection="ids" open="(" separator="," close=")">  
+		  #{item}  
+		 </foreach> 
+    </select>
+    
+    <select id="getUserByUserId" resultType="com.wwh.vo.UserVO">
+	    SELECT
+			user_id userId,
+			user_name nickName,
+			real_name realName,
+			id_card_no idCardNo,
+			mobile_phone mobilePhone,
+			reference_id referenceId,
+			email email,
+			password password
+		FROM
+			wwh_user_t
+		WHERE
+			user_id = #{userId}  
+    </select>
+    <select id="getUserByMobilePhone" resultType="com.wwh.vo.UserVO">
+	    SELECT
+			a.user_id userId,
+			a.user_name nickName,
+			a.real_name realName,
+			a.mobile_phone mobilePhone,
+			a.reference_id referenceId,
+			a.created_date createdDate,
+			a.email email,
+			a.password password,
+			b.user_name referenceName
+		FROM
+			wwh_user_t a
+		LEFT JOIN wwh_user_t b ON a.reference_id=b.user_id
+		WHERE
+				a.mobile_phone = #{mobilePhone}
+    </select>
+    <select id="getUsersByUserIds" resultType="com.wwh.vo.UserVO">
+	    SELECT
+			user_id userId,
+			CASE 
+				WHEN user_name  IS NULL or  user_name ='' THEN  mobile_phone
+				WHEN user_name  is not null  THEN user_name
+       		end as userName,
+			real_name realName,
+			reference_id referenceId,
+			mobile_phone mobilePhone,
+			email,
+			`password`,
+			created_date createdDate
+		FROM
+			wwh_user_t
+		WHERE
+			user_id IN 
+		<foreach item="item" index="index" collection="records" open="(" separator="," close=")">  
+		   #{item}  
+		</foreach> 
+    </select>
+	<insert id="addEliminateVO">
+		INSERT INTO wallet_disk_eliminate_t
+		(
+			disk_seq,
+			role_id,
+			eliminate_type,
+			eliminate_remark,
+			user_id,
+			id_card,
+			active_flag,
+			delete_flag,
+			created_date,
+			created_by,
+			last_updated_date,
+			last_updated_by
+		)
+		VALUES
+		(
+			#{diskSeq},
+			#{roleId},
+			#{eliminateType},
+			#{eliminateRemark},
+			#{userId},
+			#{idCard},
+			'Y',
+			'N',
+			NOW(),
+			#{createdBy},
+			NOW(),
+			#{lastUpdatedBy}
+		)
+	</insert>
+	<select id="getUserByCondition"  parameterType="String"  resultType="java.util.Map">
+	    SELECT
+			user_id userId,
+			user_name userName,
+			real_name realName,
+			reference_id referenceId,
+			mobile_phone mobilePhone,
+			email,
+			`password`,
+			created_date createdDate
+		FROM
+			wwh_user_t t
+		WHERE
+		 t.active_flag = 'Y' and t.delete_flag = 'N'
+		AND (t.user_name = #{condition} or t.EMAIL = #{condition} or t.mobile_phone =  #{condition})
+	</select>
+	
+	<!-- 查询用户是否实名认证 -->
+	<select id="getIdValidFlagByUserId" resultType="java.lang.Integer">
+		SELECT is_id_valid from wwh_user_t WHERE user_id=#{userId}
+	</select>
+	
+	<select id="getReferenceId" resultType="java.lang.Long">
+		select reference_id from wwh_user_t where user_id=#{userId}
+	</select>
+	
+	<!-- 根据用户id跟新用户信息 -->
+	<update id="updateUserInfoById" parameterType="com.wwh.vo.UserVO">
+		update wwh_user_t set
+		 	
+				<if test="realName != null">
+					real_name = #{realName,jdbcType=VARCHAR},
+				</if>
+				<if test="userName != null">
+					user_name = #{userName,jdbcType=VARCHAR},
+				</if>
+				<if test="referenceId != null">
+					reference_id = #{referenceId,jdbcType=BIGINT},
+				</if>
+				<if test="password != null">
+					password = #{password,jdbcType=VARCHAR},
+				</if>
+				<if test="idCardNo != null">
+				    id_card_no  = #{idCardNo,jdbcType=VARCHAR},
+				</if>
+				<if test="address != null">
+					address = #{address,jdbcType=VARCHAR},
+				</if>
+				<if test="mobilePhone != null">
+					mobile_phone = #{mobilePhone,jdbcType=VARCHAR},
+				</if>
+				<if test="lastUpdatedBy != null">
+					last_updated_by = #{lastUpdatedBy,jdbcType=BIGINT},
+				</if>
+				last_updated_date = now(),
+				is_id_valid = 1
+		where user_id = #{userId}
+	</update>
+		
+	<!-- 更新 -->			
+	<update id="updateTmemeberInfo" parameterType="com.wwh.vo.UserVO">
+		update t_member set
+		     	<if test="realName != null">
+					real_name = #{realName,jdbcType=VARCHAR},
+				</if>
+				<if test="userName != null">
+					member_name = #{userName,jdbcType=VARCHAR},
+				</if>
+				<if test="password != null">
+					password = #{password,jdbcType=VARCHAR},
+				</if>
+				<if test="referenceId != null">
+					reference_id = #{referenceId,jdbcType=BIGINT},
+				</if>
+				<if test="idCardNo != null">
+				    id_card_no  = #{idCardNo,jdbcType=VARCHAR},
+				</if>
+				<if test="mobilePhone != null">
+					mobile_phone = #{mobilePhone,jdbcType=VARCHAR},
+				</if>
+				is_id_valid = 1
+		where member_id = #{userId}
+	</update>
+	
+	<select id="getRegionByUserId" parameterType="java.lang.Long" resultType="com.wwh.vo.RegionUserVO">
+		SELECT
+			user_id userId,
+			region_code regionCode,
+			region_level regionLevel,
+			active_flag activeFlag,
+			delete_flag deleteFlag,
+			created_date createdDate,
+			created_by createdBy,
+			last_updated_date lastUpdatedDate,
+			last_updated_by lastUpdatedBy
+		FROM
+			wwh_region_user_t
+		WHERE user_id = #{userId}
+	</select>
+	
+	<select id="checkMobilePhoneExsits" parameterType="java.util.Map"  resultType="java.util.Map">
+		SELECT
+				user_id userId
+		FROM
+				wwh_user_t t  
+		where 
+		 		t.active_flag = 'Y'
+		AND 	t.delete_flag = 'N'
+		AND		t.mobile_phone = #{mobilePhone}
+	</select>
+	
+	<select id="selectUserByUserName" parameterType="java.lang.String" resultType="java.lang.Long">
+		select 
+			 user_id 
+	    from wwh_user_t t
+		where  	
+			t.active_flag = 'Y'
+			AND t.delete_flag = 'N'
+		    AND	t.user_name = #{userName}
+		
+	</select>
+	<select id="selectUserByCardNo" parameterType="java.lang.String" resultType="java.lang.Long">
+		select 
+			 user_id 
+	    from wwh_user_t t
+		where  	
+			t.active_flag = 'Y'
+			AND t.delete_flag = 'N'
+		    AND	t.id_card_no = #{cardNo}
+	</select>
+</mapper>  

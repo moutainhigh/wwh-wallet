@@ -1,0 +1,594 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.wwh.dao.IScoreDao">
+
+<!-- 修改用户的里程碑 -->
+<update id="updateMilestoneByUserId" parameterType="com.wwh.vo.MilestoneVO" >
+    update wallet_member_milestone_t
+    <set >
+      <if test="diskType != null" >
+        disk_type = #{diskType,jdbcType=VARCHAR},
+      </if>
+      <if test="isArrived != null" >
+        is_arrived = #{isArrived,jdbcType=CHAR},
+      </if>
+      <if test="activeFlag != null" >
+        active_flag = #{activeFlag,jdbcType=CHAR},
+      </if>
+      <if test="deleteFlag != null" >
+        delete_flag = #{deleteFlag,jdbcType=CHAR},
+      </if>
+      <if test="userId != null" >
+        last_updated_date = now(),
+      </if>
+      <if test="lastUpdatedBy != null" >
+        last_updated_by = #{lastUpdatedBy,jdbcType=BIGINT},
+      </if>
+    </set>
+    where user_id = #{userId,jdbcType=BIGINT},
+  </update>
+  
+<!-- 里程碑批量新增 -->
+<insert id="insertBatchMilestone" parameterType="java.util.List" >
+    insert into wallet_member_milestone_t (user_id, 
+      disk_type, is_arrived, active_flag, 
+      delete_flag, created_date, created_by, 
+      last_updated_date, last_updated_by
+      )
+    values <foreach item="item" index="index" collection="records"  separator="," > (#{item.user_id,jdbcType=BIGINT}, 
+      #{item.diskType,jdbcType=VARCHAR}, 
+      #{item.isArrived,jdbcType=CHAR}, 
+      #{item.activeFlag,jdbcType=CHAR}, 
+      #{item.deleteFlag,jdbcType=CHAR}, 
+      now(), 
+      #{item.createdBy,jdbcType=BIGINT}, 
+      now(), 
+      #{item.lastUpdatedBy,jdbcType=BIGINT}
+      )</foreach>
+  </insert>
+  
+<!-- 里程碑新增 -->
+<insert id="insertMilestone" parameterType="com.wwh.vo.MilestoneVO" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into wallet_member_milestone_t (user_id, disk_type, is_arrived, 
+      active_flag, delete_flag, created_date, 
+      created_by, last_updated_date, last_updated_by
+      )
+    values (
+    #{userId,jdbcType=BIGINT}, 
+    #{diskType,jdbcType=VARCHAR}, 
+    #{isArrived,jdbcType=CHAR}, 
+      #{activeFlag,jdbcType=CHAR}, 
+      #{deleteFlag,jdbcType=CHAR}, 
+      now(), 
+      #{createdBy,jdbcType=BIGINT}, 
+      now(), 
+      #{lastUpdatedBy,jdbcType=BIGINT}
+      )
+  </insert>
+  
+	<!-- 查询用户里程碑 -->
+	<select id="getMilestoneByUserId" parameterType="java.lang.Long"
+		resultType="com.wwh.vo.MilestoneVO">
+		SELECT
+			user_id userId,
+			disk_type diskType,
+			is_arrived
+			isArrived
+		FROM
+			wallet_member_milestone_t
+		WHERE
+			user_id = #{userId} 
+		AND
+			is_arrived = 'Y'
+		AND
+			active_flag = 'Y'
+		AND
+			delete_flag = 'N'	
+	</select>
+	<!-- 查询用户充值详情 -->
+	<select id="getAllRechargeListByUserId" resultType="com.wwh.vo.PayVO">
+		
+		<choose>
+			<when test="diskType == 'TIYAN'">
+				SELECT
+					a.created_date createdDate,
+					a.amount amount,
+					a.score	score,
+					a.pay_seq paySeq,
+					a.pay_status payStatus,
+					a.pay_amount_type payAmountType
+				FROM
+					wallet_platform_pay_detail_tiyan_t a
+				WHERE
+					a.user_id =	#{userId}
+				AND
+					active_flag = 'Y'
+				AND
+					delete_flag = 'N'
+				AND created_by != '-999999'
+				order by a.created_date desc
+			</when>
+			<when test="diskType == 'HUIMIN'">
+				SELECT
+					a.created_date createdDate,
+					a.amount amount,
+					a.score	score,
+					a.pay_seq paySeq,
+					a.pay_status payStatus,
+					a.pay_amount_type payAmountType
+				FROM
+					wallet_platform_pay_detail_huimin_t a
+				WHERE
+					a.user_id =	#{userId}
+				AND
+					active_flag = 'Y'
+				AND
+					delete_flag = 'N'
+				AND created_by != '-999999'
+				order by a.created_date desc
+			</when>
+			<when test="diskType == 'FUMIN'">
+				SELECT
+					a.created_date createdDate,
+					a.amount amount,
+					a.score	score,
+					a.pay_seq paySeq,
+					a.pay_status payStatus,
+					a.pay_amount_type payAmountType
+				FROM
+					wallet_platform_pay_detail_fumin_t a
+				WHERE
+					a.user_id =	#{userId}
+				AND
+					active_flag = 'Y'
+				AND
+					delete_flag = 'N'
+				AND created_by != '-999999'
+				order by a.created_date desc
+			</when>
+			<when test="diskType == 'XINGMIN'">
+				SELECT
+					a.created_date createdDate,
+					a.amount amount,
+					a.score	score,
+					a.pay_seq paySeq,
+					a.pay_status payStatus,
+					a.pay_amount_type payAmountType
+				FROM
+					wallet_platform_pay_detail_xingmin_t a
+				WHERE
+					a.user_id =	#{userId}
+				AND
+					active_flag = 'Y'
+				AND
+					delete_flag = 'N'
+				AND created_by != '-999999'
+				order by a.created_date desc
+			</when>
+			<otherwise>
+				select 
+					b.createdDate,
+					b.amount,
+					b.score,
+					b.paySeq,
+					b.payStatus,
+					b.payAmountType
+				from (
+					SELECT
+						a.created_date createdDate,
+						a.amount amount,
+						a.score	score,
+						a.pay_seq paySeq,
+						a.pay_status payStatus,
+						a.pay_amount_type payAmountType,
+						a.last_updated_date
+					FROM
+						wallet_platform_pay_detail_tiyan_t a
+					WHERE
+						a.user_id =	#{userId}
+					AND
+						active_flag = 'Y'
+					AND
+						delete_flag = 'N'
+					AND created_by != '-999999'
+					UNION ALL
+					
+					SELECT
+						a.created_date createdDate,
+						a.amount amount,
+						a.score	score,
+						a.pay_seq paySeq,
+						a.pay_status payStatus,
+						a.pay_amount_type payAmountType,
+						a.last_updated_date
+					FROM
+						wallet_platform_pay_detail_huimin_t a
+					WHERE
+						a.user_id =	#{userId}
+					AND
+						active_flag = 'Y'
+					AND
+						delete_flag = 'N'
+					AND created_by != '-999999'
+					UNION ALL
+					
+					SELECT
+						a.created_date createdDate,
+						a.amount amount,
+						a.score	score,
+						a.pay_seq paySeq,
+						a.pay_status payStatus,
+						a.pay_amount_type payAmountType,
+						a.last_updated_date
+					FROM
+						wallet_platform_pay_detail_fumin_t a
+					WHERE
+						a.user_id =	#{userId}
+					AND
+						active_flag = 'Y'
+					AND
+						delete_flag = 'N'
+					AND created_by != '-999999'
+					UNION ALL
+					
+					SELECT
+						a.created_date createdDate,
+						a.amount amount,
+						a.score	score,
+						a.pay_seq paySeq,
+						a.pay_status payStatus,
+						a.pay_amount_type payAmountType,
+						a.last_updated_date
+					FROM
+						wallet_platform_pay_detail_xingmin_t a
+					WHERE
+						a.user_id =	#{userId}
+					AND
+						active_flag = 'Y'
+					AND
+						delete_flag = 'N'
+					AND created_by != '-999999'
+						
+					UNION ALL 
+					
+					SELECT
+						a.created_date createdDate,
+						a.amount amount,
+						a.score	score,
+						a.pay_seq paySeq,
+						a.pay_status payStatus,
+						a.pay_amount_type payAmountType,
+						a.last_updated_date
+					FROM
+						wallet_platform_pay_detail_other_t a
+					WHERE
+						a.user_id =	#{userId}
+					AND
+						active_flag = 'Y'
+					AND
+						delete_flag = 'N'
+				)b
+				order by b.createdDate desc
+			</otherwise>
+		</choose>
+		
+		
+	</select>
+
+	<!-- 获取用户钱包详情 -->
+	<select id="getWalletByUserId" parameterType="java.lang.Long"
+		resultType="com.wwh.vo.WalletAmountExtendVO">
+		SELECT
+			a.user_id userId,
+			a.total_score totalScore,
+			a.recharge_amount rechargeAmount,
+			a.platform_total_amount platformTotalAmount,
+			a.used_score usedScore,
+			a.remain_score remainScore,
+			b.role_id wwhRoleId
+		FROM
+			wallet_amount_t a
+		LEFT JOIN wwh_user_role_t b ON a.user_id = b.user_id
+		WHERE
+			a.user_id = #{userId}
+		AND a.active_flag = 'Y'
+		AND a.delete_flag = 'N'	
+	</select>
+	
+	<select id="getWalletByUserId2" parameterType="java.lang.Long"
+		resultType="com.wwh.vo.SaveGoldCustromVO">
+		SELECT
+			id id,
+			user_id userId,
+			total_score totalScore,
+			recharge_amount rechargeAmount,
+			platform_total_amount platformTotalAmount,
+			used_score usedScore,
+			remain_score remainScore
+		FROM
+			wallet_amount_t
+		WHERE
+			user_id = #{userId}
+		AND
+			active_flag = 'Y'
+		AND
+			delete_flag = 'N'
+	</select>
+
+	<!-- 查询用户积分使用记录 -->
+	<select id="getScoreUsageByUserId" resultType="com.wwh.vo.ScoreUsageVO"
+		parameterType="java.lang.Long">
+		SELECT
+			user_id userId,
+			uasge_score uasgeScore,
+			order_number orderNumber,
+			order_amount orderAmount,
+			uasge_score_status uasgeScoreStatus,
+			created_date createdDate
+		FROM
+			wallet_platform_score_usage_t
+		WHERE 
+			user_id = #{userId}
+		AND active_flag = 'Y'
+		AND delete_flag = 'N'	
+		order by created_date desc	
+	</select>
+	
+	
+	
+	<!-- 获取用户注册积分收益详情 -->
+	<select id="getRegistScoreProfitDetailByUserId" resultType="com.wwh.vo.PlatformProfitScoreVO">
+		SELECT
+			a.profit_score profitScore,
+			a.profit_score_type profitScoreType,
+			a.created_date createdDate,
+			a.source_user_id sourceUserId,
+			a.recharge_Amount rechargeAmount,
+			b.user_name nickName
+		FROM
+			wallet_platform_profit_score_t a
+		LEFT JOIN
+			wwh_user_t b
+		ON a.source_user_id = b.user_id
+		WHERE
+		profit_score_type in ('REGISTERPROFIT','INVIITEREGISTERPROFIT')
+		AND a.user_id = #{userId}
+		AND b.active_flag = 'Y'
+		AND b.delete_flag = 'N'
+		AND a.active_flag = 'Y'
+		AND a.delete_flag = 'N'		
+		order by a.created_date desc	
+	</select>
+	
+	<!-- 获取用户注册积分收益详情 -->
+	<select id="getAllScoreProfitDetailByUserId" resultType="com.wwh.vo.PlatformProfitScoreVO">
+		SELECT
+			a.profit_score profitScore,
+			a.profit_score_type profitScoreType,
+			a.created_date createdDate,
+			a.source_user_id sourceUserId,
+			a.recharge_Amount rechargeAmount,
+			b.user_name nickName
+		FROM
+			wallet_platform_profit_score_t a
+		LEFT JOIN
+			wwh_user_t b
+		ON a.source_user_id = b.user_id
+		WHERE
+			a.user_id = #{userId}
+		AND b.active_flag = 'Y'
+		AND b.delete_flag = 'N'
+		AND a.active_flag = 'Y'
+		AND a.delete_flag = 'N'		
+		order by a.created_date desc	
+	</select>
+	
+	<!-- 获取用户充值积分收益详情 -->
+	<select id="getChargeScoreProfitDetailByUserId" resultType="com.wwh.vo.PlatformProfitScoreVO">
+		SELECT
+			profit_score profitScore,
+			profit_score_type profitScoreType,
+			a.created_date createdDate,
+			source_user_id sourceUserId,
+			recharge_Amount rechargeAmount,
+			b.user_name nickName
+		FROM
+			wallet_platform_profit_score_t a
+		LEFT JOIN
+			wwh_user_t b
+		ON a.source_user_id = b.user_id
+		WHERE
+		profit_score_type = 'INVIITERECHARGEPROFIT'
+		AND a.user_id = #{userId}
+		AND b.active_flag = 'Y'
+		AND b.delete_flag = 'N'
+		AND a.active_flag = 'Y'
+		AND a.delete_flag = 'N'	
+		order by a.created_date desc	
+	</select>
+
+	<!-- 获取充值积分配置 -->
+	<select id="getScoreRcgConfig" resultType="java.math.BigDecimal">
+		SELECT
+			award_score
+		FROM
+			WALLET_PLATFORM_SCORE_AWARD_CONFIG_T
+		WHERE
+			award_type = #{payType}
+		AND `status` = 'Y'
+		AND ACTIVE_FLAG = 'Y'
+		AND DELETE_FLAG = 'N'
+	</select>
+	<!-- 插入积分收益流水表 -->
+	<insert id="insertScoreProfitRecord" parameterType="com.wwh.vo.PlatformProfitScoreVO">
+		INSERT INTO wallet_platform_profit_score_t (
+			user_id,
+			profit_score,
+			profit_score_type,
+			profit_score_remark,
+			recharge_amount,
+			source_user_id,
+			active_flag,
+			delete_flag,
+			created_date,
+			created_by,
+			last_updated_date,
+			last_updated_by
+		)
+		VALUES(
+			#{userId},
+			#{profitScore},
+			#{profitScoreType},
+			#{profitScoreRemark},
+			#{rechargeAmount},
+			#{sourceUserId},
+			'Y',
+			'N',
+			NOW(),
+			#{userId},
+			NOW(),
+			#{userId}
+		)
+	</insert>
+	<!-- 更新钱包表积分 -->
+	<update id="updateWallteScore" parameterType="com.wwh.vo.WalletAmountVO">
+		INSERT INTO wallet_amount_t (
+			user_id,
+			total_score,
+			recharge_amount,
+			platform_total_amount,
+			used_score,
+			remain_score,
+			active_flag,
+			delete_flag,
+			created_date,
+			created_by,
+			last_updated_date,
+			last_updated_by
+		)
+		VALUES
+			(
+				#{userId},
+				#{totalScore},
+				#{rechargeAmount},
+				#{platformTotalAmount},
+				#{usedScore},
+				#{remainScore},
+				'Y',
+				'N',
+				NOW(),
+				#{userId},
+				NOW(),
+				#{userId}
+			) 
+		ON DUPLICATE KEY UPDATE 
+			total_score = total_score + #{totalScore},
+			recharge_amount = recharge_amount + #{rechargeAmount},
+			remain_score = remain_score + #{remainScore},
+			last_updated_date = NOW(),
+			last_updated_by = #{userId}
+	</update>
+	<!-- 修改充值记录为已计算 -->
+	<update id="updateRcgIsCalcuated" parameterType="java.lang.String">
+		UPDATE 
+			<choose>
+				<when test="payAmountType == 'TIYAN'">wallet_platform_pay_detail_tiyan_t</when>
+				<when test="payAmountType == 'HUIMIN'">wallet_platform_pay_detail_huimin_t</when>
+				<when test="payAmountType == 'FUMIN'">wallet_platform_pay_detail_fumin_t</when>
+				<when test="payAmountType == 'XINGMIN'">wallet_platform_pay_detail_xingmin_t</when>
+				<otherwise>wallet_platform_pay_detail_other_t</otherwise>
+			</choose>
+		SET 
+		 is_calcuated = 'Y',
+		 last_updated_date = NOW()
+		WHERE
+			id_card = #{paySeq}
+	</update>
+	
+	<select id="getScoreAwardConfigVO" resultType="com.wwh.vo.PlatformScoreAwardConfigVO">
+		SELECT
+			award_score awardScore,
+			invite_award_score inviteAwardScore,
+			award_type awardType
+		FROM
+			wallet_platform_score_award_config_t
+		WHERE
+			STATUS = 'Y'
+		AND active_flag = 'Y'
+		AND delete_flag = 'N'
+		<if test="diskType != null">
+		AND award_type = #{diskType}
+		</if>
+	</select>
+	
+	<insert id="updateSystemProfitByVO" parameterType="com.wwh.vo.SystemWalletVO">
+		INSERT INTO wwh_system_wallet_t
+		( 
+			system_id,
+			system_wallet_total_amount,
+			system_mall_total_amount,
+			system_profit_amount,
+			system_expenditure_amount,
+			system_expenditure_score,
+			active_flag,
+			delete_flag,
+			created_date,
+			created_by,
+			last_updated_date,
+			last_updated_by
+		)
+		VALUES(
+			#{systemId},
+			#{systemWalletTotalAmount},
+			#{systemMallTotalAmount},
+			#{systemProfitAmount},
+			#{systemExpenditureAmount},
+			#{systemExpenditureScore},
+			'Y',
+			'N',
+			NOW(),
+			#{createdBy},
+			NOW(),
+			#{lastUpdatedBy}
+		)ON DUPLICATE KEY UPDATE
+			system_wallet_total_amount = system_wallet_total_amount + #{systemWalletTotalAmount},
+			system_mall_total_amount = system_mall_total_amount + #{systemMallTotalAmount},
+			system_profit_amount = system_profit_amount + #{systemProfitAmount},
+			system_expenditure_amount = system_expenditure_amount + #{systemExpenditureAmount},
+			system_expenditure_score = system_expenditure_score + #{systemExpenditureScore},
+			last_updated_date = NOW(),
+			last_updated_by = #{lastUpdatedBy}
+	</insert>
+	
+	<insert id="addAssetExpenditureVO">
+		INSERT INTO wwh_asset_expenditure_detail_t
+		(
+			user_id,
+			expenditure_amount,
+			target_user_id,
+			status,
+			active_flag,
+			delete_flag,
+			created_date,
+			created_by,
+			last_updated_date,
+			last_updated_by
+		)VALUES
+		(
+			#{userId},
+			#{expenditureAmount},
+			#{targetUserId},
+			#{status},
+			'Y',
+			'N',
+			NOW(),
+			#{createdBy},
+			NOW(),
+			#{lastUpdatedBy}
+		)
+	</insert>
+</mapper>

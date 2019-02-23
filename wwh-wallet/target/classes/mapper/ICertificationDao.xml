@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wwh.dao.ICertificationDao">
+	<!-- 查询国家列表 -->
+	<select id="getCountryList" resultType="com.wwh.vo.CountryVO">
+		SELECT
+			id              as id,
+			country_code    as countryCode,
+			country_name    as countryName,
+			active_flag     as activeFlag,
+			delete_flag     as deleteFlag,
+			created_date    as createdDate,
+			created_by      as createdBy,
+			last_updated_date as lastUpdatedDate,
+			last_updated_by  as lastUpdatedBy
+		FROM
+			wwh_country_t
+	</select>
+	<!-- 查询城市列表 -->
+	<select id="getProvinceList" resultType="com.wwh.vo.ProvinceVO">
+		SELECT
+			id                as id,
+			province_code     as provinceCode,
+			province_name     as provinceName,
+			country_code      as countryCode,
+			active_flag       as activeFlag,
+			delete_flag       as deleteFlag,
+			created_date      as createdDate,
+			created_by        as createdBy,
+			last_updated_date as lastUpdatedDate,
+			last_updated_by   as lastUpdatedBy
+	   FROM
+		    wwh_province_t
+	   WHERE
+		    country_code = #{countryCode}
+	</select>
+
+	<select id="getCityList" resultType="com.wwh.vo.CityVO">
+		SELECT
+			id              as id,
+			city_code       as cityCode,
+			city_name       as cityName,
+			province_code   as provinceCode,
+			active_flag     as activeFlag,
+			delete_flag     as deleteFlag,
+			created_date    as createdDate,
+			created_by      as createdBy,
+			last_updated_date  as lastUpdatedDate,
+			last_updated_by    as lastUpdatedBy
+       FROM
+	        wwh_city_t
+       WHERE
+	        province_code = #{provinceCode} 
+	</select>
+
+	<select id="getAreaList" resultType="com.wwh.vo.AreaVO">
+		SELECT
+			id              as id,
+			area_code       as areaCode,
+			area_name       as areaName,
+			city_code       as cityCode,
+			active_flag     as activeFlag,
+			delete_flag     as deleteFlag,
+			created_date    as createdDate,
+			created_by      as createdBy,
+			last_updated_date  as lastUpdatedDate,
+			last_updated_by    as lastUpdatedBy
+		FROM
+			wwh_area_t
+		WHERE
+			city_code = #{cityCode}
+	</select>
+	
+	<select id="getPhoneByUserId" resultType="com.wwh.vo.UserVO">
+		 SELECT
+		u.mobile_phone AS mobilePhone,
+		u.user_name AS userName,
+		u.real_name AS realName,
+		u.id_card_no AS idCardNo,
+		u.is_id_valid AS isIdValid,
+		u.address AS address,
+		CASE
+		WHEN (u.reference_id != '' or u.reference_id != null) and u.reference_id != '-999999' THEN (select mobile_phone from wwh_user_t where user_id = u.reference_id)
+		END AS referencePhone,
+		CASE
+		WHEN (u.reference_id != '' or u.reference_id != null) and u.reference_id != '-999999' THEN (select user_name from wwh_user_t where user_id = u.reference_id)
+		END AS referenceName,
+		co.country_name AS countryName,
+		p.province_name AS provinceName,
+		c.city_name AS cityName,
+		a.area_name AS areaName,
+		co.country_code AS countryCode,
+		p.province_code AS provinceCode,
+		c.city_code AS cityCode,
+		a.area_code AS areaCode
+	    FROM
+			wwh_user_t u
+			LEFT JOIN wwh_area_relation_t re ON u.user_id = re.user_id
+			LEFT JOIN wwh_country_t co ON re.country_code = co.country_code
+			LEFT JOIN wwh_province_t p ON re.province_code = p.province_code
+			LEFT JOIN wwh_city_t c ON re.city_code = c.city_code
+			LEFT JOIN wwh_area_t a ON re.area_code = a.area_code
+			WHERE u.user_id = #{userId}
+	</select>
+	
+	<insert id="updateAreaRelationInfo" parameterType="com.wwh.vo.AreaRelationVO">
+		  INSERT INTO wwh_area_relation_t(
+				user_id,
+				area_code,
+				city_code,
+				province_code,
+				country_code,
+				active_flag,
+				delete_flag,
+				created_date,
+				created_by,
+				last_updated_date,
+				last_updated_by
+		  )values(
+		  	 #{userId},
+		  	 #{areaCode},
+		  	 #{cityCode},
+		  	 #{provinceCode},
+		  	 #{countryCode},
+		  	 'Y',
+		  	 'N',
+		  	 now(),
+		  	 #{createdBy},
+		  	 now(),
+		  	 #{lastUpdatedBy}
+		  )
+		  ON DUPLICATE KEY UPDATE 
+		  		<if test="areaCode != null">
+					area_code = #{areaCode},
+				</if>
+				<if test="cityCode != null">
+					city_code = #{cityCode},
+				</if>
+				<if test="provinceCode != null">
+					province_code = #{provinceCode},
+				</if>
+				<if test="countryCode">
+					country_code = #{countryCode},
+				</if>
+				last_updated_date = NOW(),
+				last_updated_by = #{lastUpdatedBy}
+	</insert>
+	
+	<select id="getCountryByCountryCode" resultType="com.wwh.vo.CountryVO">
+		SELECT
+			country_code countryCode,
+			country_name countryName,
+			active_flag activeFlag,
+			delete_flag deleteFlag,
+			created_date createdDate,
+			created_by createdBy,
+			last_updated_date lastUpdatedDate,
+			last_updated_by lastUpdatedBy
+		FROM
+			wwh_country_t
+		WHERE country_code = #{code}
+	</select>
+	
+	<select id="getProvinceByProvinceCode" resultType="com.wwh.vo.ProvinceVO"> 
+		SELECT
+			province_code provinceCode,
+			province_name provinceName,
+			country_code countryCode,
+			active_flag activeFlag,
+			delete_flag deleteFlag,
+			created_date createdDate,
+			created_by createdBy,
+			last_updated_date lastUpdatedDate,
+			last_updated_by lastUpdatedBy
+		FROM
+			wwh_province_t
+		WHERE
+			province_code = #{code}
+	</select>
+	
+	<select id="getAreaByAreaCode" resultType="com.wwh.vo.AreaVO">
+		SELECT
+			area_code areaCode,
+			area_name areaName,
+			city_code cityCode,
+			active_flag activeFlag,
+			delete_flag deleteFlag,
+			created_date createdDate,
+			created_by createdBy,
+			last_updated_date lastUpdatedDate,
+			last_updated_by lastUpdatedBy
+		FROM
+			wwh_area_t
+		WHERE
+			area_code = #{code}
+	</select>
+	
+	<select id="getCityByCityCode" resultType="com.wwh.vo.CityVO">
+		SELECT
+			city_code cityCode,
+			city_name cityName,
+			province_code provinceCode,
+			active_flag activeFlag,
+			delete_flag deleteFlag,
+			created_date createdDate,
+			created_by createdBy,
+			last_updated_date lastUpdatedDate,
+			last_updated_by lastUpdatedBy
+		FROM
+			wwh_city_t
+		WHERE
+			city_code = #{code}
+	</select>
+	
+	<select id="getAgentByRegionCode" resultType="com.wwh.vo.AgentRegionVO">
+		SELECT
+			agent_id agentId,
+			region_code regionCode,
+			region_level regionLevel,
+			active_flag activeFlag,
+			delete_flag deleteFlag,
+			created_date createdDate,
+			created_by createdBy,
+			last_updated_date lastUpdatedDate,
+			last_updated_by lastUpdatedBy
+		FROM
+			wwh_agent_region_t
+		WHERE region_code = #{code}
+	</select>
+	
+</mapper>

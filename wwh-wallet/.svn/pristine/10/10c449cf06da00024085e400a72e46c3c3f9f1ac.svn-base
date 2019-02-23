@@ -1,0 +1,455 @@
+﻿<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+
+    <title>Mobile first web app theme | first</title>
+
+    <meta name="description" content="mobile first, app, web app, responsive, admin dashboard, flat, flat ui">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <link rel="stylesheet" href="/wwh-wallet/css/bootstrapadmin.css">
+
+    <link rel="stylesheet" href="/wwh-wallet/css/font-awesome.min.css">
+
+    <link rel="stylesheet" href="/wwh-wallet/css/styleadmin.css">
+
+    <link rel="stylesheet" href="/wwh-wallet/css/plugin.css">
+
+    <link rel="stylesheet" href="/wwh-wallet/css/landing.css">
+
+    <!--[if lt IE 9]>
+
+      <script src="js/ie/respond.min.js"></script>
+
+      <script src="js/ie/html5.js"></script>
+
+    <![endif]-->
+
+</head>
+
+<body style="background:#faf7f7">
+
+    <!-- header -->
+
+    <header id="header" class="navbar">
+
+        <ul class="nav navbar-nav navbar-avatar pull-right">
+
+            <li class="dropdown">
+                <div class="loginbox"><a>登录</a>&nbsp;/&nbsp;<a>注册</a></div>
+
+            </li>
+
+        </ul>
+
+        <a class="navbar-brand" href="#">唯沃惠钱包后台管理系统</a>
+
+    </header>
+
+    <!-- / header -->
+    <!-- nav -->
+
+    <nav id="nav" class="nav-primary visible-lg nav-vertical">
+
+        <ul class="nav" data-spy="affix" data-offset-top="50">
+
+            <li class="dropdown-submenu">
+                <a href="index.html"><i class="icon-dashboard icon-xlarge"></i>后台首页</a>
+
+                <ul class="dropdown-menu">
+
+                    <li><a href="checkcash.html"><b class="badge bg-primary pull-right">2</b>提现审核</a></li>
+
+                </ul>
+
+            </li>
+
+            <li class="dropdown-submenu">
+
+                <a href="managepan.html"><i class="icon-th icon-xlarge"></i>盘管理</a>
+
+                <ul class="dropdown-menu">
+
+                    <li><a href="addpan.html">新增盘</a></li>
+
+                </ul>
+
+            </li>
+
+            <li class="dropdown-submenu active">
+
+                <a href="usermanage.html"><i class="icon-list icon-xlarge"></i>用户管理</a>
+
+            </li>
+
+        </ul>
+
+    </nav>
+
+    <!-- / nav -->
+
+    <section id="content">
+                <div class="col-lg-12">
+
+            <!-- .breadcrumb -->
+
+            <ul class="breadcrumb">
+
+                <li><a href="#"><i class="icon-home"></i>后台首页</a></li>
+
+                <li><a href="#"><i class="icon-list-ul"></i>盘管理</a></li>
+
+                <li class="active">新增盘</li>
+
+            </ul>
+
+            <!-- / .breadcrumb -->
+
+        </div>
+        <section class="main padder">
+
+            <div class="row">
+
+                <div class="col-12">
+                    <section class="toolbar clearfix m-t-large m-b">
+                        <div style="width:230px; height:40px; float:left">
+                            <form class="navbar-form pull-left shift" action="" data-toggle="shift:appendTo" data-target=".nav-primary">
+                                <i class="icon-search text-muted"></i>
+                                <input type="text" class="input-small form-control" placeholder="输入盘号或盘内参与者ID">
+                            </form>
+                        </div>
+                        <div style="line-height:40px; padding-top:3px;">
+                            <a class="btn btn-default">查询</a>
+                            <a class="btn btn-default">新增</a>
+                        </div>
+                    </section>
+                </div>
+
+                <div class="col-lg-3">
+
+                    <ul class="panmanage-ul">
+                        <li class="font-color-ALIZARIN">盘号：<label>03-9526</label></li>
+                        <li class="font-color-CARROT">父盘：<label>03-9526</label></li>
+                        <li class="font-color-NEPHRITIS">通盘：<label>03-9526</label></li>
+                        <li>空点数量：<label>03-9526</label></li>
+                        <li>现有人数：<label>03-9526</label></li>
+                        <li>存在时间：<label>03-9526</label></li>
+                        <li>抢点者：<label>03-9526</label></li>
+                        <li>盘创建时间：<label>03-9526</label></li>
+                    </ul>
+
+                </div>
+
+                <div class="col-lg-9">
+                    <div class="pan-position">
+                        <div class="gp-pos gp-pos01 fixed">
+                            <div class="gp-box supervisor-header selected all-list-header">
+                                <div class="surs01">总监</div>
+                                <div class="surs02">巴菲特</div>
+                            </div>
+                        </div>
+                        <div class="gp-pos gp-pos02 fixed">
+                            <div id="nrt01" class="gp-pos-wrap gp-pos01-wrap">
+                                <div class="gp-box manager-header selected">
+                                    <div class="surs01">经理</div>
+                                    <div class="surs02">巴菲特</div>
+                                </div>
+                            </div>
+                            <div id="nrt02" class="gp-pos-wrap gp-pos01-wrap">
+                                <div class="gp-box manager-header">
+                                    <div class="surs01">经理</div>
+                                    <div class="surs02">巴菲特</div>
+                                </div>
+                            </div>
+                            <div id="nrt03" class="gp-pos-wrap gp-pos01-wrap last">
+                                <div class="gp-box manager-header selected">
+                                    <div class="surs01">经理</div>
+                                    <div class="surs02">巴菲特</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="gp-pos gp-pos03 fixed">
+                            <div id="npt01" class="gp-pos-wrap gp-pos01-wrap">
+                                <div class="gp-box coun-p01">
+                                    <div class="surs01">理财师</div>
+                                    <div class="surs02">巴菲特</div>
+                                </div>
+                                <div class="gp-box coun-p02">
+                                    <div class="surs01">理财师</div>
+                                    <div class="surs02">巴菲特</div>
+                                </div>
+                                <div class="gp-box coun-p03">
+                                    <div class="surs01">理财师</div>
+                                    <div class="surs02">巴菲特</div>
+                                </div>
+                            </div>
+                            <div id="npt02" class="gp-pos-wrap gp-pos02-wrap">
+                                <div class="gp-box coun-p01 selected">
+                                    <div class="surs01">理财师</div>
+                                    <div class="surs02">巴菲特</div>
+                                </div>
+                                <div class="gp-box coun-p02">
+                                    <div class="surs01">理财师</div>
+                                    <div class="surs02">巴菲特</div>
+                                </div>
+                                <div class="gp-box coun-p03">
+                                    <div class="surs01">理财师</div>
+                                    <div class="surs02">巴菲特</div>
+                                </div>
+                            </div>
+                            <div id="npt03" class="gp-pos-wrap gp-pos03-wrap last">
+                                <div class="gp-box coun-p01">
+                                    <div class="surs01">理财师</div>
+                                    <div class="surs02">巴菲特</div>
+                                </div>
+                                <div class="gp-box coun-p02 selected">
+                                    <div class="surs01">理财师</div>
+                                    <div class="surs02">巴菲特</div>
+                                </div>
+                                <div class="gp-box coun-p03">
+                                    <div class="surs01">理财师</div>
+                                    <div class="surs02">巴菲特</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="gp-pos gp-pos04 fixed">
+                            <div id="nps01" class="gp-pos-wrap normal-pos01 fixed">
+                                <div class="gp-box nor-mb01 myselfs selected">
+                                    <div class="surs01">普通会员<br />1</div>
+                                    <div class="surs02">巴菲特</div>
+                                </div>
+                                <div class="gp-box nor-mb02">
+                                    <div class="surs01">普通会员<br />4</div>
+                                    <div class="surs02">巴菲特</div>
+                                </div>
+                                <div class="gp-box nor-mb03 last">
+                                    <div class="surs01">普通会员<br />7</div>
+                                    <div class="surs02">巴菲特</div>
+                                </div>
+                                <div class="gp-box nor-mb04">
+                                    <div class="surs01">普通会员<br />10</div>
+                                    <div class="surs02">巴菲特</div>
+                                </div>
+                                <div class="gp-box nor-mb05">
+                                    <div class="surs01">普通会员<br />13</div>
+                                    <div class="surs02">巴菲特</div>
+                                </div>
+                                <div class="gp-box nor-mb06 last">
+                                    <div class="surs01">普通会员<br />16</div>
+                                    <div class="surs02">巴菲特</div>
+                                </div>
+                                <div class="gp-box nor-mb07">
+                                    <div class="surs01">普通会员<br />19</div>
+                                    <div class="surs02">巴菲特</div>
+                                </div>
+                                <div class="gp-box nor-mb08">
+                                    <div class="surs01">普通会员<br />22</div>
+                                    <div class="surs02">巴菲特</div>
+                                </div>
+                                <div class="gp-box nor-mb09 last">
+                                    <div class="surs01">普通会员<br />25</div>
+                                    <div class="surs02">巴菲特</div>
+                                </div>
+                            </div>
+                            <div id="nps02" class="gp-pos-wrap normal-pos02 fixed">
+                                <div class="gp-box nor-mb10 selected">
+                                    <div class="surs01">普通会员<br />2</div>
+                                    <div class="surs02">巴菲特</div>
+                                </div>
+                                <div class="gp-box nor-mb11">
+                                    <div class="surs01">普通会员<br />5</div>
+                                    <div class="surs02">巴菲特</div>
+                                </div>
+                                <div class="gp-box nor-mb12 last">
+                                    <div class="surs01">普通会员<br />8</div>
+                                    <div class="surs02">巴菲特</div>
+                                </div>
+                                <div class="gp-box nor-mb13">
+                                    <div class="surs01">普通会员<br />11</div>
+                                    <div class="surs02">巴菲特</div>
+                                </div>
+                                <div class="gp-box nor-mb14">
+                                    <div class="surs01">普通会员<br />14</div>
+                                    <div class="surs02">巴菲特</div>
+                                </div>
+                                <div class="gp-box nor-mb15 last">
+                                    <div class="surs01">普通会员<br />17</div>
+                                    <div class="surs02">巴菲特</div>
+                                </div>
+                                <div class="gp-box nor-mb16">
+                                    <div class="surs01">普通会员<br />20</div>
+                                    <div class="surs02">巴菲特</div>
+                                </div>
+                                <div class="gp-box nor-mb17">
+                                    <div class="surs01">普通会员<br />23</div>
+                                    <div class="surs02">巴菲特</div>
+                                </div>
+                                <div class="gp-box nor-mb18 noperson last">
+                                    <div class="surs01">普通会员<br />26</div>
+                                    <div class="surs02">巴菲特</div>
+                                </div>
+                            </div>
+                            <div id="nps03" class="gp-pos-wrap normal-pos03 last fixed ">
+                                <div class="gp-box nor-mb19 selected">
+                                    <div class="surs01">普通会员<br />3</div>
+                                    <div class="surs02">巴菲特</div>
+                                </div>
+                                <div class="gp-box nor-mb20">
+                                    <div class="surs01">普通会员<br />6</div>
+                                    <div class="surs02">巴菲特</div>
+                                </div>
+                                <div class="gp-box nor-mb21 last">
+                                    <div class="surs01">普通会员<br />9</div>
+                                    <div class="surs02">巴菲特</div>
+                                </div>
+                                <div class="gp-box nor-mb22">
+                                    <div class="surs01">普通会员<br />12</div>
+                                    <div class="surs02">巴菲特</div>
+                                </div>
+                                <div class="gp-box nor-mb23">
+                                    <div class="surs01">普通会员<br />15</div>
+                                    <div class="surs02">巴菲特</div>
+                                </div>
+                                <div class="gp-box nor-mb24 last">
+                                    <div class="surs01">普通会员<br />18</div>
+                                    <div class="surs02">巴菲特</div>
+                                </div>
+                                <div class="gp-box nor-mb25">
+                                    <div class="surs01">普通会员<br />21</div>
+                                    <div class="surs02">巴菲特</div>
+                                </div>
+                                <div class="gp-box nor-mb26">
+                                    <div class="surs01">普通会员<br />24</div>
+                                    <div class="surs02">巴菲特</div>
+                                </div>
+                                <div class="gp-box nor-mb27 last">
+                                    <div class="surs01">普通会员<br />27</div>
+                                    <div class="surs02">巴菲特</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+    </section>
+
+    <!-- .modal -->
+
+    <div id="modal" class="modal fade">
+
+        <form class="m-b-none">
+
+            <div class="modal-dialog pos-abt" style="margin-top:-235px; top:50%">
+
+                <div class="modal-content">
+
+                    <div class="modal-header">
+
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="icon-remove"></i></button>
+
+                        <h4 class="modal-title" id="myModalLabel">Post your first idea</h4>
+
+                    </div>
+
+                    <div class="modal-body">
+
+                        <div class="block">
+
+                            <label class="control-label">Title</label>
+
+                            <input type="text" class="form-control" placeholder="Post title">
+
+                        </div>
+
+                        <div class="block">
+
+                            <label class="control-label">Content</label>
+
+                            <textarea class="form-control" placeholder="Content" rows="5"></textarea>
+
+                        </div>
+
+                        <div class="checkbox">
+
+                            <label>
+
+                                <input type="checkbox"> Share with all memebers of first
+
+                            </label>
+
+                        </div>
+
+                    </div>
+
+                    <div class="modal-footer">
+
+                        <button type="button" class="btn btn-small btn-default" data-dismiss="modal">Save</button>
+
+                        <button type="button" class="btn btn-small btn-primary" data-loading-text="Publishing...">Publish</button>
+
+                    </div>
+
+                </div><!-- /.modal-content -->
+
+            </div>
+
+        </form>
+
+    </div>
+
+    <!-- / .modal -->
+    <!-- footer -->
+
+    <footer id="footer">
+
+        <div class="text-center padder clearfix">
+
+            <p>
+
+                <small>&copy; 2016 唯沃惠.中国 粤 ICP 备 16056251 号 -1</small><br><br>
+
+            </p>
+
+        </div>
+
+    </footer>
+
+    <!-- / footer -->
+
+    <script src="/wwh-wallet/js/jquery.min.js"></script>
+
+    <!-- Bootstrap -->
+
+    <script src="/wwh-wallet/js/bootstrap.js"></script>
+
+    <!-- app -->
+
+    <script src="/wwh-wallet/js/app.js"></script>
+
+    <script src="/wwh-wallet/js/app.plugin.js"></script>
+
+    <script src="/wwh-wallet/js/app.data.js"></script>
+
+
+    <!-- Sparkline Chart -->
+
+    <script src="/wwh-wallet/js/charts/sparkline/jquery.sparkline.min.js"></script>
+
+    <!-- Easy Pie Chart -->
+
+    <script src="/wwh-wallet/js/charts/easypiechart/jquery.easy-pie-chart.js"></script>
+
+    <script src="/wwh-wallet/js/ie/excanvas.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,925 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wwh.dao.IDiskDao">
+
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap"  >
+    select 
+    <include refid="Base_Column_List" />
+    from wallet_disk_t
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+
+	<!--  批量插入盘表 -->
+	<insert id="insertBatch" parameterType="java.util.List">
+		INSERT INTO wallet_disk_t (
+			disk_head,
+			disk_tail,
+			disk_seq,
+			disk_status,
+			disk_parent_seq,
+			disk_counter,
+			disk_type,
+			active_flag,
+			delete_flag,
+			created_date,
+			created_by,
+			last_updated_date,
+			last_updated_by
+		)
+		VALUES
+		<foreach item="item" index="index" collection="records"  separator="," > 
+			(
+				#{item.diskHead,jdbcType=VARCHAR},
+				#{item.diskTail,jdbcType=VARCHAR},
+				#{item.diskSeq,jdbcType=VARCHAR}, 
+				#{item.diskStatus,jdbcType=VARCHAR}, 
+				#{item.diskParentSeq,jdbcType=VARCHAR}, 
+				#{item.diskCounter,jdbcType=INTEGER}, 
+				#{item.diskType,jdbcType=VARCHAR}, 
+				#{item.activeFlag,jdbcType=CHAR}, 
+				#{item.deleteFlag,jdbcType=CHAR}, 
+				now(),
+				#{item.createdBy,jdbcType=BIGINT}, 
+				now(),
+				#{item.lastUpdatedBy,jdbcType=BIGINT}
+			)
+		</foreach>
+	  </insert>
+  
+	<!-- 新入盘 -->
+	<insert id="insertDisk" parameterType="com.wwh.vo.DiskVO" >
+	    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+	      SELECT LAST_INSERT_ID()
+	    </selectKey>
+	    insert into wallet_disk_t (disk_seq, disk_status, disk_parent_seq, 
+	      disk_counter, disk_type, active_flag, 
+	      delete_flag, created_date, created_by, 
+	      last_updated_date, last_updated_by
+	      )
+	    values (
+	    #{diskSeq,jdbcType=VARCHAR}, 
+	    #{diskStatus,jdbcType=VARCHAR}, 
+	    #{diskParentSeq,jdbcType=VARCHAR}, 
+	      #{diskCounter,jdbcType=INTEGER}, 
+	      #{diskType,jdbcType=VARCHAR}, 
+	      #{activeFlag,jdbcType=CHAR}, 
+	      #{deleteFlag,jdbcType=CHAR}, 
+	      now(), 
+	      #{createdBy,jdbcType=BIGINT}, 
+	      now(), 
+	      #{lastUpdatedBy,jdbcType=BIGINT}
+	      )
+	  </insert>
+  
+	<!-- 修改盘完成状态 -->
+	 <update id="diskFinished" >
+	    UPDATE 
+	    	wallet_disk_t 
+	    SET 
+	    	disk_status = 'FINISHED' ,last_updated_date=now(),last_updated_by=#{lastUpdatedBy}
+	    where 
+	    	disk_type=#{diskType,jdbcType=VARCHAR}  
+	    and disk_seq= #{diskSeq,jdbcType=VARCHAR}
+	  </update>
+	 
+	  
+	  
+	<!-- 某盘的人数 +1  -->
+	 <update id="increaseDiskCounter" parameterType="java.lang.String" >
+	    UPDATE wallet_disk_t SET disk_counter = disk_counter+1 where disk_seq= #{paySeq,jdbcType=VARCHAR}
+	  </update>
+
+	 <sql id="Base_Column_List" >
+	    id as id,
+		disk_seq as diskSeq,
+		disk_status as diskStatus,
+		disk_parent_seq as diskParentSeq,
+		disk_counter as diskCounter,
+		disk_type as diskType,
+		active_flag as activeFlag,
+		delete_flag as deleteFlag,
+		created_date as createdDate,
+		created_by as createdBy,
+		last_updated_date as lastUpdatedDate,
+		last_updated_by as lastUpdatedBy
+	  </sql>
+	  
+	   <!-- 查询最快的盘 ,查询最慢的盘 -->
+	<select id='getRunningTheFastestOrTheSlowestDisk' resultType="com.wwh.vo.DiskVO">
+		SELECT 
+			<include refid="Base_Column_List" />
+		FROM 
+			wallet_disk_t a
+		WHERE  
+			disk_type=#{diskType} 
+		AND 
+			disk_status='RUNNING' 
+		ORDER BY 
+			disk_counter 
+		<choose>
+			<when test="orderByType!=null and orderByType == 'DESC'">
+				DESC
+			</when>
+			<otherwise>
+				ASC
+			</otherwise>
+		</choose>
+		 LIMIT 0,1
+	</select>
+	
+	   <!-- 查询最快的盘 ,查询最慢的盘 -->
+	<select id='getRunningTheFastestOrTheSlowestDisk2' resultType="com.wwh.vo.DiskVO">
+		SELECT 
+			<include refid="Base_Column_List" />
+		FROM 
+			wallet_disk_t a
+		WHERE  
+			disk_type=#{diskType} 
+		AND 
+			disk_status='RUNNING' 
+		AND system_type = 'N'
+		ORDER BY 
+			disk_counter 
+		<choose>
+			<when test="orderByType!=null and orderByType == 'DESC'">
+				DESC
+			</when>
+			<otherwise>
+				ASC
+			</otherwise>
+		</choose>
+		 LIMIT 0,1
+	</select>
+
+	<!-- 查询某个系统里最新的若干条收益记录 -->
+	<select id="getItemByDiskType" resultType="com.wwh.vo.ProfitExtendVO">
+		SELECT
+			a.user_id userId,
+			b.user_name nickName,
+			a.disk_seq diskSeq,
+			a.disk_type diskType,
+			a.withdrawals_amount withdrawalsAmount,
+			a.save_amount saveAmount,
+			a.withdrawals_amount + save_amount profitAmount,
+			a.role_id roleId,
+			a.disk_counter diskCounter,
+			a.join_disk_time joinDiskTime,
+			a.id_card idCard,
+			c.created_date createdDate,
+			a.disk_status diskStatus,
+			a.last_updated_date lastUpdatedDate
+		FROM
+			wallet_disk_profit_t a
+		LEFT JOIN wwh_user_t b ON b.user_id = a.user_id
+		INNER JOIN (
+				SELECT
+					id_card,
+					created_date
+				FROM
+					(
+						(
+							SELECT
+								id_card,
+								created_date
+							FROM
+								<choose>
+										<when test="diskType == 'TIYAN'">wallet_profit_detail_tiyan_t a</when>
+										<when test="diskType == 'HUIMIN'">wallet_profit_detail_huimin_t a</when>
+										<when test="diskType == 'FUMIN'">wallet_profit_detail_fumin_t a</when>
+										<when test="diskType == 'XINGMIN'">wallet_profit_detail_xingmin_t a</when>
+								</choose>
+							WHERE
+								a.active_flag = 'Y'
+							AND a.delete_flag = 'N'
+						)
+						UNION ALL
+							(
+								SELECT
+									id_card,
+									created_date
+								FROM
+									wallet_grap_profit_detail_t a
+								WHERE
+									a.active_flag = 'Y'
+								AND disk_type = #{diskType}
+								AND a.delete_flag = 'N'
+							)
+					) a
+				ORDER BY
+					created_date DESC
+		) c ON a.id_card = c.id_card
+		ORDER BY
+			c.created_date DESC
+		LIMIT 0,#{num}
+	</select>
+	
+	<select id="getNewestProfitIdCard">
+		SELECT 
+			a.id_card 
+		FROM(
+			SELECT
+				id_card,
+				created_date
+			FROM
+				<choose>
+						<when test="diskType == 'TIYAN'">wallet_profit_detail_tiyan_t a</when>
+						<when test="diskType == 'HUIMIN'">wallet_profit_detail_huimin_t a</when>
+						<when test="diskType == 'FUMIN'">wallet_profit_detail_fumin_t a</when>
+						<when test="diskType == 'XINGMIN'">wallet_profit_detail_xingmin_t a</when>
+				</choose>
+			WHERE
+				a.active_flag = 'Y'
+			AND a.delete_flag = 'N'
+			UNION ALL
+			SELECT
+				id_card,
+				created_date
+			FROM
+				wallet_grap_profit_detail_t a
+			WHERE
+				a.active_flag = 'Y'
+			AND disk_type = #{diskType}
+			AND a.delete_flag = 'N'
+			) a  
+		ORDER BY a.created_date DESC 
+		LIMIT 0,{count}
+	</select>
+		
+	<!-- 获取用户在某个系统中的所有盘关系 -->
+	<select id="getDiskUserRelation" resultType="com.wwh.vo.DiskUserRelationVO">
+		SELECT
+			disk_seq diskSeq,
+			disk_status diskStatus,
+			role_id roleId,
+			localtion localtion,
+			user_id userId,
+			id_card idCard,
+			created_date createdDate
+		FROM
+		<choose>
+			<when test="diskType == 'TIYAN'">wallet_disk_relation_tiyan_t</when>
+			<when test="diskType == 'HUIMIN'">wallet_disk_relation_huimin_t</when>
+			<when test="diskType == 'FUMIN'">wallet_disk_relation_fumin_t</when>
+			<when test="diskType == 'XINGMIN'">wallet_disk_relation_xingmin_t</when>
+			<otherwise>wallet_disk_relation_tiyan_t</otherwise>
+		</choose>
+		WHERE
+			user_id = #{userId}
+		AND active_flag = 'Y'
+		AND delete_flag = 'N'
+	</select>
+	
+	<!-- 获取用户在某个系统中的盘存在数量-->
+	<select id="getDiskUserRelationExistsRecord" resultType="com.wwh.vo.DiskUserRelationVO">
+		SELECT
+			disk_seq diskSeq,
+			disk_status diskStatus,
+			role_id roleId,
+			localtion localtion,
+			user_id userId,
+			id_card idCard,
+			created_date createdDate
+		FROM
+		<choose>
+			<when test="diskType == 'TIYAN'">wallet_disk_relation_tiyan_t</when>
+			<when test="diskType == 'HUIMIN'">wallet_disk_relation_huimin_t</when>
+			<when test="diskType == 'FUMIN'">wallet_disk_relation_fumin_t</when>
+			<when test="diskType == 'XINGMIN'">wallet_disk_relation_xingmin_t</when>
+		</choose>
+		WHERE
+			user_id = #{userId}
+		AND active_flag = 'Y'
+		AND delete_flag = 'N'
+		<if test="userIdCard != null">
+			AND id_card = #{userIdCard}
+		</if>
+		<if test="diskStatus != null">
+			AND disk_status = #{diskStatus}
+		</if>
+	</select>
+
+	<!-- 获取某个系统所有盘的总参与人数 -->
+	<select id="getDiskCounterByType" parameterType="java.lang.String"
+		resultType="java.lang.Integer">
+		SELECT
+			SUM(disk_counter)
+		FROM
+			wallet_disk_t
+		WHERE
+			disk_type = #{type} 
+		AND disk_status = 'RUNNING'
+		AND active_flag = 'Y'
+		AND delete_flag = 'N'	
+	</select>
+	<!-- 获取某个系统的总收益 -->
+	<select id="getDiskAmountByType" resultType="java.math.BigDecimal">
+		SELECT
+			SUM(disk_profit_amount)
+		FROM
+			wallet_disk_type_profit_t
+		WHERE
+			disk_type = #{diskType}
+		AND
+			active_flag = 'Y'
+		AND
+			delete_flag = 'N'
+	</select>
+	<!-- 获取某个系统的总充值金额 -->
+	<select id="getDiskRechargeAmountByType" resultType="java.math.BigDecimal">
+		SELECT
+			SUM(amount) allAmount
+		FROM
+		<choose>
+			<when test="diskType == 'TIYAN'">
+				wallet_platform_pay_detail_tiyan_t
+			</when>
+			<when test="diskType == 'HUIMIN'">
+				wallet_platform_pay_detail_huimin_t
+			</when>
+			<when test="diskType == 'FUMIN'">
+				wallet_platform_pay_detail_fumin_t
+			</when>
+			<when test="diskType == 'XINGMIN'">
+				wallet_platform_pay_detail_xingmin_t
+			</when>
+			<otherwise>
+				wallet_platform_pay_detail_other_t
+			</otherwise>
+		</choose>
+		WHERE
+			active_flag = 'Y'
+		AND delete_flag = 'N'
+	</select>
+	<!-- 获取用户在某个系统的总充值金额 -->
+	<select id="getDiskRechargeAmountByUserId" resultType="java.math.BigDecimal">
+		SELECT
+			SUM(amount) allAmount
+		FROM
+		<choose>
+			<when test="diskType == 'TIYAN'">
+				wallet_platform_pay_detail_tiyan_t
+			</when>
+			<when test="diskType == 'HUIMIN'">
+				wallet_platform_pay_detail_huimin_t
+			</when>
+			<when test="diskType == 'FUMIN'">
+				wallet_platform_pay_detail_fumin_t
+			</when>
+			<when test="diskType == 'XINGMIN'">
+				wallet_platform_pay_detail_xingmin_t
+			</when>
+			<otherwise>
+				wallet_platform_pay_detail_other_t
+			</otherwise>
+		</choose>
+		WHERE
+			user_id = #{userId}
+		AND	active_flag = 'Y'
+		AND delete_flag = 'N'
+		AND pay_status = 'PAYSUCCESSED'
+	</select>
+	<!-- 获取用户在所有系统的各自充值金额 -->
+	<select id="getUserRcgByAllSys" resultType="java.math.BigDecimal">
+		SELECT
+			SUM(amount) allAmount
+		FROM
+			wallet_platform_pay_detail_tiyan_t
+		WHERE
+			user_id = #{userId}
+		AND pay_status = 'PAYSUCCESSED'
+		AND active_flag = 'Y'
+		AND delete_flag = 'N'
+		UNION ALL
+		SELECT
+			SUM(amount) allAmount
+		FROM
+			wallet_platform_pay_detail_huimin_t
+		WHERE
+			user_id = #{userId}
+		AND pay_status = 'PAYSUCCESSED'
+		AND active_flag = 'Y'
+		AND delete_flag = 'N'
+		UNION ALL
+		SELECT
+			SUM(amount) allAmount
+		FROM
+			wallet_platform_pay_detail_fumin_t
+		WHERE
+			user_id = #{userId}
+		AND pay_status = 'PAYSUCCESSED'
+		AND active_flag = 'Y'
+		AND delete_flag = 'N'
+		UNION ALL
+		SELECT
+			SUM(amount) allAmount
+		FROM
+			wallet_platform_pay_detail_xingmin_t
+		WHERE
+			user_id = #{userId}
+		AND pay_status = 'PAYSUCCESSED'
+		AND active_flag = 'Y'
+		AND delete_flag = 'N'
+	</select>
+	<!-- 获取用户在某个系统的所有历史收益 -->
+	<select id="getDiskAmountByUserId" resultType="java.math.BigDecimal">
+		SELECT
+			SUM(disk_profit_amount)
+		FROM
+			wallet_disk_type_profit_t
+		WHERE
+			disk_type = #{diskType}
+		AND user_id = #{userId}
+		AND active_flag = 'Y'
+		AND	delete_flag = 'N'
+	</select>
+	<!-- 获取用户的所有系统各个的总收入 -->
+	<select id="getUesrProfitByAllSys" resultType="java.math.BigDecimal">
+		SELECT
+			SUM(disk_profit_amount)
+		FROM
+			wallet_disk_type_profit_t
+		WHERE
+			disk_type = 'TIYAN'
+		AND user_id = #{userId}
+		AND active_flag = 'Y'
+		AND delete_flag = 'N'
+		UNION ALL
+		SELECT
+			SUM(disk_profit_amount)
+		FROM
+			wallet_disk_type_profit_t
+		WHERE
+			disk_type = 'HUIMIN'
+		AND user_id = #{userId}
+		AND active_flag = 'Y'
+		AND delete_flag = 'N'
+		UNION ALL
+		SELECT
+			SUM(disk_profit_amount)
+		FROM
+			wallet_disk_type_profit_t
+		WHERE
+			disk_type = 'FUMIN'
+		AND user_id = #{userId}
+		AND active_flag = 'Y'
+		AND delete_flag = 'N'
+		UNION ALL
+		SELECT
+			SUM(disk_profit_amount)
+		FROM
+			wallet_disk_type_profit_t
+		WHERE
+			disk_type = 'XINGMIN'
+		AND user_id = #{userId}
+		AND active_flag = 'Y'
+		AND delete_flag = 'N'
+	</select>
+	<!-- 获取平台所有的招商分红 -->
+	<select id="getAllBusinessAmount" resultType="java.math.BigDecimal">
+		SELECT
+			SUM(profit_amount)
+		FROM
+			wallet_seller_relation_product_sales_detail_t
+	</select>
+	<!--获取平台总充值资金 和 平台总收益资金 -->
+	<select id="getDiskAll" resultType="com.wwh.vo.DiskCustromVO">
+		SELECT
+			SUM(platform_total_amount) allPlatformTotalAmount,
+			SUM(recharge_amount) allRechargeAmount
+		FROM
+			wallet_amount_t
+		WHERE active_flag = 'Y'
+		AND delete_flag = 'N'
+	</select>
+
+ <select id="selectByDiskVO" resultMap="BaseResultMap" parameterType="com.wwh.vo.DiskVO" >
+    <!--
+      WARNING - @mbggenerated
+      This element is automatically generated by MyBatis Generator, do not modify.
+      This element was generated on Mon Oct 24 11:16:28 CST 2016.
+    -->
+    select 
+    <include refid="Base_Column_List" />
+    from wallet_disk_t
+    where 1=1 
+    <if test="diskSeq != null" >
+        disk_seq = #{diskSeq,jdbcType=VARCHAR},
+      </if>
+      <if test="diskStatus != null" >
+        disk_status = #{diskStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="diskParentSeq != null" >
+        disk_parent_seq = #{diskParentSeq,jdbcType=VARCHAR},
+      </if>
+      <if test="diskCounter != null" >
+        disk_counter = #{diskCounter,jdbcType=INTEGER},
+      </if>
+      <if test="diskType != null" >
+        disk_type = #{diskType,jdbcType=VARCHAR},
+      </if>
+      <if test="activeFlag != null" >
+        active_flag = #{activeFlag,jdbcType=CHAR},
+      </if>
+      <if test="delete_flag != null" >
+        delete_flag = #{deleteFlag,jdbcType=CHAR},
+      </if>
+      <if test="createdDate != null" >
+        created_date = #{createdDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdBy != null" >
+        created_by = #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="lastUpdatedDate != null" >
+        last_updated_date = #{lastUpdatedDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastUpdatedBy != null" >
+        last_updated_by = #{lastUpdatedBy,jdbcType=BIGINT},
+      </if>
+  </select>
+  
+   <resultMap id="BaseResultMap" type="com.wwh.vo.DiskVO" >
+    <!--
+      WARNING - @mbggenerated
+      This element is automatically generated by MyBatis Generator, do not modify.
+      This element was generated on Mon Oct 24 11:16:28 CST 2016.
+    -->
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="disk_seq" property="diskSeq" jdbcType="VARCHAR" />
+    <result column="disk_status" property="diskStatus" jdbcType="VARCHAR" />
+    <result column="disk_parent_seq" property="diskParentSeq" jdbcType="VARCHAR" />
+    <result column="disk_counter" property="diskCounter" jdbcType="INTEGER" />
+    <result column="disk_type" property="diskType" jdbcType="VARCHAR" />
+    <result column="active_flag" property="activeFlag" jdbcType="CHAR" />
+    <result column="delete_flag" property="deleteFlag" jdbcType="CHAR" />
+    <result column="created_date" property="createdDate" jdbcType="TIMESTAMP" />
+    <result column="created_by" property="createdBy" jdbcType="BIGINT" />
+    <result column="last_updated_date" property="lastUpdatedDate" jdbcType="TIMESTAMP" />
+    <result column="last_updated_by" property="lastUpdatedBy" jdbcType="BIGINT" />
+  </resultMap>
+  
+  
+    <select id="getByDiskSeq" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    <!--
+      WARNING - @mbggenerated
+      This element is automatically generated by MyBatis Generator, do not modify.
+      This element was generated on Wed Oct 26 17:20:02 CST 2016.
+    -->
+    select 
+    <include refid="Base_Column_List" />
+    from wallet_disk_t
+    where disk_seq = #{diskSeq,jdbcType=BIGINT}
+  </select>
+  <select id="getByDiskSeqs" resultType="com.wwh.vo.DiskVO">
+  	select 
+    <include refid="Base_Column_List" />
+    from wallet_disk_t
+    where disk_seq IN
+    <foreach item="item" index="index" collection="records" open="(" separator="," close=")">  
+		   #{item}  
+	</foreach> 
+  </select>
+  
+  
+    <select id="getByDiskTypeAndDiskSeq" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from wallet_disk_t
+    where disk_type = #{diskType,jdbcType=BIGINT} and disk_seq = #{diskSeq,jdbcType=VARCHAR}
+  </select>
+  
+  
+  
+  <!-- 通过盘类型确定去哪个系统表查询，通过用户名获取该表中的所有收益记录 -->
+  <select id="getDiskProfitDetail" resultType="com.wwh.vo.ProfitExtendVO">
+  	SELECT
+		b.user_name payNickName,
+		c.disk_counter diskCounter,
+		profit_user_id profitUserId,
+		a.disk_seq diskSeq,
+		profit_amount profitAmount,
+		save_amount saveAmount,
+		withdrawals_amount withdrawalsAmount,
+		pay_user_id payUserId,
+		id_card idCard,
+		profit_target_type profitTargetType,
+		join_disk_time joinDiskTime,
+		role_id roleId,
+		a.created_date createdDate
+	FROM
+	<choose>
+		<when test="diskType == 'TIYAN'">wallet_profit_detail_tiyan_t a</when>
+		<when test="diskType == 'HUIMIN'">wallet_profit_detail_huimin_t a</when>
+		<when test="diskType == 'FUMIN'">wallet_profit_detail_fumin_t a</when>
+		<when test="diskType == 'XINGMIN'">wallet_profit_detail_xingmin_t a</when>
+		<otherwise>wallet_profit_detail_tiyan_t</otherwise>
+	</choose>
+	LEFT JOIN wwh_user_t b ON a.pay_user_id = b.user_id
+	LEFT JOIN wallet_disk_t c ON a.disk_seq = c.disk_seq
+	WHERE
+		profit_user_id = #{userId}
+	AND a.active_flag = 'Y'
+	AND a.delete_flag = 'N'
+	AND c.active_flag = 'Y'
+	AND c.delete_flag = 'N'
+	ORDER BY a.created_date DESC
+  </select>
+
+  
+  <!-- 查询各个系统中用户所有参与过该系统的会员人数(多个身份不叠加) -->
+  <select id="getDiskByType" resultType="java.lang.Integer">
+	 select (d.disk_counter-13)
+	     FROM
+		<choose>
+			<when test="diskType == 'TIYAN'">wallet_disk_relation_tiyan_t re</when>
+			<when test="diskType == 'HUIMIN'">wallet_disk_relation_huimin_t re</when>
+			<when test="diskType == 'FUMIN'">wallet_disk_relation_fumin_t re</when>
+			<when test="diskType == 'XINGMIN'">wallet_disk_relation_xingmin_t re</when>
+		</choose>
+		left join wallet_disk_t d on d.disk_seq= re.disk_seq
+			where user_id = #{userId}
+			ORDER BY re.created_date desc
+			limit 0,1
+  </select>
+  
+   <!-- 通过盘类型确定去哪个系统表查询，通过盘号和用户名获取该盘中的所有收益记录 -->
+  <select id="getDiskProfitDetail2" resultType="com.wwh.vo.ProfitExtendVO">
+  	SELECT
+		b.user_name nickNanme,
+		c.disk_counter diskCounter,
+		profit_user_id profitUserId,
+		a.disk_seq diskSeq,
+		profit_amount profitAmount,
+		save_amount saveAmount,
+		withdrawals_amount withdrawalsAmount,
+		pay_user_id payUserId,
+		id_card idCard,
+		profit_target_type profitTargetType,
+		join_disk_time joinDiskTime,
+		role_id roleId,
+		a.created_date createdDate
+	FROM
+	<choose>
+		<when test="diskType == 'TIYAN'">wallet_profit_detail_tiyan_t a</when>
+		<when test="diskType == 'HUIMIN'">wallet_profit_detail_huimin_t a</when>
+		<when test="diskType == 'FUMIN'">wallet_profit_detail_fumin_t a</when>
+		<when test="diskType == 'XINGMIN'">wallet_profit_detail_xingmin_t a</when>
+		<otherwise>wallet_profit_detail_tiyan_t</otherwise>
+	</choose>
+	LEFT JOIN wwh_user_t b ON a.pay_user_id = b.user_id
+	LEFT JOIN wallet_disk_t c ON a.disk_seq = c.disk_seq
+	WHERE
+		profit_user_id = #{userId}
+	AND a.disk_seq = #{diskSeq}
+	AND a.active_flag = 'Y'
+	AND a.delete_flag = 'N'
+	AND c.active_flag = 'Y'
+	AND c.delete_flag = 'N'
+  </select>
+  
+  
+  <!-- 获取某个盘的抢点人 -->
+  <select id="getPointGrapRelationByDiskSeq" resultType="com.wwh.vo.PointGrapRelationVO">
+  	SELECT
+		id_card idCard,
+		disk_seq diskSeq,
+		is_director isDirector,
+		profit_points profitPoints,
+		disk_type diskType,
+		created_date as createdDate,
+		created_by as createdBy,
+		last_updated_date as lastUpdatedDate,
+		last_updated_by as lastUpdatedBy
+	FROM
+		wallet_point_grap_relation_t
+	WHERE
+		disk_seq = #{diskSeq}
+	AND active_flag = 'Y'
+	AND delete_flag = 'N'
+  </select>
+ 
+ 
+  <!-- 获取某个盘的今天新增人数 -->
+	<select id="getDiskTodayNewCounter" resultType="java.lang.Integer">
+		SELECT
+			count(1)
+		FROM
+		<choose>
+			<when test="diskType == 'TIYAN'">wallet_disk_relation_tiyan_t </when>
+			<when test="diskType == 'HUIMIN'">wallet_disk_relation_huimin_t </when>
+			<when test="diskType == 'FUMIN'">wallet_disk_relation_fumin_t </when>
+			<when test="diskType == 'XINGMIN'">wallet_disk_relation_xingmin_t </when>
+			<otherwise>wallet_disk_relation_tiyan_t</otherwise>
+		</choose>	
+		WHERE
+			TO_DAYS(created_date) = TO_DAYS(NOW())
+		AND disk_seq = #{diskSeq}
+	</select>
+	<!-- 修改用户的盘关系表当前收益 -->
+	<insert id="updateUserCurrentProfit" parameterType="com.wwh.vo.DiskRelationVO">
+		INSERT INTO 
+		<choose>
+			<when test="diskType == 'TIYAN'">wallet_disk_relation_tiyan_t </when>
+			<when test="diskType == 'HUIMIN'">wallet_disk_relation_huimin_t </when>
+			<when test="diskType == 'FUMIN'">wallet_disk_relation_fumin_t </when>
+			<when test="diskType == 'XINGMIN'">wallet_disk_relation_xingmin_t </when>
+		</choose>
+		 (
+			disk_seq,
+			disk_status,
+			role_id,
+			localtion,
+			current_profit,
+			user_id,
+			disk_type,
+			id_card,
+			active_flag,
+			delete_flag,
+			created_date,
+			created_by,
+			last_updated_date,
+			last_updated_by
+		)
+		VALUES
+			(
+				#{diskSeq},
+				#{diskStatus},
+				#{roleId},
+				#{localtion},
+				#{currentProfit},
+				#{userId},
+				#{diskType},
+				#{idCard},
+				'Y',
+				'N',
+				NOW(),
+				#{createdBy},
+				NOW(),
+				#{lastUpdatedBy}
+			) ON DUPLICATE KEY UPDATE 
+			current_profit = current_profit + #{currentProfit},
+			last_updated_date = NOW(),
+			last_updated_by = #{lastUpdatedBy}
+	</insert>
+	
+	
+	<!-- 根据系统类型查询今天生成的盘数 -->
+	<select id="countPlatetNum" resultType="java.lang.Integer">
+		select 
+			count(1)  
+			from wallet_disk_t
+			where disk_type = #{diskType}
+			AND to_days(created_date) = to_days(now());
+   </select>
+   
+   <!-- 查询用户的a推荐点个数 -->
+   <select id="selectRecommentPoint"  resultType="java.lang.Integer">
+        select 
+        	total_recommend_point
+        	from 
+            wallet_recommend_point_a_statistics_t
+            where user_id = #{userId,jdbcType=BIGINT}
+            and disk_type = #{diskType,jdbcType=VARCHAR}
+   
+   </select>
+   
+   <select id="getDiskNamesByDiskSeqs" resultType="com.wwh.vo.DiskVO">
+	SELECT
+		CONCAT(disk_head,'-',disk_tail) diskName,
+		disk_seq diskSeq
+	FROM
+		wallet_disk_t
+	WHERE
+		disk_seq IN
+	<foreach item="item" index="index" collection="records" open="(" separator="," close=")">  
+		   #{item}  
+	</foreach> 
+	AND active_flag = 'Y'
+	AND delete_flag = 'N'
+   </select>
+   
+   <select id="getDiskByParentDiskSeqs" resultType="com.wwh.vo.DiskVO">
+	SELECT
+		CONCAT(disk_head,'-',disk_tail) diskName,
+		disk_seq diskSeq,
+		disk_status diskStatus,
+		disk_parent_seq diskParentSeq,
+		disk_counter diskCounter,
+		disk_type diskType,
+		created_date createdDate,
+		last_updated_date lastUpdatedDate
+	FROM
+		wallet_disk_t
+	WHERE
+		disk_parent_seq IN
+	<foreach item="item" index="index" collection="records" open="(" separator="," close=")">  
+		   #{item}  
+	</foreach> 
+	AND active_flag = 'Y'
+	AND delete_flag = 'N'
+   </select>
+   
+   
+     <!-- 通过盘类型确定去哪个系统表查询，通过用户名获取该表中的所有收益记录 -->
+  <select id="getDiskProfitDetailByDisk" resultType="com.wwh.vo.ProfitExtendVO">
+  	SELECT
+		b.user_name payNickName,
+		c.disk_counter diskCounter,
+		profit_user_id profitUserId,
+		a.disk_seq diskSeq,
+		profit_amount profitAmount,
+		save_amount saveAmount,
+		withdrawals_amount withdrawalsAmount,
+		pay_user_id payUserId,
+		id_card idCard,
+		profit_target_type profitTargetType,
+		join_disk_time joinDiskTime,
+		role_id roleId,
+		a.created_date createdDate
+	FROM
+	<choose>
+		<when test="diskType == 'TIYAN'">wallet_profit_detail_tiyan_t a</when>
+		<when test="diskType == 'HUIMIN'">wallet_profit_detail_huimin_t a</when>
+		<when test="diskType == 'FUMIN'">wallet_profit_detail_fumin_t a</when>
+		<when test="diskType == 'XINGMIN'">wallet_profit_detail_xingmin_t a</when>
+	</choose>
+	LEFT JOIN wwh_user_t b ON a.pay_user_id = b.user_id
+	LEFT JOIN wallet_disk_t c ON a.disk_seq = c.disk_seq
+	WHERE
+	a.disk_seq = (
+		SELECT disk_seq FROM
+		  <choose>
+			<when test="diskType == 'TIYAN'">wallet_disk_relation_tiyan_t</when>
+			<when test="diskType == 'HUIMIN'">wallet_disk_relation_huimin_t</when>
+			<when test="diskType == 'FUMIN'">wallet_disk_relation_fumin_t a</when>
+			<when test="diskType == 'XINGMIN'">wallet_disk_relation_xingmin_t a</when>
+		  </choose>
+	      WHERE user_id= #{userId}
+	      AND active_flag = 'Y'
+	      AND delete_flag = 'N' 
+	      ORDER BY created_date DESC
+	      LIMIT 0,1
+      )
+    AND a.profit_user_id = #{userId}
+	AND a.active_flag = 'Y'
+	AND a.delete_flag = 'N'
+	AND c.active_flag = 'Y'
+	AND c.delete_flag = 'N'
+	AND a.role_id = 1
+	ORDER BY a.created_date DESC
+  </select>
+  
+  <select id="getDiskStatus" resultType="java.lang.String">
+ 	 SELECT disk_status FROM
+		  <choose>
+			<when test="diskType == 'TIYAN'">wallet_disk_relation_tiyan_t</when>
+			<when test="diskType == 'HUIMIN'">wallet_disk_relation_huimin_t</when>
+			<when test="diskType == 'FUMIN'">wallet_disk_relation_fumin_t </when>
+			<when test="diskType == 'XINGMIN'">wallet_disk_relation_xingmin_t </when>
+		  </choose>
+	      WHERE user_id= #{userId}
+	      AND active_flag = 'Y'
+	      AND delete_flag = 'N' 
+	      ORDER BY created_date DESC
+	      LIMIT 0,1
+  </select>
+  <select id="getDiskRelationCustromVO" resultType="com.wwh.vo.DiskRelationCustromVO">
+		SELECT
+			a.role_id roleId,
+			a.current_profit currentProfit,
+			a.id_card idCard,
+			a.disk_seq diskSeq,
+			CONCAT(b.disk_head, b.disk_tail) diskName,
+			c.withdrawals_amount withdrawalsAmount,
+			c.save_amount saveAmount,
+			a.localtion 
+		FROM
+		<choose>
+			<when test="diskType == 'TIYAN'">wallet_disk_relation_tiyan_t a</when>
+			<when test="diskType == 'HUIMIN'">wallet_disk_relation_huimin_t a</when>
+			<when test="diskType == 'FUMIN'">wallet_disk_relation_fumin_t a</when>
+			<when test="diskType == 'XINGMIN'">wallet_disk_relation_xingmin_t a</when>
+		</choose>
+		INNER JOIN wallet_disk_t b ON a.disk_seq = b.disk_seq
+		LEFT JOIN wallet_disk_profit_t c ON a.id_card = c.id_card
+		WHERE
+			a.user_id =#{userId}
+		AND a.disk_status = 'RUNNING'
+		AND a.active_flag = 'Y'
+		AND a.delete_flag = 'N'
+  </select>
+  <select id="getDiskMemberCounter" resultType="java.lang.Integer">
+  	SELECT COUNT(1) FROM 
+  	<choose>
+		<when test="diskType == 'TIYAN'">wallet_disk_relation_tiyan_t a</when>
+		<when test="diskType == 'HUIMIN'">wallet_disk_relation_huimin_t a</when>
+		<when test="diskType == 'FUMIN'">wallet_disk_relation_fumin_t a</when>
+		<when test="diskType == 'XINGMIN'">wallet_disk_relation_xingmin_t a</when>
+	</choose>
+	WHERE disk_seq = #{diskSeq}
+	AND role_id = 4
+	AND active_flag = 'Y'
+	AND delete_flag = 'N'
+  </select>
+</mapper>  

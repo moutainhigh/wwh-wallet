@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wwh.dao.IDiskTypeProfitDao" >
+	<insert id="updateDiskTypeProfitByUserId">
+		INSERT INTO wallet_disk_type_profit_t (
+			user_id,
+			disk_type,
+			disk_profit_amount,
+			active_flag,
+			delete_flag,
+			created_date,
+			created_by,
+			last_updated_date,
+			last_updated_by
+		)
+		VALUES
+			(
+				#{userId},
+				#{diskType},
+				#{diskProfitAmount},
+				'Y',
+				'N',
+				NOW(),
+				#{createdBy},
+				NOW(),
+				#{lastUpdatedBy}
+			) ON DUPLICATE KEY UPDATE 
+			disk_profit_amount = disk_profit_amount + #{diskProfitAmount},
+			last_updated_date = NOW(),
+			last_updated_by = #{lastUpdatedBy}
+	</insert>
+
+ <sql id="Base_Column_List" >
+	id as id, 
+	user_id as userId, 
+	disk_type as diskType, 
+	disk_profit_amount as diskProfitAmount, 
+	active_flag activeFlag,
+	delete_flag deleteFlag, 
+    created_date createdDate, 
+    created_by createdBy, 
+    last_updated_date lastUpdatedDate, 
+    last_updated_by lastUpdatedBy
+  </sql>
+
+	<!-- 累加系统收益  userId,   disk_type   不允许为空 -->
+	<update id="increaseDiskTypeProfit" parameterType="com.wwh.vo.DiskTypeProfitVO" >
+    update wallet_disk_type_profit_t
+    <set >
+      <if test="diskProfitAmount != null" >
+        disk_profit_amount = disk_profit_amount +#{diskProfitAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="activeFlag != null" >
+        active_flag = #{activeFlag,jdbcType=CHAR},
+      </if>
+      <if test="deleteFlag != null" >
+        delete_flag = #{deleteFlag,jdbcType=CHAR},
+      </if>
+      <if test="userId != null" >
+        last_updated_date = now(),
+      </if>
+      <if test="lastUpdatedBy != null" >
+        last_updated_by = #{lastUpdatedBy,jdbcType=BIGINT},
+      </if>
+    </set>
+    where user_id = #{userId,jdbcType=BIGINT} and  disk_type = #{diskType,jdbcType=VARCHAR}
+  </update>
+  
+	<!-- 插入系统收益  -->
+	<insert id="insertDiskTypeProfit" parameterType="com.wwh.vo.DiskTypeProfitVO" >
+	    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+	      SELECT LAST_INSERT_ID()
+	    </selectKey>
+	    insert into wallet_disk_type_profit_t (user_id, disk_type, disk_profit_amount, 
+	      active_flag, delete_flag, created_date, 
+	      created_by, last_updated_date, last_updated_by
+	      )
+	    values (
+	    #{userId,jdbcType=BIGINT}, 
+	    #{diskType,jdbcType=VARCHAR}, 
+	    #{diskProfitAmount,jdbcType=DECIMAL}, 
+	      #{activeFlag,jdbcType=CHAR}, 
+	      #{deleteFlag,jdbcType=CHAR}, 
+	      now(), 
+	      #{createdBy,jdbcType=BIGINT}, 
+	      now(), 
+	      #{lastUpdatedBy,jdbcType=BIGINT}
+	      )
+	  </insert>
+
+
+	 <!-- 查询该系统收益  -->
+	 <select id="selectDiskTypeProfitByDiskTypeProfit" resultMap="BaseResult" parameterType="com.wwh.vo.DiskTypeProfitVO" >
+	    select <include refid="Base_Column_List" />
+	    from wallet_disk_type_profit_t
+	    where 1=1
+	    <if test="id != null" >
+	      and   id = #{id,jdbcType=BIGINT}
+	      </if>
+	    <if test="userId != null" >
+	      and  user_id = #{userId,jdbcType=BIGINT}
+	      </if>
+	      <if test="diskType != null" >
+	     and   disk_type = #{diskType,jdbcType=VARCHAR}
+	      </if>
+	      <if test="diskProfitAmount != null" >
+	      and  disk_profit_amount = #{diskProfitAmount,jdbcType=DECIMAL}
+	      </if>
+	      <if test="activeFlag != null" >
+	       and active_flag = #{activeFlag,jdbcType=CHAR}
+	      </if>
+	      <if test="deleteFlag != null" >
+	       and delete_flag = #{deleteFlag,jdbcType=CHAR}
+	      </if>
+	      <if test="createdDate != null" >
+	      and  created_date = #{createdDate,jdbcType=TIMESTAMP}
+	      </if>
+	      <if test="createdBy != null" >
+	      and  created_by = #{createdBy,jdbcType=BIGINT}
+	      </if>
+	      <if test="lastUpdatedDate != null" >
+	       and last_updated_date = #{lastUpdatedDate,jdbcType=TIMESTAMP}
+	      </if>
+	      <if test="lastUpdatedBy != null" >
+	      and  last_updated_by = #{lastUpdatedBy,jdbcType=BIGINT}
+	      </if>
+	  </select>
+
+	<resultMap id="BaseResult" type="com.wwh.vo.DiskTypeProfitVO" >
+	    <id column="id" property="id" jdbcType="BIGINT" />
+	    <result column="user_id" property="userId" jdbcType="BIGINT" />
+	    <result column="disk_type" property="diskType" jdbcType="VARCHAR" />
+	    <result column="disk_profit_amount" property="diskProfitAmount" jdbcType="DECIMAL" />
+	    <result column="active_flag" property="activeFlag" jdbcType="CHAR" />
+	    <result column="delete_flag" property="deleteFlag" jdbcType="CHAR" />
+	    <result column="created_date" property="createdDate" jdbcType="TIMESTAMP" />
+	    <result column="created_by" property="createdBy" jdbcType="BIGINT" />
+	    <result column="last_updated_date" property="lastUpdatedDate" jdbcType="TIMESTAMP" />
+	    <result column="last_updated_by" property="lastUpdatedBy" jdbcType="BIGINT" />
+	  </resultMap>
+  
+  
+ </mapper>

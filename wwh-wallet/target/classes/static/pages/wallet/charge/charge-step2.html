@@ -1,0 +1,239 @@
+﻿<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>充值-唯沃惠</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="金融、钱包、理财、高收益">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="renderer" content="webkit" />
+    <link rel="stylesheet" href="/wwh-wallet/css/bootstrap.css">
+    <link rel="stylesheet" href="/wwh-wallet/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/wwh-wallet/css/plugin.css">
+    <link rel="stylesheet" href="/wwh-wallet/css/landing.css">
+    <link rel="stylesheet" href="/wwh-wallet/css/common.css">
+    <link href="/wwh-wallet/css/mall/private-benefit.css" rel="stylesheet" />
+    <script type="text/javascript" src="/wwh-wallet/js/jquery.min.js"></script>
+    <script src="/wwh-wallet/js/bootstrap.js"></script>
+    <script src="/wwh-wallet/js/app.js"></script>
+    <script src="/wwh-wallet/js/app.plugin.js"></script>
+    <script src="/wwh-wallet/js/app.data.js"></script>
+    <script src="/wwh-wallet/js/fuelux/fuelux.js"></script>
+    <script src="/wwh-wallet/js/datepicker/bootstrap-datepicker.js"></script>
+    <script src="/wwh-wallet/js/slider/bootstrap-slider.js"></script>
+    <script src="/wwh-wallet/js/file-input/bootstrap.file-input.js"></script>
+    <script src="/wwh-wallet/js/combodate/moment.min.js"></script>
+    <script src="/wwh-wallet/js/parsley/parsley.min.js"></script>
+    <script src="/wwh-wallet/js/angular.js"></script>
+</head>
+<body>
+    <div ng-include src="'/wwh-wallet/pages/wallet/common/header.html'"></div>
+    <div class="charge-wrap fixed">
+        <div class="charge-box m-box fixed">
+            <div class="title-wrap">
+                <div class="title">充值</div>
+                <div class="title-second"></div>
+            </div>
+            <div class="containner-middle fixed">
+                <div class="choose-bank-wrap fixed" style="height:150px;min-height:150px;">
+                    <div class="c-b-box-1 fixed" style="display:none;">
+                        <span>*</span>银联充值方式：
+                    </div>
+                    <div class="c-b-box23w fixed">
+                        <div class="c-b-box-2 fixed">
+                            <div class="c-b-title-w">
+                                <script type="text/javascript">
+                                    $(document).ready(function () {
+                                        //$("button").click(function(){
+                                        $("payOrder").html("W3School");
+                                        //});
+                                    });
+                                </script>
+                                <script type="text/javascript">
+                                    $(function () {
+                                        //方法二：
+                                        (function ($) {
+                                            $.getUrlParam = function (name) {
+                                                var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+                                                var r = window.location.search.substr(1).match(reg);
+                                                if (r != null) return unescape(r[2]); return null;
+                                            }
+                                        })(jQuery);
+                                        //方法二：
+                                        //  var payOrder = $.getUrlParam('payOrder');
+                                        //方法一：
+                                        // var xx = getUrlParam('reurl');
+                                        //alert(xx);
+                                        //   $("#payOrder").text(payOrder);
+                                        //  var needPayMoney = $.getUrlParam('needPayMoney');
+                                        //   $("#needPayMoney").text(needPayMoney);
+                                    });
+                                    //方法一：
+                                    //获取url中的参数
+                                    function getUrlParam(name) {
+                                        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+                                        var r = window.location.search.substr(1).match(reg);  //匹配目标参数
+                                        if (r != null) return unescape(r[2]); return null; //返回参数值
+                                    }
+                                </script>
+                                <div class="c-b-t1">文字订单提交成功，请尽快付款！订单号：<div id="payOrder">${orderId}</div></div>
+                                <div class="c-b-t2">请您在提交订单后30分钟内完成支付，否则订单会自动取消</div>
+                            </div>
+                            <div class="c-b-title-w2">
+                                <div class="c-b-t3">应付金额：<span id="needPayMoney">${amount}</span>元</div>
+                            </div>
+                        </div>
+                        <div class="c-b-box-3 fixed" style="height:60px; display:none;">
+                            <div class="bank-logo CMB selected"><i></i><b></b></div>
+                            <!--<div class="bank-logo bl-02 norightm"><i></i><b></b></div>
+                            <div class="bank-logo bl-03"><i></i><b></b></div>
+                            <div class="bank-logo bl-04 norightm"><i></i><b></b></div>-->
+                        </div>
+                    </div>
+                    <!--<div class="c-b-box-4" data-toggle="modal" data-target="#myModal2">
+                        选择其他
+                    </div>-->
+                </div>
+
+                <div class="choose-bank-wrap-2 fixed">
+                    <div class="c-b-box-1 fixed">
+                        <span>*</span>充值方式：
+                    </div>
+                    <div class="c-b-box-56 fixed">
+                        <div class="c-b-box-5 fixed">
+
+                            <div class="otherz-box wx-c selected" payType="weixin" ><b></b><i></i>微信支付<input type="hidden" id="otherz-box wx-c value" value="WWHWEIXINPAY" /></div>
+                            <div class="otherz-box zfb-c" payType="zhifubao"><b></b><i></i>支付宝支付</div>
+                        </div>
+                        <script type="text/javascript">
+                            $(document).ready(function () {
+                                var zwSelected = $('.otherz-box'); // 选择哪个银行
+                                zwSelected.click(function () {
+                                    $(this).addClass('selected').siblings().removeClass('selected');
+                                    $('.bank-logo').removeClass('selected');
+                                });
+                            })
+                        </script>
+
+                        <form action="" method="post" id="payform2">
+                            <div class="c-b-box-6 fixed">
+                                <div class="charge-btn" id="payNextId" data-toggle="modal" >下一步</div>
+                                <!--<div id="weixinpay" class="charge-btn">下一步</div>-->
+                                <input type="hidden" name="myModaldd" id="myModaldd"  data-toggle="modal" data-target="#myModal" />
+                                <input type="hidden" name="payOrderType" id="payOrderType" value=${orderId}>
+                                <input type="hidden" name="amount" id="amount" value=${amount}>
+                                <input type="hidden" name="payAmountType" id="payAmountType" value=${payAmountType}>
+                            </div>
+                            <script>
+                                $('#weixinpay').click(function () {
+                                    if ($('.chargecash').hasClass('selected')) {
+                                        $('#myModaldd').trigger('click');
+                                    } else {
+                                        return false;
+                                    }
+
+                                });
+                            </script>
+                        </form>
+                        <div class="c-b-box-7 fixed">
+                            温馨提示：<br />
+                            1、充值成功后，余额可能存在延迟现象，一般1到5分钟内到账，如有问题，请咨询客服；<br />
+                            2、您只能用储蓄卡进行提现，如遇到任何支付问题可以在线联系客服帮助；<br />
+                            3、充值完成后，您可以进入我的积分充值记录页面进行查看余额状态<br />
+                            4、客服电话0755-86671456服务时间：周一至周日0:00-24:00
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="charge-modal-box wwh">
+            <!-- 模态框（Modal） -->
+            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title" id="myModalLabel">登录支付页面支付</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="md-c-wrap">
+                                <div class="md-c-title1">请您在新打开的页面进行支付，支付完成前请不要关闭该窗口</div>
+                                <div class="md-c-title2-w">
+                                    <div class="md-c-title2"><a href="/wwh-wallet/score" class="md-c-btn" id="iSurePaysuccessed">已支付完成</a></div>
+                                    <div class="md-c-title3"><a href="/wwh-wallet/score" class="md-c-btn">未支付完成</a></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal -->
+            </div>
+        </div>
+        <div class="other-bank-modal">
+            <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title" id="myModalLabel">唯沃惠的合作银行</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="bank-modal-w fixed">
+                                <div class="bank-logo bl-01 selected"><i></i><b></b></div>
+                                <div class="bank-logo bl-02"><i></i><b></b></div>
+                                <div class="bank-logo bl-03 norightm"><i></i><b></b></div>
+                                <div class="bank-logo bl-04"><i></i><b></b></div>
+                                <div class="bank-logo bl-05"><i></i><b></b></div>
+                                <div class="bank-logo bl-06 norightm"><i></i><b></b></div>
+                                <div class="bank-logo bl-07"><i></i><b></b></div>
+                                <div class="bank-logo bl-08"><i></i><b></b></div>
+                                <div class="bank-logo bl-09 norightm"><i></i><b></b></div>
+                            </div>
+                            <script type="text/javascript">
+                                $(document).ready(function () {
+                                    // 第一次加载 取参数
+                                    function getQueryString(name) {
+                                        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+                                        var r = window.location.search.substr(1).match(reg);
+                                        if (r != null) return unescape(r[2]); return null;
+                                    }
+                                    $('#payNextId').click(function () {
+                                    	 //判断是否是支付包支付
+                                    	var payType = ""; 
+                                    	var weixin = $("div[class='otherz-box wx-c selected']").attr("payType");
+                                        var zhifubao = $("div[class='otherz-box zfb-c selected']").attr("payType");
+                                        payType = weixin ? weixin : zhifubao;
+                                        if(null != payType){
+                                        	 $('#payNextId').attr("data-target","#myModal");
+                                        }
+                                        if (payType =="zhifubao") {
+                                            window.open("/wwh-wallet/pages/wallet/charge/alipay.html?orderId=${orderId}&orderName=${orderId}&totalfee=${amount}&payAmountType=${payAmountType}");
+                                            // window.open ("http://localhost:8080/wwh-wallet/pages/wallet/charge/alipay.html?orderId=" + paySeq + "&orderName=" +orderName+"&totalfee"+amount+"&payAmountType"+payAmountType);
+                                        } else if(payType =="weixin"){
+                                            //第一个参数取    盘类型    订单号     金额
+                                            window.open("/wwh-wallet/wenxinpay", '${payAmountType},${orderId},${amount}');
+                                        }
+                                    });
+                                    // 选择银行
+                                    var bandSelected = $('.bank-logo');
+                                    bandSelected.click(function () {
+                                        $(this).addClass('selected').siblings().removeClass('selected');
+                                        $('.otherz-box').removeClass('selected');
+                                    });
+                                });
+                            </script>
+                            <div class="charge-btn-w">
+                                <div class="charge-btn" id="">下一步</div>
+                            </div>
+
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal -->
+            </div>
+        </div>
+    </div>
+    <div ng-include src="'/wwh-wallet/pages/wallet/common/footer.html'"></div>
+    <script type="text/javascript">
+        var app = angular.module('myApp', []);
+    </script>
+</body>
+</html>

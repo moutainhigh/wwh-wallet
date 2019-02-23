@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wwh.dao.ILoginwxDao">
+	<!-- 查询个人信息 -->
+	<select id="getWXUserInfoByUserId" resultType="com.wwh.loginwx.vo.WXUserInfoVO">
+		select 
+			a.user_id userId,
+			a.unionid unionId,
+			a.openid openId,
+			a.subscribe subScribe,
+			a.subscribetime subScribeTime,
+			a.nickname nickName,
+			a.password passWord,
+			a.reference_id referenceId,
+			a.sex sex,
+			a.country country,
+			a.province province,
+			a.city city,
+			a.language language,
+			a.headimgurl headImgUrl,
+			a.privilege privilege,
+			b.mobile_phone mobilePhone
+		 from wallet_wx_user_t a
+		 left join wwh_user_t b on a.user_id=b.user_id	
+		 where 
+		    a.user_id=#{userId}
+			and a.active_flag='Y'
+			and a.delete_flag ='N'
+	</select>
+	<!-- 查询个人信息 -->
+	<select id="getWXUserInfoByUnionId" resultType="com.wwh.loginwx.vo.WXUserInfoVO">
+		select 
+			a.user_id userId,
+			a.unionid unionId,
+			a.openid openId,
+			a.subscribe subScribe,
+			a.subscribetime subScribeTime,
+			a.nickname nickName,
+			a.password passWord,
+			a.reference_id referenceId,
+			a.sex sex,
+			a.country country,
+			a.province province,
+			a.city city,
+			a.language language,
+			a.headimgurl headImgUrl,
+			a.privilege privilege,
+			b.mobile_phone mobilePhone
+		 from wallet_wx_user_t a
+		 left join wwh_user_t b on a.user_id=b.user_id	
+		 where 
+		    a.unionid=#{unionId}
+			and a.active_flag='Y'
+			and a.delete_flag ='N'
+	</select>
+	<insert id="insertWXUserInfo" parameterType="com.wwh.loginwx.vo.WXUserInfoVO">
+     insert into wallet_wx_user_t 
+	    (
+	      	user_id,
+			unionid,
+			openid,
+			subscribe,
+			subscribetime,
+			nickname,
+			password,
+			reference_id,
+			sex,
+			country,
+			province,
+			city,
+			language,
+			headimgurl,
+			privilege,
+			active_flag,
+			delete_flag,	
+			created_date,	
+			created_by,	
+			last_updated_date,	
+			last_updated_by	
+	      )
+	    values (
+		    #{userId,jdbcType=BIGINT}, 
+	     	#{unionId,jdbcType=VARCHAR}, 
+		    #{openId,jdbcType=VARCHAR},
+	 	 	#{subScribe,jdbcType=BIGINT},
+	      	#{subScribeTime,jdbcType=TIMESTAMP},
+	      	#{nickName,jdbcType=VARCHAR},
+	      	#{passWord,jdbcType=VARCHAR},
+	      	#{referenceId,jdbcType=BIGINT},
+	      	#{sex,jdbcType=BIGINT}, 
+	      	#{country,jdbcType=VARCHAR}, 
+	      	#{province,jdbcType=VARCHAR}, 
+	      	#{city,jdbcType=VARCHAR}, 
+	      	#{language,jdbcType=VARCHAR},
+	      	#{headImgUrl,jdbcType=VARCHAR},
+	      	#{privilege,jdbcType=VARCHAR},
+	      	'Y',
+	      	'N',
+	      	now(), 
+	      	#{createdBy,jdbcType=BIGINT}, 
+	      	now(), 
+	      	#{lastUpdatedBy,jdbcType=BIGINT}
+	      )
+	</insert>
+	<update id="updateWXUserInfo" parameterType="com.wwh.loginwx.vo.WXUserInfoVO">
+		update 
+			wallet_wx_user_t 
+		set 
+		<if test="unionId != null ">
+			<if test="userId != null ">
+				user_id=#{userId},
+			</if> 
+			<if test="passWord != null ">
+				password=#{passWord},
+			</if> 
+			<if test="referenceId != null ">
+				reference_id=#{referenceId},
+			</if> 
+			<if test="mobilePhone != null ">
+				mobile_phone=#{mobilePhone},
+			</if> 
+			<if test="mediaId != null ">
+				mediaid=#{mediaId},
+			</if> 
+			<if test="mediaId != null ">
+				mediadate=now(),
+			</if> 
+			<if test="accessToken != null ">
+				accesstoken=#{accessToken},
+			</if> 
+			<if test="accessToken != null ">
+				tokendate=now(),
+			</if> 
+				last_updated_date=now(),	
+				last_updated_by=#{userId}
+			where 
+				unionid=#{unionId}   	
+		</if>
+		<if test="unionId == null ">
+			<if test="accessToken != null ">
+				accesstoken=#{accessToken},
+			</if> 
+			<if test="accessToken != null ">
+				tokendate=now()
+			</if> 
+		</if>		
+	</update>
+	<!-- 查询未超过2小时(110分钟)的token -->
+	<select id="getValidTokenByUnionId" resultType="java.lang.String">
+		select 
+			accesstoken
+		 from wallet_wx_user_t a
+		 where 
+		    unionid=#{unionId}
+			and tokendate>=date_sub(now(), interval 110 minute)
+			and active_flag='Y'
+			and delete_flag ='N'
+	</select>
+	<!-- 查询未超过3天(70小时)的二维码id -->
+	<select id="getValidMediaIdByUnionId" resultType="java.lang.String">
+		select 
+			mediaid
+		 from wallet_wx_user_t a
+		 where 
+		    unionid=#{unionId}
+			and mediadate>=date_sub(now(), interval 70 hour)
+			and active_flag='Y'
+			and delete_flag ='N'
+	</select>
+	
+</mapper>

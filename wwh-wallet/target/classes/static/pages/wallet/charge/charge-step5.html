@@ -1,0 +1,319 @@
+﻿<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>提现-唯沃惠</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="金融、钱包、理财、高收益">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="renderer" content="webkit" />
+    <link rel="stylesheet" href="/wwh-wallet/css/bootstrap.css">
+    <link rel="stylesheet" href="/wwh-wallet/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/wwh-wallet/css/plugin.css">
+    <link rel="stylesheet" href="/wwh-wallet/css/landing.css">
+    <link rel="stylesheet" href="/wwh-wallet/css/common.css">
+    <link href="/wwh-wallet/css/mall/private-benefit.css" rel="stylesheet" />
+    <script type="text/javascript" src="/wwh-wallet/js/jquery.min.js"></script>
+    <script src="/wwh-wallet/js/bootstrap.js"></script>
+    <script src="/wwh-wallet/js/app.js"></script>
+    <script src="/wwh-wallet/js/app.plugin.js"></script>
+    <script src="/wwh-wallet/js/app.data.js"></script>
+    <script src="/wwh-wallet/js/fuelux/fuelux.js"></script>
+    <script src="/wwh-wallet/js/datepicker/bootstrap-datepicker.js"></script>
+    <script src="/wwh-wallet/js/slider/bootstrap-slider.js"></script>
+    <script src="/wwh-wallet/js/file-input/bootstrap.file-input.js"></script>
+    <script src="/wwh-wallet/js/combodate/moment.min.js"></script>
+    <script src="/wwh-wallet/js/parsley/parsley.min.js"></script>
+    <script type="text/javascript" src="/wwh-wallet/js/jquery.validate.js"></script>
+    <script src="/wwh-wallet/js/angular.js"></script>
+</head>
+<body>
+    <div ng-include src="'/wwh-wallet/pages/wallet/common/header.html'"></div>
+    <div class="charge-wrap fixed">
+        <div class="charge-box m-box fixed">
+            <div class="title-wrap">
+                <div class="title">添加微信号</div>
+            </div>
+            <div class="containner-middle fixed">
+                <div class="benifit-table-wrap">
+                    <!-- <form class="cmxform" id="signupForm" > -->
+                    <fieldset>
+                        <table class="benifit-table wwh-table">
+                            <tr>
+                                <td class="td01"><span class="redmi">*</span>微信名：</td>
+                                <td class="td02">
+                                    <div class="input-wrap weixinName-after after-ele">
+                                        <input id="weixinName" name="weixinName" placeholder="输入微信名称"  />
+                                        <div class="errorinfo">输入正确微信名</div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="td01"><span class="redmi">*</span>微信号：</td>
+                                <td class="td02">
+                                    <div class="input-wrap longtext weixinNum-after">
+                                        <input id="weixinNum" name="weixinNum" placeholder="输入微信号" />
+                                        <div class="errorinfo">输入正确微信号</div>
+                                    </div>
+                                </td>
+                            </tr>
+                            
+                              <tr>
+                                <td class="td01"><span class="redmi">*</span>手机号：</td>
+                                <td class="td02">
+                                    <div class="after-ele input-wrap phonenum-after">
+                                        <input placeholder="输入手机号码" type="text" id="phonenum" />
+                                        <div class="errorinfo">输入正确手机号码</div>
+                                    </div>
+                                    <!-- 
+                                    <div class="after-input-w fontsize12">请填写该卡在银行预留的手机号</div>
+                                     -->
+                                </td>
+                            </tr>
+                            <!--  
+                            <tr>
+                                <td class="td01"><span class="redmi">*</span>校验码：</td>
+                                <td class="td02">
+                                    <div class="after-ele  input-wrap validcode-after">
+                                        <input placeholder="" type="text" id="validcode" />
+                                        <div class="errorinfo">输入正确校验码</div>
+                                    </div>
+                                    <div class="check-code">
+                                    <input class="check-input" placeholder="" type="button" onclick="settime(this)" value="免费获取验证码" style="" />
+                                    </div>
+                                </td>
+                            </tr>
+                            -->
+                            <tr>
+                                <td class="td01"></td>
+                                <td class="td02">
+                                    <div class="attention marginb20">
+                                        <span>*</span>注意：<br />
+                                     		   填写真实信息资料<br />
+                                    </div>
+                                    <div class="btn-yes-wrap"><input class="btn-yes" type="submit" onclick="submitbtn()" value="确定添加"></div>
+                                    <input id="onloadtriggerClick1" class="onloadtrigger3" data-toggle="modal" href="#modal" type="hidden" />
+                                </td>
+                            </tr>
+                        </table>
+                        <script type="text/javascript">
+                        	
+							// 页面字段的失去焦点和获得焦点事件
+                            $("#weixinName").blur(function () {
+                            	weixinName();
+                            });
+
+                            $("#weixinName").focus(function () {
+                                $('#weixinName').siblings('.errorinfo').hide();
+                            });
+							//微信号
+                            $("#weixinNum").blur(function () {
+                            	weixinNum();
+                            });
+
+                            $("#weixinNum").focus(function () {
+                                $('#weixinNum').siblings('.errorinfo').hide();
+                            });
+							//电话号码
+                             $("#phonenum").blur(function () {
+                                vailPhone();
+                            });
+                            $("#phonenum").focus(function () {
+                                $('#phonenum').siblings('.errorinfo').hide();
+                            }); 
+                            //二维码
+                            $("#validcode").blur(function () {
+                                isValidcode();
+                            });
+                            $("#validcode").focus(function () {
+                                $('#validcode').siblings('.errorinfo').hide();
+                            });
+                            
+                            function isValidcode() {
+                                if ($("#validcode").val() == "") {
+                                    $('.validcode-after').children('.errorinfo').text("请输入正确的验证码").show();
+                                    return false;
+                                }
+                                return true;
+                            }
+                            
+                            //校验手机号吗
+                            function vailPhone() {
+                                var phone = $("#phonenum").val();
+                                var flag = false;
+                                var message = "";
+                                var myreg = new RegExp("^[0-9]*$");;
+                                if (phone == '') {
+                                    message = "手机号码不能为空！";
+                                    $('.phonenum-after').children('.errorinfo').text(message).show(); return false;
+                                }else if (!myreg.test(phone)) {
+                                    message = "请输入有效的手机号码！";
+                                    $('.phonenum-after').children('.errorinfo').text(message).show(); return false;
+                                } else {
+                                    return true;
+                                }
+                            }
+							
+                            //校验微信名称是否有填写
+                            function weixinName() {
+                            	var flag = true;
+                                if ($("#weixinName").val() == '') {
+                                    $('.weixinName-after').children('.errorinfo').show();
+                                    flag = false;
+                                }
+                                return flag;
+                            }
+
+                        	//校验微信号是否有填写
+                            function weixinNum() {
+                            	var flag = true;
+                                if ($("#weixinNum").val() == '') {
+                                    $('.weixinNum-after').children('.errorinfo').show();
+                                    flag = false;
+                                }
+                                return flag;
+                            }
+							
+                        	//发送验证码
+                            function settime(obj) {
+                                if (!vailPhone()) {
+                                    return;
+                                }
+                                var countdown = 60;
+                                var phonenum = $("#phonenum").val();
+                                $.ajax({     // 请求 ajax
+                                    url: "/wwh-wallet/msg/sendMsg",
+                                    type: "post",
+                                    data: {
+                                        "msgType": "4",
+                                        "tel": phonenum
+                                    },
+                                    error: function () {
+                                        //alert("异常");
+                                    },
+                                    success: function (msg) {
+                                    	if(msg.returnCode == "0"){
+                                    		//发送验证码成功后开始倒计时
+                                            validCode(obj, countdown);
+                                    	}
+                                    },
+                                    complete: function () {
+                                        //完成之后执行回调函数
+                                    },
+                                });
+                            }
+                        	
+                        	//空值二维码得按钮得样式
+                            function validCode(obj, countdown) {
+                                if (countdown == 0) {
+                                    obj.removeAttribute("disabled");
+                                    obj.value = "免费获取验证码";
+                                    countdown = 60;
+                                    return;
+                                } else {
+                                    obj.setAttribute("disabled", true);
+                                    obj.value = "重新发送(" + countdown + ")";
+                                    countdown--;
+                                }
+                                setTimeout(function () {
+                                    validCode(obj, countdown)
+                                }, 1000)
+                            }
+                        	
+							//点击提交按扭
+                            function submitbtn() {
+                                if (weixinName() && weixinNum() && vailPhone()) {
+                                	//当所有都正确了后就去校验验证码
+                                	//validVerifyMsg();
+                                	insertWeixin();
+                                }else{
+                                	 return false;
+                                }
+                            }
+							
+                            //校验验证码信息
+                            function validVerifyMsg(){
+                            	var phonenum = $("#phonenum").val();
+                                var msgCode = $("#validcode").val();
+                                $.ajax({     // 请求 ajax
+                                    url: "/wwh-wallet/msg/verifyMsg",
+                                    type: "post",
+                                    data:{"msgCode":msgCode, "tel": phonenum},
+                                    error: function () {
+                                        //alert("异常");
+                                    },
+                                    success: function (msg) {
+                                       if(msg.returnCode == "0"){
+                                    	   //验证吗校验成功后就去判断实名认证
+                                    	   insertWeixin();
+                                       }else{
+                                    	  alert(msg.returnMsg); 
+                                       }
+                                    },
+                                    complete: function () {
+                                        //完成之后执行回调函数
+                                    },
+                                });
+                            }
+                            
+                        	//点击提交按钮的点击事件
+                            function insertWeixin(){
+                        		  var phoneNumber = $("#phonenum").val();
+                            	  var weixinName = $("#weixinName").val();
+                            	  var weixinNum = $("#weixinNum").val();
+                            	
+                            	  $.ajax({     // 请求 ajax
+                                      url: "/wwh-wallet/addweixin/insertweixin",
+                                      type: "post",
+                                      contentType: 'application/json',
+                                      dataType: 'json',
+                                      data: JSON.stringify(AddWeixinVO = {
+                                          "weixinName": weixinName,
+                                          "weixinNum": weixinNum,
+                                          "phoneNumber" : phoneNumber
+                                      }),
+                                      success: function (msg) {
+                                          window.location.href = "/wwh-wallet/applywithdrawl";
+                                      },
+                                      complete: function () {
+                                          //完成之后执行回调函数
+                                      },
+                                  });
+                            }
+                            
+                        </script>
+                    </fieldset>
+                    <!-- </form>  -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+     <div id="modal" class="modal fade">
+        <form class="m-b-none">
+            <div class="modal-dialog pos-abt" style="margin-top:-235px; top:50%; width:800px; margin-left:-400px;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="icon-remove"></i></button>
+                        <h4 class="modal-title" id="myModalLabel">充值规则</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="checkbox">
+                            1、	真实姓名必须与银行卡信息一致<br/>
+							2、	实名认证后方可绑定银行卡（点击确认进行实名认证）<br/>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-small btn-primary" data-dismiss="modal">确认</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div>
+        </form>
+    </div>
+    
+    <div ng-include src="'/wwh-wallet/pages/wallet/common/footer.html'"></div>
+    <script type="text/javascript">
+        var app = angular.module('myApp', []);
+    </script>
+</body>
+</html>

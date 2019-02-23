@@ -1,0 +1,110 @@
+[
+    {
+        "rechargeMan": "14",
+        "profitMan": "5,2,1"
+    },
+    {
+        "rechargeMan": "23",
+        "profitMan": "5,2,1"
+    },
+    {
+        "rechargeMan": "32",
+        "profitMan": "5,2,1"
+    },
+    {
+        "rechargeMan": "17",
+        "profitMan": "6,2,1"
+    },
+    {
+        "rechargeMan": "26",
+        "profitMan": "6,2,1"
+    },
+    {
+        "rechargeMan": "35",
+        "profitMan": "6,2,1"
+    },
+    {
+        "rechargeMan": "20",
+        "profitMan": "7,2,1"
+    },
+    {
+        "rechargeMan": "29",
+        "profitMan": "7,2,1"
+    },
+    {
+        "rechargeMan": "38",
+        "profitMan": "7,2,1"
+    },
+    {
+        "rechargeMan": "15",
+        "profitMan": "8,3,1"
+    },
+    {
+        "rechargeMan": "24",
+        "profitMan": "8,3,1"
+    },
+    {
+        "rechargeMan": "33",
+        "profitMan": "8,3,1"
+    },
+    {
+        "rechargeMan": "18",
+        "profitMan": "9,3,1"
+    },
+    {
+        "rechargeMan": "27",
+        "profitMan": "9,3,1"
+    },
+    {
+        "rechargeMan": "36",
+        "profitMan": "9,3,1"
+    },
+    {
+        "rechargeMan": "21",
+        "profitMan": "10,3,1"
+    },
+    {
+        "rechargeMan": "30",
+        "profitMan": "10,3,1"
+    },
+    {
+        "rechargeMan": "39",
+        "profitMan": "10,3,1"
+    },
+    {
+        "rechargeMan": "16",
+        "profitMan": "11,4,1"
+    },
+    {
+        "rechargeMan": "25",
+        "profitMan": "11,4,1"
+    },
+    {
+        "rechargeMan": "34",
+        "profitMan": "11,4,1"
+    },
+    {
+        "rechargeMan": "19",
+        "profitMan": "12,4,1"
+    },
+    {
+        "rechargeMan": "28",
+        "profitMan": "12,4,1"
+    },
+    {
+        "rechargeMan": "37",
+        "profitMan": "12,4,1"
+    },
+    {
+        "rechargeMan": "22",
+        "profitMan": "13,4,1"
+    },
+    {
+        "rechargeMan": "31",
+        "profitMan": "13,4,1"
+    },
+    {
+        "rechargeMan": "40",
+        "profitMan": "13,4,1"
+    }
+]

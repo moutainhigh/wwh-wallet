@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wwh.dao.ILevelRelationshipDao">
+	<!-- 插入层级关系 -->
+	<insert id="insertLevelRelation" parameterType="com.wwh.vo.LevelRelationshipVO">
+		insert into wallet_level_relationship
+		      (
+		     	level_relation,
+		     	active_flag,
+		     	delete_flag,
+		     	created_date,
+		     	created_by,
+		     	last_updated_date,
+		     	last_updated_by
+		       ) values
+		       (
+		     	#{levelRelation,jdbcType=CHAR},
+				#{activeFlag,jdbcType=CHAR}, 
+				#{deleteFlag,jdbcType=CHAR},
+				now(),
+				#{createdBy,jdbcType=BIGINT},
+				now(),
+				#{lastUpdatedBy,jdbcType=BIGINT}
+		       )
+	</insert>
+	
+	<!-- 更新层级关系 -->
+	<update id="updateLevelRelation" parameterType="com.wwh.vo.LevelRelationshipVO">
+		update wallet_level_relationship 
+			<trim prefix="set" suffixOverrides=",">
+				<if test="levelRelation != null">
+					level_relation = #{levelRelation,jdbcType=CHAR},
+				</if>
+				<if test="activeFlag != null">
+					active_flag = #{activeFlag,jdbcType=CHAR},
+				</if>
+				<if test="lastUpdatedBy != null">
+					last_updated_by = #{lastUpdatedBy,jdbcType=CHAR},
+				</if>
+				<if test="lastUpdatedDate != null">
+					last_updated_date = #{lastUpdatedDate,jdbcType=CHAR}
+				</if>
+			</trim>
+		where id=#{id,jdbcType=BIGINT}
+	</update>
+	
+	<!-- 查询层级关系  by 用户id -->
+	<select id="selectLevelRelation" resultType="com.wwh.vo.LevelRelationshipVO">
+		select 	id                as   id,
+				level_relation    as   levelRelation,
+		     	active_flag       as   activeFlag,
+		     	delete_flag       as   deleteFlag,
+		     	created_date      as   createdDate,
+		     	created_by        as   createdBy,
+		     	last_updated_date as   lastUpdatedDate,
+		     	last_updated_by   as   lastUpdatedBy
+		 from   wallet_level_relationship
+		        where active_flag ='Y'
+		        and delete_flag = 'N'
+		        and level_relation ='Y'
+		        limit 0,1
+	</select>
+</mapper>

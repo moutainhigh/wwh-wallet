@@ -1,0 +1,814 @@
+﻿<!DOCTYPE html>
+<html lang="en" ng-app="myApp">
+<head>
+    <meta charset="utf-8">
+    <title>唯沃惠钱包</title>
+    <meta name="description" content="金融、钱包、理财、高收益">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="renderer" content="webkit" />
+    <link rel="stylesheet" href="/wwh-wallet/css/bootstrap.css">
+    <link rel="stylesheet" href="/wwh-wallet/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/wwh-wallet/css/plugin.css">
+    <link rel="stylesheet" href="/wwh-wallet/css/landing.css">
+    <link rel="stylesheet" href="/wwh-wallet/css/common.css">
+    <link rel="stylesheet" href="/wwh-wallet/css/mall/index.css">
+    <script type="text/javascript" src="/wwh-wallet/js/jquery.min.js"></script>
+    <script src="/wwh-wallet/js/angular.js"></script>
+    <meta name="baidu-site-verification" content="wogU8lMyXa" />
+	<!-- baidu网站建设统计 -->
+	<script>
+		var _hmt = _hmt || [];
+		(function() {
+			var hm = document.createElement("script");
+			hm.src = "https://hm.baidu.com/hm.js?2bf7c36575752212580cc16d2475dfe3";
+			var s = document.getElementsByTagName("script")[0];
+			s.parentNode.insertBefore(hm, s);
+		})();
+	</script>
+</head>
+<body ng-controller="infoCtrl">
+	<script>
+	  //查询用户的登陆信息 
+	  
+	  $.ajax({
+		  url:'/wwh-wallet/unauthorized',
+		  async:false,
+		  success:function(result){
+		    //200表示已经登陆
+       	   	if (result.returnCode == "200") {
+       		  queryUserInfo(result.data);
+            }
+		  }
+	  });
+	  
+	   //查询用户的登陆信息 
+	  function queryUserInfo(userId){
+	       	 $.ajax({
+	                url: "/wwh-wallet/getuserinfo/" + userId,  async:false, success: function (result) {
+	                    if (result != null && result.length > 0) {
+	                        if (result[0]['picUrl'] == 'default') {
+	                            sessionStorage.picUrl = '/wwh-wallet/images/avtar.png'; //如果没有图片给的默认图片
+	                        } else {
+	                            sessionStorage.picUrl = result[0]['picUrl'];      //有图片就取图片
+	                        } 
+	                       // $scope.picUrl = sessionStorage.picUrl;  //给页面赋值
+	                       if(result[0]['nickName'] === undefined) {
+	                    	   result[0]['nickName'] = result[0]['mobilePhone'];
+	                       }
+	                        setCookie("picUrl",sessionStorage.picUrl);
+	                        sessionStorage.nickName = result[0]['nickName'];  //用户的用户名信息
+	                        setCookie("nickName",sessionStorage.nickName );
+	                    }   
+	                }
+	            });
+	  }
+		   
+	   
+	   
+      //写cookies
+	  function setCookie(name,value){
+    	  var Days = 30;
+    	  var exp = new Date();
+    	  exp.setTime(exp.getTime() + Days*24*60*60*1000);
+    	  document.cookie = name + "="+ escape (value) + ";expires=" + exp.toGMTString();
+	  }
+	</script>
+
+
+    <div ng-include src="'/wwh-wallet/pages/wallet/common/header.html'"></div>
+    <input id="selectedpage" type="hidden" value="index" />
+    <div class="main-body-box main-slider-bg">
+        <div class="m-box">
+            <div class="playerxiab">
+                <div>
+                    <div class="fixed play-a-00 play-a">
+                        <a href="/wwh-wallet/pages/wallet/regulation/systy.html" class="pat-0 pat-01"></a>
+                        <a href="/wwh-wallet/pages/wallet/regulation/syshm.html" class="pat-0 pat-02"></a>
+                        <a href="/wwh-wallet/pages/wallet/regulation/sysfm.html" class="pat-0 pat-03"></a>
+                        <a href="/wwh-wallet/pages/wallet/regulation/sysxm.html" class="pat-0 pat-04"></a>
+                    </div>
+                    <div class="fixed play-a-01 play-a">
+                        <div class="pat pat-11">招商分红</div>
+                        <div class="pat pat-12"></div>
+                        <div class="pat pat-13">总收益</div>
+                        <div class="p-1-isplay isplaylogin">
+                            <div class="pat pat-14"><label ng-bind="infologined.businessAmountByCurrentUser == null ? '00.00' : infologined.businessAmountByCurrentUser"></label> 个</div>
+                            <div class="pat pat-15"></div>
+                            <div class="pat pat-16"></div>
+                            <a class="btn-adv pat-17 isplaylogin" href="/wwh-wallet/earnings">立即查看 ></a>
+                        </div>
+                        <div class="p-1-isplay isnplaylogin selected">
+                            <div class="pat pat-14">00.00个</div>
+                            <div class="pat pat-18">暂未参与</div>
+                        </div>
+                    </div>
+                    <div class="fixed play-a-03 play-a">
+                        <div class="pat pat-11">惠民系统收益</div>
+                        <div class="pat pat-12"></div>
+                        <div class="pat pat-13">总收益</div>
+                        <div class="pat pat-14"><label ng-bind="infologined.tiyanAmountByCurrentUser == null ? '00.00' : infologined.tiyanAmountByCurrentUser"></label> 个</div>
+                        <div class="pat pat-15">充值金额</div>
+                        <div class="pat pat-16" ng-bind="infologined.tiyanRcgByCurrentUser"></div>
+                        <a class="btn-adv pat-17 isnplaylogin selected" href="" ng-click="tologin()">立即登陆 ></a>
+                        
+                       <form id="goto_chargeStep1" action="/wwh-wallet/choose" method="post">
+                             <input id="diskType" type="hidden" name="amount" value="500" />
+                	            <a class="btn-adv pat-17 pat-17ty isplaylogin" href="/wwh-wallet/earnings">立即查看 ></a>
+                       </form>
+                        
+                        <!-- 
+                         <a class="btn-adv pat-17 pat-17ty isplaylogin" href="/wwh-wallet/earnings">立即查看 ></a>
+                         -->
+                    </div>
+                    <div class="fixed play-a-04 play-a">
+                        <div class="pat pat-11">富民系统收益</div>
+                        <div class="pat pat-12 bg-clear"></div>
+                        <div class="pat pat-13">总收益</div>
+                        <div class="pat pat-14"><label ng-bind="infologined.huiminAmountByCurrentUser == null ? '00.00' : infologined.huiminAmountByCurrentUser"></label> 个</div>
+                        <div class="pat pat-15">充值金额</div>
+                        <div class="pat pat-16" ng-bind="infologined.huiminRcgByCurrentUser"></div>
+                        <a class="btn-adv pat-17 isnplaylogin selected" href="" ng-click="tologin()">立即登陆 ></a>
+                        
+                        <form id="tiyan_goto_chargeStep2" action="/wwh-wallet/choose" method="post">
+                             <input id="diskType" type="hidden" name="amount" value="5000" />
+                	              <a class="btn-adv pat-17 pat-17hm isplaylogin" href="/wwh-wallet/earnings">立即查看 ></a>
+                       </form>
+                       
+                    </div>
+                    <div class="fixed play-a-05 play-a">
+                        <div class="pat pat-11">兴民系统收益</div>
+                        <div class="pat pat-12 bg-clear"></div>
+                        <div class="pat pat-13">总收益</div>
+                        <div class="pat pat-14"><label ng-bind="infologined.fuminAmountByCurrentUser == null ? '00.00' : infologined.fuminAmountByCurrentUser"></label> 个</div>
+                        <div class="pat pat-15">充值金额</div>
+                        <div class="pat pat-16" ng-bind="infologined.fuminRcgByCurrentUser"></div>
+                        <a class="btn-adv pat-17 isnplaylogin selected" href="" ng-click="tologin()">立即登陆 ></a>
+                        
+                       <form id="tiyan_goto_chargeStep3" action="/wwh-wallet/choose" method="post">
+                             <input id="diskType" type="hidden" name="amount" value="50000" />
+                	            <a class="btn-adv pat-17 pat-17fm isplaylogin" href="/wwh-wallet/earnings">立即查看 ></a>
+                       </form>
+                       <!-- 
+                        <a class="btn-adv pat-17 pat-17fm isplaylogin" href="/wwh-wallet/earnings">立即查看 ></a>
+                         -->
+                    </div>
+                </div>
+                <div class="page-arrow-button">
+                    <div class="page-arrow-box">
+                        <div class="page-arrow to-left"></div>
+                        <div class="page-arrow to-right"></div>
+                    </div>
+                </div>
+            </div>
+            <script type="text/javascript">
+                $(function () {
+                    var oPlay = $('.playerxiab'),
+						paArray = $('.play-a'),
+						paIndexChild = paArray.find('.selected'),
+						iNow = 0,
+						leftBtn = $('.to-left'),
+						rightBtn = $('.to-right');
+                    leftBtn.click(function () {
+                        iNow--;
+                        if (iNow < 0) {
+                            iNow = 5;
+                        }
+                        paArray.eq(iNow).siblings().stop().animate({
+                            opacity: 0
+                        }, 500);
+                        paArray.eq(iNow).stop().animate({
+                            opacity: 1
+                        }, 500);
+                        paArray.eq(iNow).css('z-index', '2').siblings().css('z-index', '1');
+                    });
+                    rightBtn.click(function () {
+                        iNow++;
+                        if (iNow > 5) {
+                            iNow = 0;
+                        }
+                        paArray.eq(iNow).siblings().stop().animate({
+                            opacity: 0
+                        }, 500);
+                        paArray.eq(iNow).stop().animate({
+                            opacity: 1
+                        }, 500);
+                        paArray.eq(iNow).css('z-index', '2').siblings().css('z-index', '1');
+                    });
+                });
+            </script>
+            <div class="slider-box">
+                <div id="focus">
+                    <div class="pb-img">
+                        <img src="/wwh-wallet/images/banner0.jpg" />
+                    </div>
+                    <div class="p-btn-box fixed">
+                        <div class="pb-box play-btn-01 selected">
+                            <a href="#">全民创业</a>
+                        </div>
+                        <div class="pb-box play-btn-02">
+                            <a href="#">充值活动</a>
+                        </div>
+                        <div class="pb-box play-btn-03">
+                            <a href="#">分享奖励</a>
+                        </div>
+                        <div class="pb-box play-btn-04">
+                            <a href="#">商城购物</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <script type="text/javascript">
+                $(function () {
+                    var oFocus = $('#focus'),
+						imagePlayer = $('.pb-img'),
+						childArray = oFocus.find('.pb-box'),
+						index = 0,
+						timer = null,
+						colorIndex = ['#ff2d24', '#ff2243', '#ef8300', '#ff3825'];
+                    childArray.mouseover(function () {
+                        index = $(this).index()
+                        $(this).addClass('selected').siblings().removeClass('selected');
+                        $('.pb-img img').attr('src', '/wwh-wallet/images/banner' + index + '.jpg');
+                        $('.main-slider-bg').css('background-color', colorIndex[index]);
+                    });
+                    imagePlayer.mouseenter(function () {
+                        stopFoucs();
+                    });
+                    imagePlayer.mouseleave(function () {
+                        timer = setInterval(function () {
+                            startFocus();
+                        }, 3000);
+                    });
+                    childArray.mouseenter(function () {
+                        stopFoucs();
+                    });
+                    childArray.mouseleave(function () {
+                        timer = setInterval(function () {
+                            startFocus();
+                        }, 3000);
+                    });
+                    timer = setInterval(function () {
+                        startFocus();
+                    }, 3000);
+                    function startFocus() {
+                        index++;
+                        index = index > childArray.size() - 1 ? 0 : index;
+
+                        childArray.eq(index).addClass('selected').siblings().removeClass('selected');
+                        childArray.eq(index).addClass('selected').siblings().removeClass('selected');
+                        $('.pb-img img').attr('src', '/wwh-wallet/images/banner' + index + '.jpg');
+                        $('.main-slider-bg').css('background-color', colorIndex[index]);
+                    }
+                    function stopFoucs() {
+                        clearInterval(timer);
+                    }
+                })
+            </script>
+            <div class="member-box">
+                <div class="loginedmebinfobox" style="display:none">
+                    <div class="avtar-box">
+                        <div id="imgidshow" class="fixed">
+                            <div class="maozi" ng-class="maoziclass"></div>
+                            <script type="text/javascript">
+                          
+                            showImg(getCookie("picUrl"));
+                            function showImg(url) {
+                            	if(url != "/wwh-wallet/images/avtar.png"){
+                            		url = "http://www.vwhsc.com/image-server/"+ url;
+                            	}
+                                var frameid = 'frameimg' + Math.random();
+                                window.img = '<img style="width:100px;height:100px;" id="img" src=\'' + url + '?' + Math.random() + '\' /><script>window.onload = function() {document.body.setAttribute("style","margin:0px");parent.document.getElementById(\'' + frameid + '\').height = 100+\'px\';}<' + '/script>';
+                                document.write('<iframe id="' + frameid + '" src="javascript:parent.img;" frameBorder="0" scrolling="no" width="100px"></iframe>');
+                            }
+                            
+                            function getCookie(name){
+              	        	  var arr,reg=new RegExp("(^| )"+name+"=([^;]*)(;|$)");
+              	        	  if(arr=document.cookie.match(reg))
+              	        	  return unescape(arr[2]);
+              	        	  else
+              	        	  return null;
+                      	  }
+                               
+                           
+                            </script>
+                        </div>
+                    </div>
+                    <div class="memb m-b-title01">
+                        亲爱的，<sapn class="nickName-box"></sapn><br />
+                        欢迎回来！
+                    </div>
+                    <div class="m-b-title02-b fixed">
+                    <form id="goto_chargeStep1" action="/wwh-wallet/choose" method="post">
+                         <input id="diskType" type="hidden" name="amount" value="500" />
+                        <a ng-click="gotoChargeStep(500)">   您是<span ng-bind="topsys"></span><br />
+                            <span ng-bind="topsysico"></span>
+                        </a>
+                    </form>
+                    </div>
+                    <a class="m-b-sy" href="/wwh-wallet/earnings">查看我的收益 ></a>
+                </div>
+                <div class="loginedmebinfobox333">
+                    <div class="logintitle"></div>
+                    <div>
+                        <section class="">
+                            <form class="form-horizontal" method="get"
+                                  data-validate="parsley">
+                                <div class="form-group">
+                                    <div class="col-lg-10 col-push-1 yhmbox">
+                                        <input type="text" id="usernameid" name="username" placeholder="用户名" ng-model="userNameInput"
+                                               class="form-control">
+                                        <i class="mj01"></i>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-lg-10 col-push-1 yhmbox">
+                                        <input type="password" id="passwordid" name="password" placeholder="密码" ng-model="userPasswordInput"
+                                               class="bg-focus form-control"> <i class="mj02"></i>
+                                    </div>
+                                </div>
+                                <div class="loginerror" style="padding-left:25px; margin-bottom:10px; display:none">用户名或密码错误</div>
+                                <div class="form-group">
+                                    <div class="col-lg-10 col-push-1">
+                                        <button type="submit" class="col-lg-12 btn btn-small btn-danger" ng-click="loginBtnClick()">
+                                            确认登录
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 
+    <div class="info-ec-box">
+        <div class="m-box fixed">
+            <div class="info-ec-title">唯沃惠快讯</div>
+            <div style="float:left;width:999px;">
+               <div style="font-size:22px; float:left;line-height:74px;">春节期间暂停提现通知：2017年01月22日-02月04日放假期间暂停提现，02月05日恢复正常！</div>
+               <div style="font-size:26px;line-height:74px; float:left; color:#e94949;"></div>
+            </div>
+            
+            <ul class="info-ec-list" style="display:none;">
+
+            	<!--
+                <li>
+                    <span class="t_title">用户充值金额已达到</span><span class="t_num" ng-bind="info.allRechargeAmount == null ? '00.00' : info.allRechargeAmount | currency :'' "></span><span class="y">元</span>
+                </li>
+                <li>
+                    <span class="t_title">参与系统人数</span><span class="t_num" ng-bind="info.allDiskCounter == null ? '0' : info.allDiskCounter"></span><span class="y">人</span>
+                </li>
+                <li>
+                    <span class="t_title">已为用户获取</span><span class="t_num" ng-bind="info.allPlatformTotalAmount == null ? '00.00' : info.allPlatformTotalAmount | currency :'' "></span><span class="y">个金币</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+     -->
+    <div class="container-box">
+        <div class="m-box fixed m-g-table g-table-s" style="display:none;">
+            <div class="m-g-title indexleftbg01">
+                <div class="d-q-c-01">
+					<!-- 当前参与<label ng-bind="info.tiyanDiskCounter == null ? 0 : info.tiyanDiskCounter"></label>人-->
+                </div>
+                <div class="d-q-c-02">起购金额</div>
+                <div class="d-q-c-03">金币500个</div>
+                <a class="d-q-c-04 isnplaylogin notlogintologinboxClick" onclick="notlogintologinbox()">立即参与</a>
+                    
+               <form id="goto_chargeStep1" action="/wwh-wallet/choose" method="post">
+                             <input id="diskType" type="hidden" name="amount" value="500" />
+                	           <a ng-click="gotoChargeStep(500)" class="d-q-c-04 isplaylogin">立即参与</a>
+               </form>
+            </div>
+            <table ng-controller="siteCtrl1">
+                <tr>
+                    <th>用户名<i></i></th>
+                    <th>身份<i></i></th>
+                    <th>充值金额<i></i></th>
+                    <th>当前收益<i></i></th>
+                    <th>加入时间</th>
+                </tr>
+                <tr ng-repeat="x in datatable1">
+                    <td class="td01" ng-bind="starNickName(x.nickName)"></td>
+                    <td class="td02" ng-bind="getTitleGrade(x.roleId)"></td>
+                    <td class="td03">500元</td>
+                    <td class="td04"><span ng-bind="x.profitAmount == null ? 0 : x.profitAmount"></span>个金币</td>
+                    <td class="td05" ng-bind="x.createdDate"></td>
+                </tr>
+            </table>
+        </div>
+        <div class="m-box fixed m-g-table r-table-s" style="display:none;">
+            <div class="m-g-title indexleftbg02">
+                <div class="d-q-c-01">
+					<!-- 当前参与<label ng-bind="info.huiminDiskCounter == null ? 0 : info.huiminDiskCounter"></label>人-->
+                </div>
+                <div class="d-q-c-02">起购金额</div>
+                <div class="d-q-c-03">金币5,000.00个</div>
+                <a class="d-q-c-04 isnplaylogin notlogintologinboxClick" onclick="notlogintologinbox()">立即参与</a>
+                
+               <form id="goto_chargeStep1" action="/wwh-wallet/choose" method="post">
+                             <input id="diskType" type="hidden" name="amount" value="500" />
+                	           <a ng-click="gotoChargeStep(5000)" class="d-q-c-04 isplaylogin">立即参与</a>
+               </form>
+            </div>
+            <table ng-controller="siteCtrl2">
+                <tr>
+                    <th>用户名<i></i></th>
+                    <th>身份<i></i></th>
+                    <th>充值金额<i></i></th>
+                    <th>当前收益<i></i></th>
+                    <th>加入时间</th>
+                </tr>
+                <tr ng-repeat="x in datatable2">
+                    <td class="td01" ng-bind="starNickName(x.nickName)"></td>
+                    <td class="td02" ng-bind="getTitleGrade(x.roleId)"></td>
+                    <td class="td03">5000元</td>
+                    <td class="td04"><span ng-bind="x.profitAmount == null ? 0 : x.profitAmount"></span> 个金币</td>
+                    <td class="td05" ng-bind="x.createdDate"></td>
+                </tr>
+            </table>
+        </div>
+        <div class="m-box fixed m-g-table p-table-s" style="display:none;">
+            <div class="m-g-title indexleftbg03">
+                <div class="d-q-c-01">
+                   	<!-- 当前参与<label ng-bind="info.fuminDiskCounter == null ? 0 : info.fuminDiskCounter"></label>人 -->
+                </div>
+                <div class="d-q-c-02">起购金额</div>
+                <div class="d-q-c-03">金币50,000.00个</div>
+                <a class="d-q-c-04 isnplaylogin notlogintologinboxClick" onclick="notlogintologinbox()">立即参与</a>
+                
+               <form id="goto_chargeStep1" action="/wwh-wallet/choose" method="post">
+                             <input id="diskType" type="hidden" name="amount" value="50000" />
+                	           <a ng-click="gotoChargeStep(50000)" class="d-q-c-04 isplaylogin">立即参与</a>
+               </form>
+            </div>
+            <table ng-controller="siteCtrl3">
+                <tr>
+                    <th>用户名<i></i></th>
+                    <th>身份<i></i></th>
+                    <th>充值金额<i></i></th>
+                    <th>当前收益<i></i></th>
+                    <th>加入时间</th>
+                </tr>
+                <tr ng-repeat="x in datatable3">
+                    <td class="td01" ng-bind="starNickName(x.nickName)"></td>
+                    <td class="td02" ng-bind="getTitleGrade(x.roleId)"></td>
+                    <td class="td03">50000元</td>
+                    <td class="td04"><span ng-bind="x.profitAmount == null ? 0 : x.profitAmount"></span>个金币</td>
+                    <td class="td05" ng-bind="x.createdDate"></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <script type="text/javascript">
+      
+        var app = angular.module('myApp', []);
+        app.controller('infoCtrl', function ($scope, $http) {
+        	$scope.starNickName = function(rrr){
+             //   var stringLenth = rrr.length;
+                var lastchar = rrr.substring(rrr.length-1,rrr.length);
+               
+                return "**"+ lastchar;
+            }
+        	
+        	
+        	   //加载页面通过shrio判断用户是否登陆
+		       $http.get("/wwh-wallet/unauthorized").success(function (response) {
+		    	   		//200表示已经登陆
+		        	   if (response.returnCode == "200") {
+		        		   //登陆加载已登陆样式
+		        		   function1();
+		        		   //加载右上角登陆信息
+		        		   userwalletdetail();
+		        		   //加载左上交用户信息
+		        		   lijidenglu();
+		        		   //获取商城过来的用户id
+		        		   var userID = response.data;
+		        		   console.log(userID);
+		        		   //获取图片信息
+		        		   queryUserInfo(userID);
+		        		
+		                }else{
+		                	//未登录加载未登录的样式
+		                	function2();
+		                }
+		        });
+        	
+		       $http.get("/wwh-wallet/disk/diskall").success(function (response) {
+	                if (response.data != null) {
+	                    $scope.info = response.data;
+	                    console.log('第一次加载未登陆接口');
+	                    console.log($scope.info);
+	                    if (sessionStorage.picUrl) {
+	                        $scope.picUrl = sessionStorage.picUrl;
+	                    }
+	                }
+	            });
+		       
+        	 //加载用户钱包信息
+        	 var userwalletdetail = function(){
+        		 $http.get("/wwh-wallet/score/userwalletdetail").success(function (response) {
+                     if (response.data != null) {
+                         console.log(response.data);
+                         if (response.data.tiyan) {
+                             $scope.topsys = "银卡会员";
+                             $scope.topsysico = '距离金卡会员还有一步之遥哟~';
+                             $scope.canshu = "?name=500";
+                             $scope.maoziclass = "maozi04"
+                         }
+                         if (response.data.huimin) {
+                             $scope.topsys = "金卡会员";
+                             $scope.topsysico = '距离钻卡会员还有一步之遥哟~';
+                             $scope.canshu = "?name=5000";
+                             $scope.maoziclass = "maozi03"
+                         }
+                         if (response.data.fumin) {
+                             $scope.topsys = "钻卡会员";
+                             $scope.topsysico = '距离至尊会员还有一步之遥哟~';
+                             $scope.canshu = "?name=50000";
+                             $scope.maoziclass = "maozi02"
+                         }
+                         if (response.data.xingmin) {
+                             $scope.topsys = "至尊会员";
+                             $scope.topsysico = '恭喜您，已经达到系统最高等级';
+                             $scope.canshu = "";
+                             $scope.maoziclass = "maozi01"
+                         }
+                         if (!response.data.tiyan && !response.data.huimin && !response.data.fumin && !response.data.xingmin) {
+                             $scope.topsys = "普通会员";
+                             $scope.topsysico = '距离白银会员还需：五百经验值';
+                             $scope.canshu = "?name=500";
+                             $scope.maoziclass = ""
+                         }
+                         $scope.picUrl = sessionStorage.picUrl;  
+                     }
+                 });
+        	 }
+        	
+        	
+        	//已登陆加载页面样式
+        	 var function1 = function(){
+        		 angular.element('.loginerror').css('display', 'none');    // isnplaylogin  yhmbox  loginedmebinfobox333  infologined isfirstplay
+                 angular.element('.isnplaylogin').removeClass('selected');
+                 angular.element('.isplaylogin').addClass('selected');
+                 angular.element('.yhmbox').removeClass('has-error');
+                 angular.element('.loginedmebinfobox').css('display', 'block');
+                 angular.element('.loginedmebinfobox333').css('display', 'none');
+                 angular.element('.infologined').css('display', 'block');
+                 angular.element('.uninfologined').css('display', 'none');
+                 angular.element('.shop-c.isplaylogin').css('display', 'block');
+                 angular.element('#nickname').text(getCookie("nickName"));
+                 angular.element('.nickName-box').text(getCookie("nickName"));
+        	 }
+        	
+	        	//未登陆后加载页面样式
+	          var function2 = function(){
+	        		  angular.element('.isnplaylogin').addClass('selected');
+	                  angular.element('.isplaylogin').removeClass('selected');
+	                  angular.element('.isnplaylogin').addClass('selected');
+	                  angular.element('.loginedmebinfobox333').css('display', 'block');
+	                  angular.element('.loginedmebinfobox').css('display', 'none');
+	                  angular.element('.infologined').css('display', 'none');
+	                  angular.element('.uninfologined').css('display', 'block');
+	                  angular.element('.shop-c.isplaylogin').css('display', 'none');
+	                  angular.element('.nickName-box').text('');
+	         }
+	        	
+        	
+        	  //已经登陆后   左上角   立即参与
+	          var lijidenglu = function(){
+	        	   $http.get("/wwh-wallet/disk/userdiskall").success(function (response) {
+	                   if (response.data != null) {
+	                       $scope.infologined = response.data;
+	                       console.log('已经登录加载数据');
+	                       $('.nickName-box').val(getCookie("nickName"));
+	                   }
+	                   if (response.data != null) {
+	                       $scope.picUrl = sessionStorage.picUrl;
+	                       if (response.data.tiyanRcgByCurrentUser != null) {
+	                           if (response.data.tiyanRcgByCurrentUser > 0) {
+	                               sessionStorage.istyed = 'show'; 
+	                           } else {
+	                               sessionStorage.istyed = 'hide';
+	                               angular.element('.pat-17ty').text('立即参与 >').attr('href','');
+	                            //   angular.element('.pat-17ty').text('立即参与 >').attr('href', '/wwh-wallet/pages/wallet/charge/charge-step1.html?name=500');
+	                               $('#goto_chargeStep1 .pat-17ty').live('click', function () {   
+	                            	   gotoChargeStep1(500);
+	                               });
+	                           }
+	                       }
+	                       if (response.data.huiminRcgByCurrentUser != null) {
+	                           if (response.data.huiminRcgByCurrentUser > 0) {
+	                               sessionStorage.ishmed = 'show';
+	                           } else {
+	                               sessionStorage.ishmed = 'hide';
+	                               angular.element('.pat-17hm').text('立即参与 >').attr('href', "");
+	                              // angular.element('.pat-17hm').text('立即参与 >').attr('href', '/wwh-wallet/pages/wallet/charge/charge-step1.html?name=5000');
+	                               $('#tiyan_goto_chargeStep2 .pat-17hm').live('click', function () {   
+	                            	   gotoChargeStep1(5000);
+	                               });
+	                           
+	                           }
+	                       }
+	                       if (response.data.fuminRcgByCurrentUser != null) {
+	                           if (response.data.fuminRcgByCurrentUser > 0) {
+	                               sessionStorage.isfmed = 'show';
+	                           } else {
+	                        	   
+	                               sessionStorage.isfmed = 'hide';
+	                               angular.element('.pat-17fm').text('立即参与 >').attr('href', '');
+	                               $('#tiyan_goto_chargeStep3 .pat-17fm').live('click', function () {   
+	                            	   gotoChargeStep1(50000);
+	                               });
+	                               
+	                               
+	                           }
+	                       }
+	                   }
+	               });
+	           }
+        	  
+        	  //写cookies
+        	  function setCookie(name,value){
+	        	  var Days = 30;
+	        	  var exp = new Date();
+	        	  exp.setTime(exp.getTime() + Days*24*60*60*1000);
+	        	  document.cookie = name + "="+ escape (value) + ";expires=" + exp.toGMTString();
+        	  }
+        	  
+        	  function getCookie(name){
+  	        	  var arr,reg=new RegExp("(^| )"+name+"=([^;]*)(;|$)");
+  	        	  if(arr=document.cookie.match(reg))
+  	        	  return unescape(arr[2]);
+  	        	  else
+  	        	  return null;
+          	  }
+        	
+		       //查询用户的登陆信息 
+		       var queryUserInfo = function(userId){
+		        	 $.ajax({
+		                 url: "/wwh-wallet/getuserinfo/" + userId,  async:true, success: function (result) {
+		                     if (result != null && result.length > 0) {
+		                         if (result[0]['picUrl'] == 'default') {
+		                             sessionStorage.picUrl = '/wwh-wallet/images/avtar.png'; //如果没有图片给的默认图片
+		                         } else {
+		                             sessionStorage.picUrl = result[0]['picUrl'];      //有图片就取图片
+		                         } 
+		                         $scope.picUrl = sessionStorage.picUrl;  //给页面赋值
+		                         setCookie("picUrl",sessionStorage.picUrl);
+		                         if(result[0]['nickName']=== undefined){
+		                           	 result[0]['nickName'] = result[0]['mobilePhone'];
+		                            }
+		                         sessionStorage.nickName = result[0]['nickName'];  //用户的用户名信息
+		                         setCookie("nickName",sessionStorage.nickName );
+		                     }   
+		                 }
+		             });
+		        }
+        	
+       
+		       //点击登陆事件
+		       $scope.loginBtnClick  = function(){
+		    	   //获取用户填写的用户信息
+		    	   var UserName = $scope.userNameInput;    //用户名
+		           var UserPwd = $scope.userPasswordInput;   //密码
+		           //调用登陆接口
+		           $http({ url: 'login', method: 'POST', data: { userName: UserName, password: UserPwd } }).success(function (response) {
+		        	 	//判断是否登陆成功
+		               if (response.returnCode == "200") {
+		                   //登陆成功后  先加载登陆成功的样式
+		                   function1();
+		                   //将用户信息放进缓存路
+		                   if (response.data != null) {
+		                       angular.element('.nickName-box').text(response.data.nickName);
+		                       angular.element('#nickname').text(response.data.nickName);
+		                       if (response.data.picUrl == 'default') {
+		                           sessionStorage.picUrl = '/wwh-wallet/images/avtar.png';
+		                       } else {
+		                           sessionStorage.picUrl = response.data.picUrl;
+
+		                       }
+		                       setCookie("picUrl", sessionStorage.picUrl);
+		                       if(response.data.nickName === undefined){
+		                    	   sessionStorage.nickName = response.data.mobilePhone;
+		                       }
+		                       setCookie("nickName", response.data.nickName);		                       
+		                       sessionStorage.nickName = response.data.nickName;
+		                      
+		                       $scope.picUrl = sessionStorage.picUrl;  //给页面赋值
+		                       window.location.reload();
+		                   }
+		               } else {
+		                   angular.element('.loginerror').css('display', 'block');
+		               }
+		           });
+		    	   
+		       }
+		       
+		       //加载三个表格的用户信息
+		       $scope.getTitleGrade = function (titlegradeNum) {
+		           if (titlegradeNum == 1) {
+		               return "总监";
+		           } else if (titlegradeNum == 2) {
+		               return "经理";
+		           } else if (titlegradeNum == 3) {
+		               return "理财师";
+		           } else if (titlegradeNum == 4) {
+		               return "普通会员";
+		           } else {
+		               return "抢点者";
+		           }
+		       }
+		       
+		       
+		       
+		       
+		       
+		       
+		    $scope.gotoChargeStep = function(amount){
+		    	var formObj = $("#goto_chargeStep1");
+				if(amount == "5000"){
+					formObj = $("#tiyan_goto_chargeStep2");
+				}else if(amount == "50000"){
+					formObj = $("#tiyan_goto_chargeStep3");
+				}
+                formObj.attr("method", "post");
+                formObj.submit();
+		    	
+		    }
+		       
+		       
+		       
+		       
+		       
+		       
+		   	//用于页面跳转
+            function gotoChargeStep1(amount){
+            	var formObj = $("#goto_chargeStep1");
+				if(amount == "5000"){
+					formObj = $("#tiyan_goto_chargeStep2");
+				}else if(amount == "50000"){
+					formObj = $("#tiyan_goto_chargeStep3");
+				}
+                formObj.attr("method", "post");
+                formObj.submit();
+            } 
+		   	
+		   	
+        });
+        
+        
+        //加载体验系统信息
+        app.controller('siteCtrl1', function ($scope, $http) {
+            $http.get("/wwh-wallet/disk/diskitem/TIYAN")
+				.success(function (response) {
+				    $scope.datatable1 = response.data;
+				});
+        });
+        
+        //加载惠民系统表格信息
+        app.controller('siteCtrl2', function ($scope, $http) {
+            $http.get("/wwh-wallet/disk/diskitem/HUIMIN")
+				.success(function (response) {
+				    $scope.datatable2 = response.data;
+				});
+        });
+        
+        //加载体验系统表格信息
+        app.controller('siteCtrl3', function ($scope, $http) {
+            $http.get("/wwh-wallet/disk/diskitem/FUMIN")
+				.success(function (response) {
+				    $scope.datatable3 = response.data;
+				});
+        });
+        
+    </script>
+    <script type="text/javascript">
+        function notlogintologinbox() {
+            $('#usernameid').focus();
+            $('body,html').animate({
+                scrollTop: 0
+            }, 100);
+        }
+    </script>
+    <div class="corp-box fixed">
+        <div class="m-box">
+            <div class="m-title">合作机构</div>
+            <div class="m-main-container">
+                <ul class="fixed">
+                    <li><img src="/wwh-wallet/images/footlogo/corp01.png" /></li>
+                    <li><img src="/wwh-wallet/images/footlogo/corp02.png" /></li>
+                    <li><img src="/wwh-wallet/images/footlogo/corp03.png" /></li>
+                    <li><img src="/wwh-wallet/images/footlogo/corp04.png" /></li>
+                    <li><img src="/wwh-wallet/images/footlogo/corp05.png" /></li>
+                    <li><img src="/wwh-wallet/images/footlogo/corp06.png" /></li>
+                    <li><img src="/wwh-wallet/images/footlogo/corp07.png" /></li>
+                    <li><img src="/wwh-wallet/images/footlogo/corp08.png" /></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div ng-include src="'/wwh-wallet/pages/wallet/common/footer.html'"></div>
+</body>
+</html>

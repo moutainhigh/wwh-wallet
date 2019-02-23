@@ -1,0 +1,64 @@
+package com.wwh.loginwx.service.impl;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.wwh.loginwx.controller.LoginwxControlller;
+import com.wwh.loginwx.dao.ILoginwxDao;
+import com.wwh.loginwx.service.ILoginwxService;
+import com.wwh.loginwx.vo.WXUserInfoVO;
+import com.wwh.service.IExternalService;
+import com.wwh.vo.ExternalVO;
+@Service
+public class LoginwxService implements ILoginwxService{
+	private static Logger logger = LogManager.getLogger(LoginwxControlller.class);
+	
+	@Autowired
+	ILoginwxDao loginwxDao;
+	
+	@Autowired
+	IExternalService externalService;
+	/**
+	 * 新增微信用户信息
+	 */
+	public Long insertWXUserInfo(WXUserInfoVO wxUserInfoVO) {
+		logger.info("新增微信用户信息");
+		wxUserInfoVO.setUserId(System.currentTimeMillis());
+		return loginwxDao.insertWXUserInfo(wxUserInfoVO);
+	}
+	/**
+	 * 通过userId查询微信信息
+	 */
+	@Override
+	public WXUserInfoVO getWXUserInfoByUserId(Long userId) {
+		logger.info("查询微信用户信息userId={}",userId);
+		return loginwxDao.getWXUserInfoByUserId(userId);
+	}
+	/**
+	 *  通过unionId查询微信信息
+	 */
+	@Override
+	public WXUserInfoVO getWXUserInfoByUnionId(String uniontId) {
+		logger.info("查询微信用户信息uniontId={}",uniontId);
+		return loginwxDao.getWXUserInfoByUnionId(uniontId);
+	}
+	/**
+	 * 注册
+	 */
+	@Override
+	public void registerMember(Long userId,String nickName){
+		logger.info("注册微信用户信息userId={},nickName={}",userId,nickName);
+		try {
+			ExternalVO externalVO=new ExternalVO();
+			externalVO.setUserId(userId);
+			externalVO.setUserName(nickName);
+			externalVO.setPassword("123456");
+			externalService.registerMember(externalVO);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+}

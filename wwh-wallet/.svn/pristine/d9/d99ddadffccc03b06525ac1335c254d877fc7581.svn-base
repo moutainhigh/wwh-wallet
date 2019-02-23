@@ -1,0 +1,67 @@
+package com.wwh.loginwx.service;
+
+import com.wwh.common.ResultMsg;
+import com.wwh.loginwx.vo.WXUserInfoVO;
+import com.wwh.loginwx.vo.WeChatQRCodeVO;
+import com.wwh.vo.UserVO;
+
+public interface ILoginwxService {
+	/**
+	 * 新增微信用户信息
+	 * 
+	 * @param wxUserInfoVO
+	 * @return
+	 */
+	public Long insertWXUserInfo(WXUserInfoVO wxUserInfoVO);
+
+	/**
+	 * 通过userId查询微信用户信息
+	 * 
+	 * @param wxUserInfoVO
+	 * @return
+	 */
+	public WXUserInfoVO getWXUserInfoByUserId(Long userId);
+
+	/**
+	 * 通过微信唯一标示查询微信用户信息
+	 * 
+	 * @param wxUserInfoVO
+	 * @return
+	 */
+	public WXUserInfoVO getWXUserInfoByUnionId(String unionId);
+
+	/**
+	 * 注册
+	 */
+	public void registerMember(Long userId, WXUserInfoVO wxUserInfoVO);
+
+	/**
+	 * 绑定微信用户手机号
+	 */
+	public ResultMsg<Object> bindWXUser(WXUserInfoVO wxUserInfoVO);
+
+	/**
+	 * 得到用户信息
+	 */
+	public UserVO getUserByUserId(Long userId);
+
+	/**
+	 * 得到二维码参数
+	 * 
+	 * @param wxUserInfo
+	 * @return
+	 */
+	public String getParam(WXUserInfoVO wxUserInfo);
+
+	public boolean chageQr(String ticket);
+
+	public WeChatQRCodeVO createTemporaryORCode(String accessToken, String jsnMsg);
+
+	/**
+	 * 验证手机号是否存在
+	 * 
+	 * @param phone
+	 * @return
+	 */
+	public ResultMsg<Object> validPhone(String phone);
+}

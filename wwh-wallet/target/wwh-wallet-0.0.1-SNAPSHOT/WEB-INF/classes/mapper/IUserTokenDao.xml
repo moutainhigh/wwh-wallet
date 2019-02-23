@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wwh.dao.IUserTokenDao" >
+	<insert id ="addUserToken" parameterType="com.wwh.vo.UserTokenVO">
+   		<selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+	      SELECT LAST_INSERT_ID()
+	    </selectKey>
+   		INSERT INTO wwh_user_token_t 
+		(
+		  user_id,
+		  token,
+		  active_flag,
+		  delete_flag,
+		  created_date,
+		  created_by,
+		  last_updated_date,
+		  last_updated_by
+		) 
+		VALUES (
+		#{userId,jdbcType=BIGINT},
+		#{token,jdbcType=VARCHAR}, 
+		'Y','N', 
+		now(), 
+		#{userId,jdbcType=BIGINT}, 
+		now(), 
+		#{userId,jdbcType=BIGINT}
+		)
+	</insert>
+	<select id="queryUserTokenByUserId" resultType="com.wwh.vo.UserTokenVO" parameterType="long" >
+		select user_id userId,token,(10-(now() -last_updated_date)/60) > 0 timeOutFlag from wwh_user_token_t t
+		where active_flag = 'Y' and user_Id = #{userId}
+		order by t.created_date ,t.last_updated_date desc
+	</select>
+	
+	<update id="verifyUserToken" parameterType="java.util.Map">
+		update wwh_user_token_t set active_flag = #{flag} ,last_updated_date =now()
+		<if test="token!=null and token!=''">,token = #{token} </if>
+		where user_id = #{userId}
+	</update>
+ </mapper>
+ 

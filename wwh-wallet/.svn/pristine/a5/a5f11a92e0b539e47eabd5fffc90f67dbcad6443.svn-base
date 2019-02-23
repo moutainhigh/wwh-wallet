@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wwh.dao.IPlatformInviteDetailDao">
+	
+	<update id="updatePlatformInviteDetailById" parameterType="com.wwh.vo.PlatformInviteDetailVO" >
+		update wallet_platform_invite_detail_t
+     <trim prefix="set" suffixOverrides=",">
+      <if test="invite_user_id!=null">invite_user_id = #{inviteUserId,jdbcType=BIGINT},</if>
+      <if test="receive_user_id!=null">receive_user_id = #{receiveUserId,jdbcType=BIGINT},</if>
+      <if test="is_recharged!=null">is_recharged = #{isRecharged,jdbcType=VARCHAR},</if>
+      <if test="active_flag!=null">active_flag = #{activeFlag,jdbcType=CHAR},</if>
+      <if test="delete_flag!=null">delete_flag = #{deleteFlag,jdbcType=CHAR},</if>
+      <if test="created_by!=null">created_by = #{createdBy,jdbcType=BIGINT},</if>
+      <if test="last_updated_by!=null">last_updated_by = #{lastUpdatedBy,jdbcType=BIGINT},</if>
+      
+      <if test="receive_user_id!=null">last_updated_date = now() ,</if>
+      <if test="receive_user_id!=null">created_date = now() ,</if>
+      
+      </trim>
+ 		WHERE id=#{id}
+	</update>
+
+	<!-- #{item.createdDate,jdbcType=TIMESTAMP} -->
+ 
+	<insert id="insert"  parameterType="com.wwh.vo.PlatformInviteDetailVO"  useGeneratedKeys="true" keyProperty="id" > 
+		<selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id"> 
+		SELECT LAST_INSERT_ID() 
+		</selectKey> 
+		insert into wallet_platform_invite_detail_t (invite_user_id, 
+			      receive_user_id, is_recharged, 
+			      active_flag, delete_flag, created_date, 
+			      created_by, last_updated_date, 
+			      last_updated_by) 
+			      values (#{inviteUserId,jdbcType=BIGINT}, 
+			      #{receiveUserId,jdbcType=BIGINT}, #{isRecharged,jdbcType=VARCHAR}, 
+			      #{activeFlag,jdbcType=CHAR}, #{deleteFlag,jdbcType=CHAR}, now(), 
+			      #{createdBy,jdbcType=BIGINT}, now(), 
+			      #{lastUpdatedBy,jdbcType=BIGINT})
+	</insert> 
+
+	<insert id="insertBatch" parameterType="java.util.List" >
+	    insert into wallet_platform_invite_detail_t (invite_user_id, 
+	      receive_user_id, is_recharged, 
+	      active_flag, delete_flag, created_date, 
+	      created_by, last_updated_date, 
+	      last_updated_by)
+	    values <foreach item="item" index="index" collection="records"  separator="," > (#{item.inviteUserId,jdbcType=BIGINT}, 
+	      #{item.receiveUserId,jdbcType=BIGINT}, #{item.isRecharged,jdbcType=VARCHAR}, 
+	      #{item.activeFlag,jdbcType=CHAR}, #{item.deleteFlag,jdbcType=CHAR}, now() , 
+	      #{item.createdBy,jdbcType=BIGINT}, now() , 
+	      #{item.lastUpdatedBy,jdbcType=BIGINT})</foreach>
+	  </insert>
+	<select id="getPlatformInviteDetailVOByUserId" resultType="com.wwh.vo.PlatformInviteDetailVO">
+		SELECT
+			id id,
+			invite_user_id inviteUserId,
+			receive_user_id receiveUserId,
+			is_recharged isRecharged,
+			active_flag activeFlag,
+			delete_flag deleteFlag,
+			created_date createdDate,
+			created_by createdBy,
+			last_updated_by lastUpdatedBy,
+			last_updated_date lastUpdatedDate
+		FROM
+			wallet_platform_invite_detail_t
+		WHERE
+			receive_user_id = #{userId}
+		AND	active_flag = 'Y' 
+		AND delete_flag = 'N'
+	</select>
+	
+	<update id="updatePlatformInviteDetailToY">
+		UPDATE wallet_platform_invite_detail_t
+		SET is_recharged = 'Y'
+		WHERE receive_user_id = #{userId}
+	</update>
+
+</mapper>  

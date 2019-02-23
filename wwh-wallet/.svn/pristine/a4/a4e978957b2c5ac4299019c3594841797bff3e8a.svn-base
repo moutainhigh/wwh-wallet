@@ -1,0 +1,58 @@
+﻿<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>兴民系统介绍</title>
+    <meta charset="utf-8" />
+    <base href="/">
+    <meta name="description" content="金融、钱包、理财、高收益">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="renderer" content="webkit" />
+    <link rel="stylesheet" href="/wwh-wallet/css/bootstrap.css">
+    <link rel="stylesheet" href="/wwh-wallet/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/wwh-wallet/css/plugin.css">
+    <link rel="stylesheet" href="/wwh-wallet/css/landing.css">
+    <link rel="stylesheet" href="/wwh-wallet/css/common.css">
+    <link href="/wwh-wallet/css/mall/private-benefit.css" rel="stylesheet" />
+    <link href="/wwh-wallet/css/style.css" rel="stylesheet" />
+    <script type="text/javascript" src="/wwh-wallet/js/jquery.min.js"></script>
+    <script src="/wwh-wallet/js/bootstrap.js"></script>
+    <script src="/wwh-wallet/js/app.js"></script>
+    <script src="/wwh-wallet/js/app.plugin.js"></script>
+    <script src="/wwh-wallet/js/app.data.js"></script>
+    <script src="/wwh-wallet/js/fuelux/fuelux.js"></script>
+    <script src="/wwh-wallet/js/datepicker/bootstrap-datepicker.js"></script>
+    <script src="/wwh-wallet/js/slider/bootstrap-slider.js"></script>
+    <script src="/wwh-wallet/js/file-input/bootstrap.file-input.js"></script>
+    <script src="/wwh-wallet/js/combodate/moment.min.js"></script>
+    <script src="/wwh-wallet/js/combodate/combodate.js"></script>
+    <script src="/wwh-wallet/js/parsley/parsley.min.js"></script>
+    <script src="/wwh-wallet/js/angular.js"></script>
+    <script src="/wwh-wallet/js/tm.pagination.js"></script>
+</head>
+<body>
+    <div ng-include src="'/wwh-wallet/pages/wallet/common/header.html'"></div>
+    <div class="sys-tro-box sysxm">
+        <div class="sys-main-box fixed">
+            <div class="ty-img ty-box-1">
+                <img src="/wwh-wallet/images/regulation/xmbg.png" />
+            </div>
+            <div class="sysbox xmdetail ty-box-2">
+                <div class="titlesys">兴民系统介绍</div>
+                <div class="containsys">
+                    <div class="tyfont">
+                        兴民是指人民兴旺，国家富强，实现中华民族伟大复兴的中国梦。
+                    </div>
+                    <div class="tyfont">
+                        会员在富民系统完成100万的收益之后，可以选择充值50万进入兴民系统。目前兴民系统暂未开放直接充值功能。
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div ng-include src="'/wwh-wallet/pages/wallet/common/footer.html'"></div>
+    <script type="text/javascript">
+        var app = angular.module('myApp', []);
+    </script>
+</body>
+</html>

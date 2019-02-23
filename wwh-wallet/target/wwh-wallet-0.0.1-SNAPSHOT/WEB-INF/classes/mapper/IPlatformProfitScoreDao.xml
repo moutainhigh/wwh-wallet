@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wwh.dao.IPlatformProfitScoreDao">
+
+	<select id="getById" parameterType="java.lang.Long">
+		select
+		id, 
+		user_id as userId, 
+		profit_score as profitScore, 
+		profit_score_type as profitScoreType, 
+		profit_score_remark as profitScoreRemark, 
+		active_flag as activeFlag, 
+		delete_flag as deleteFlag, 
+	    created_date as createdDate, 
+	    created_by as createdBy, 
+	    last_updated_date as lastUpdatedDate, 
+	    last_updated_by as lastUpdatedBy
+		from wallet_platform_profit_score_t 
+		WHERE 1=1
+		<if test="id!=null">id=#{id,jdbcType=BIGINT}</if>
+	</select>
+
+	<!-- 修改平台积分收益详情 -->
+	<update id="updatePlatformProfitScoreById" parameterType="com.wwh.vo.PlatformProfitScoreVO">
+		update wallet_platform_profit_score_t
+		<trim prefix="set" suffixOverrides=",">
+	 	  <if test="userId != null" >
+	        user_id = #{userId,jdbcType=BIGINT},
+	      </if>
+	      <if test="profitScore != null" >
+	        profit_score = #{profitScore,jdbcType=DECIMAL},
+	      </if>
+	      <if test="profitScoreType != null" >
+	        profit_score_type = #{profitScoreType,jdbcType=VARCHAR},
+	      </if>
+	      <if test="profitScoreRemark != null" >
+	        profit_score_remark = #{profitScoreRemark,jdbcType=VARCHAR},
+	      </if>
+	      <if test="activeFlag != null" >
+	        active_flag = #{activeFlag,jdbcType=CHAR},
+	      </if>
+	      <if test="deleteFlag != null" >
+	        delete_flag = #{deleteFlag,jdbcType=CHAR},
+	      </if>
+	 
+	      <if test="id != null" >
+	        last_updated_date = now(),
+	      </if>
+	      <if test="lastUpdatedBy != null" >
+	        last_updated_by = #{lastUpdatedBy,jdbcType=BIGINT},
+	      </if>
+		</trim>
+		WHERE id=#{id}
+	</update>
+
+
+	<insert id="insert" parameterType="com.wwh.vo.PlatformProfitScoreVO"
+		useGeneratedKeys="true" keyProperty="id">
+		<selectKey resultType="java.lang.Long" order="AFTER"
+			keyProperty="id">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		 insert into wallet_platform_profit_score_t (user_id, profit_score, profit_score_type, 
+      profit_score_remark, active_flag, delete_flag, 
+      created_date, created_by, last_updated_date, 
+      last_updated_by)
+    	values (
+    	#{userId,jdbcType=BIGINT}, 
+      #{profitScore,jdbcType=DECIMAL},
+       #{profitScoreType,jdbcType=VARCHAR}, 
+      #{profitScoreRemark,jdbcType=VARCHAR}, 
+      #{activeFlag,jdbcType=CHAR}, 
+      #{deleteFlag,jdbcType=CHAR}, 
+      now(), 
+      #{createdBy,jdbcType=BIGINT}, 
+      now(), 
+      #{lastUpdatedBy,jdbcType=BIGINT})
+	</insert>
+
+	<insert id="insertBatch" parameterType="java.util.List" >
+    insert into wallet_platform_profit_score_t (user_id, 
+      profit_score, profit_score_type, 
+      profit_score_remark, active_flag, 
+      delete_flag, created_date, created_by, 
+      last_updated_date, last_updated_by
+      )
+    values <foreach item="item" index="index" collection="records"  separator="," > (#{item.userId,jdbcType=BIGINT}, 
+      #{item.profitScore,jdbcType=DECIMAL}, 
+      #{item.profitScoreType,jdbcType=VARCHAR}, 
+      #{item.profitScoreRemark,jdbcType=VARCHAR}, 
+      #{item.activeFlag,jdbcType=CHAR}, 
+      #{item.deleteFlag,jdbcType=CHAR},
+		now(), 
+		#{item.createdBy,jdbcType=BIGINT}, 
+      now(), 
+      #{item.lastUpdatedBy,jdbcType=BIGINT}
+      )</foreach>
+  </insert>
+
+</mapper>  

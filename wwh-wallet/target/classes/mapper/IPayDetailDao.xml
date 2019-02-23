@@ -1,0 +1,473 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wwh.dao.IPayDetailDao" >
+  
+  
+  <resultMap id="BaseResultMap" type="com.wwh.vo.PayDetailVO" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="pay_seq" property="paySeq" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="score" property="score" jdbcType="DECIMAL" />
+    <result column="amount" property="amount" jdbcType="DECIMAL" />
+    <result column="is_calcuated" property="isCalcuated" jdbcType="CHAR" />
+    <result column="pay_status" property="payStatus" jdbcType="VARCHAR" />
+    <result column="return_code" property="returnCode" jdbcType="VARCHAR" />
+    <result column="pay_amount_type" property="payAmountYype" jdbcType="VARCHAR" />
+    <result column="active_flag" property="activeFlag" jdbcType="CHAR" />
+    <result column="delete_flag" property="deleteFlag" jdbcType="CHAR" />
+    <result column="created_date" property="createdDate" jdbcType="TIMESTAMP" />
+    <result column="created_by" property="createdBy" jdbcType="BIGINT" />
+    <result column="last_updated_date" property="lastUpdatedDate" jdbcType="TIMESTAMP" />
+    <result column="last_updated_by" property="lastUpdatedBy" jdbcType="BIGINT" />
+  </resultMap>
+  
+  
+  
+  
+  <insert id="insert" parameterType="com.wwh.vo.PayDetailVO" >
+  
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into 
+    	<choose>
+			<when test="payAmountType == 'FUMIN'">
+				wallet_platform_pay_detail_fumin_t
+			</when>
+			<when test="payAmountType == 'HUIMIN'">
+				wallet_platform_pay_detail_huimin_t
+			</when>
+			<when test="payAmountType == 'OTHER'">
+				wallet_platform_pay_detail_other_t
+			</when>
+			<when test="payAmountType == 'TIYAN'">
+				wallet_platform_pay_detail_tiyan_t
+			</when>
+			<when test="payAmountType == 'XINGMIN'">
+				wallet_platform_pay_detail_xingmin_t
+			</when>
+			<!-- <otherwise>
+				wallet_profit_detail_tiyan_t a
+			</otherwise> -->
+		</choose>
+		
+		 (pay_seq, 
+		  id_card,
+		  user_id,
+		  score, 
+		  amount,
+		  is_calcuated, 
+		  pay_status, 
+		  return_code, 
+		  pay_amount_type,
+		  active_flag, 
+		  delete_flag, 
+		  created_date, 
+		  created_by, 
+		  last_updated_date, 
+          last_updated_by
+          )
+	      values
+	      (
+		    #{paySeq,jdbcType=VARCHAR}, 
+		    #{idCard,jdbcType=VARCHAR}, 
+		    #{userId,jdbcType=BIGINT}, 
+		    #{score,jdbcType=DECIMAL}, 
+		    #{amount,jdbcType=DECIMAL}, 
+		    #{isCalcuated,jdbcType=CHAR}, 
+		    #{payStatus,jdbcType=VARCHAR}, 
+		    #{returnCode,jdbcType=VARCHAR}, 
+		    #{payAmountType,jdbcType=VARCHAR},
+		    #{activeFlag,jdbcType=CHAR}, 
+		    #{deleteFlag,jdbcType=CHAR}, 
+		    now(), 
+		    #{createdBy,jdbcType=BIGINT}, 
+		    now(), 
+		    #{lastUpdatedBy,jdbcType=BIGINT}
+		  )
+  </insert>
+  
+  
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.wwh.vo.PayDetailVO" >
+  
+    update 
+    
+    <choose>
+			<when test="payAmountType == 'FUMIN'">
+				wallet_platform_pay_detail_fumin_t
+			</when>
+			<when test="payAmountType == 'HUIMIN'">
+				wallet_platform_pay_detail_huimin_t
+			</when>
+			<when test="payAmountType == 'OTHER'">
+				wallet_platform_pay_detail_other_t
+			</when>
+			<when test="payAmountType == 'TIYAN'">
+				wallet_platform_pay_detail_tiyan_t
+			</when>
+			<when test="payAmountType == 'XINGMIN'">
+				wallet_platform_pay_detail_xingmin_t
+			</when>
+			<!-- <otherwise>
+				wallet_profit_detail_tiyan_t a
+			</otherwise> -->
+		</choose>
+    
+     
+    <set >
+      <if test="paySeq != null" >
+        pay_seq = #{paySeq,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="score != null" >
+        score = #{score,jdbcType=DECIMAL},
+      </if>
+      <if test="amount != null" >
+        amount = #{amount,jdbcType=DECIMAL},
+      </if>
+      <if test="isCalcuated != null" >
+        is_calcuated = #{isCalcuated,jdbcType=CHAR},
+      </if>
+      <if test="payStatus != null" >
+        pay_status = #{payStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="returnCode != null" >
+        return_code = #{returnCode,jdbcType=VARCHAR},
+      </if>
+      <if test="payAmountType != null" >
+        pay_amount_type = #{payAmountType,jdbcType=VARCHAR},
+      </if>
+      <if test="activeFlag != null" >
+        active_flag = #{activeFlag,jdbcType=CHAR},
+      </if>
+      <if test="deleteFlag != null" >
+        delete_flag = #{deleteFlag,jdbcType=CHAR},
+      </if>
+      <if test="createdDate != null" >
+        created_date = #{createdDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdBy != null" >
+        created_by = #{createdBy,jdbcType=BIGINT},
+      </if>
+        last_updated_date = now(),
+      <if test="lastUpdatedBy != null" >
+        last_updated_by = #{lastUpdatedBy,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
+  <update id="updateByPayAmountTypeAndPaySeqSelective" parameterType="com.wwh.vo.PayDetailVO" >
+  
+    update 
+    
+    <choose>
+			<when test="payAmountType == 'FUMIN'">
+				wallet_platform_pay_detail_fumin_t
+			</when>
+			<when test="payAmountType == 'HUIMIN'">
+				wallet_platform_pay_detail_huimin_t
+			</when>
+			<when test="payAmountType == 'OTHER'">
+				wallet_platform_pay_detail_other_t
+			</when>
+			<when test="payAmountType == 'TIYAN'">
+				wallet_platform_pay_detail_tiyan_t
+			</when>
+			<when test="payAmountType == 'XINGMIN'">
+				wallet_platform_pay_detail_xingmin_t
+			</when>
+			<!-- <otherwise>
+				wallet_profit_detail_tiyan_t a
+			</otherwise> -->
+		</choose>
+    
+     
+    <set >
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="score != null" >
+        score = #{score,jdbcType=DECIMAL},
+      </if>
+      <if test="amount != null" >
+        amount = #{amount,jdbcType=DECIMAL},
+      </if>
+      <if test="isCalcuated != null" >
+        is_calcuated = #{isCalcuated,jdbcType=CHAR},
+      </if>
+      <if test="payStatus != null" >
+        pay_status = #{payStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="returnCode != null" >
+        return_code = #{returnCode,jdbcType=VARCHAR},
+      </if>
+      <if test="payAmountType != null" >
+        pay_amount_type = #{payAmountType,jdbcType=VARCHAR},
+      </if>
+      <if test="activeFlag != null" >
+        active_flag = #{activeFlag,jdbcType=CHAR},
+      </if>
+      <if test="deleteFlag != null" >
+        delete_flag = #{deleteFlag,jdbcType=CHAR},
+      </if>
+      <if test="createdDate != null" >
+        created_date = #{createdDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdBy != null" >
+        created_by = #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="lastUpdatedDate != null" >
+        last_updated_date = #{lastUpdatedDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastUpdatedBy != null" >
+        last_updated_by = #{lastUpdatedBy,jdbcType=BIGINT},
+      </if>
+    </set>
+    where   pay_seq = #{paySeq,jdbcType=VARCHAR}
+  </update>
+  
+  
+   <sql id="Base_Column_List" >
+    id as id,
+    pay_seq as paySeq, 
+    id_card as idCard,
+    user_id as userId, 
+    score as score, 
+    amount as amount, 
+    is_calcuated as isCalcuated, 
+    pay_status as payStatus,
+    return_code as returnCode, 
+    pay_amount_type as payAmountType, 
+    active_flag as activeFlag, 
+    delete_flag as deleteFlag, 
+    created_date as createdDate, 
+    created_by as createdBy, 
+    last_updated_date as lastUpdatedDate, 
+    last_updated_by as lastUpdatedBy
+  </sql>
+  
+  <select id="selectByPayDetail" resultMap="BaseResultMap" parameterType="com.wwh.vo.PayDetailVO" >
+  
+    select <include refid="Base_Column_List" />
+    	from <choose>
+			<when test="payAmountType == 'FUMIN'">
+				wallet_platform_pay_detail_fumin_t
+			</when>
+			<when test="payAmountType == 'HUIMIN'">
+				wallet_platform_pay_detail_huimin_t
+			</when>
+			<when test="payAmountType == 'OTHER'">
+				wallet_platform_pay_detail_other_t
+			</when>
+			<when test="payAmountType == 'TIYAN'">
+				wallet_platform_pay_detail_tiyan_t
+			</when>
+			<when test="payAmountType == 'XINGMIN'">
+				wallet_platform_pay_detail_xingmin_t
+			</when>
+			<!-- <otherwise>
+				wallet_profit_detail_tiyan_t a
+			</otherwise> -->
+		</choose>
+    where 1=1
+    <if test="id != null" >
+       and id = #{id,jdbcType=BIGINT}
+      </if>
+    <if test="paySeq != null" >
+       and pay_seq = #{paySeq,jdbcType=VARCHAR}
+      </if>
+      <if test="userId != null" >
+       and user_id = #{userId,jdbcType=BIGINT}
+      </if>
+      <if test="score != null" >
+       and score = #{score,jdbcType=DECIMAL}
+      </if>
+      <if test="amount != null" >
+       and amount = #{amount,jdbcType=DECIMAL}
+      </if>
+      <if test="isCalcuated != null" >
+       and is_calcuated = #{isCalcuated,jdbcType=CHAR}
+      </if>
+      <if test="payStatus != null" >
+       and pay_status = #{payStatus,jdbcType=VARCHAR}
+      </if>
+      <if test="returnCode != null" >
+       and return_code = #{returnCode,jdbcType=VARCHAR}
+      </if>
+      <if test="payAmountType != null" >
+      and  pay_amount_type = #{payAmountType,jdbcType=VARCHAR}
+      </if>
+      <if test="activeFlag != null" >
+       and active_flag = #{activeFlag,jdbcType=CHAR}
+      </if>
+      <if test="deleteFlag != null" >
+       and delete_flag = #{deleteFlag,jdbcType=CHAR}
+      </if>
+      <if test="createdDate != null" >
+       and created_date = #{createdDate,jdbcType=TIMESTAMP}
+      </if>
+      <if test="createdBy != null" >
+      and  created_by = #{createdBy,jdbcType=BIGINT}
+      </if>
+      <if test="lastUpdatedDate != null" >
+       and last_updated_date = #{lastUpdatedDate,jdbcType=TIMESTAMP}
+      </if>
+      <if test="lastUpdatedBy != null" >
+       and last_updated_by = #{lastUpdatedBy,jdbcType=BIGINT}
+      </if>
+  </select>
+  
+  
+  <select id="isCalcuated" resultType="java.lang.String">
+	SELECT
+		is_calcuated
+	FROM
+	<choose>
+		<when test="payAmountType == 'FUMIN'">
+			wallet_platform_pay_detail_fumin_t
+		</when>
+		<when test="payAmountType == 'HUIMIN'">
+			wallet_platform_pay_detail_huimin_t
+		</when>
+		<when test="payAmountType == 'TIYAN'">
+			wallet_platform_pay_detail_tiyan_t
+		</when>
+		<when test="payAmountType == 'XINGMIN'">
+			wallet_platform_pay_detail_xingmin_t
+		</when>
+		<otherwise>
+			wallet_platform_pay_detail_other_t
+		</otherwise>
+	</choose>
+	WHERE
+		id_card = #{paySeq}
+  </select>
+  
+  
+  <select id="getPayDetailMoreThan30Min" resultType="com.wwh.vo.PayDetailVO">
+  		<include refid="fromOther" />
+  		union all
+  		<include refid="fromTiyan" />
+  		union all
+  		<include refid="fromHuimin" />
+  		union all
+  		<include refid="fromFumin" />
+  		union all
+  		<include refid="fromXingmin" />
+  </select>
+ 
+ <sql id="fromTiyan">
+	  select 
+	    id as id,
+	    pay_seq as paySeq, 
+	    user_id as userId, 
+	    score as score, 
+	    amount as amount, 
+	    is_calcuated as isCalcuated, 
+	    pay_status as payStatus,
+	    return_code as returnCode, 
+	    pay_amount_type as payAmountType, 
+	    active_flag as activeFlag, 
+	    delete_flag as deleteFlag, 
+	    created_date as createdDate, 
+	    created_by as createdBy, 
+	    last_updated_date as lastUpdatedDate, 
+	    last_updated_by as lastUpdatedBy
+	from wallet_platform_pay_detail_tiyan_t
+	where pay_status='PAYPREED'
+	and (UNIX_TIMESTAMP(now())-UNIX_TIMESTAMP(created_date))>1800
+  </sql>
+  
+   <sql id="fromOther">
+	  select 
+	    id as id,
+	    pay_seq as paySeq, 
+	    user_id as userId, 
+	    score as score, 
+	    amount as amount, 
+	    is_calcuated as isCalcuated, 
+	    pay_status as payStatus,
+	    return_code as returnCode, 
+	    pay_amount_type as payAmountType, 
+	    active_flag as activeFlag, 
+	    delete_flag as deleteFlag, 
+	    created_date as createdDate, 
+	    created_by as createdBy, 
+	    last_updated_date as lastUpdatedDate, 
+	    last_updated_by as lastUpdatedBy
+	from wallet_platform_pay_detail_other_t
+	where pay_status='PAYPREED'
+	and (UNIX_TIMESTAMP(now())-UNIX_TIMESTAMP(created_date))>1800
+  </sql>
+  
+   <sql id="fromFumin">
+	  select 
+	    id as id,
+	    pay_seq as paySeq, 
+	    user_id as userId, 
+	    score as score, 
+	    amount as amount, 
+	    is_calcuated as isCalcuated, 
+	    pay_status as payStatus,
+	    return_code as returnCode, 
+	    pay_amount_type as payAmountType, 
+	    active_flag as activeFlag, 
+	    delete_flag as deleteFlag, 
+	    created_date as createdDate, 
+	    created_by as createdBy, 
+	    last_updated_date as lastUpdatedDate, 
+	    last_updated_by as lastUpdatedBy
+	from wallet_platform_pay_detail_fumin_t
+	where pay_status='PAYPREED'
+	and (UNIX_TIMESTAMP(now())-UNIX_TIMESTAMP(created_date))>1800
+  </sql>
+  
+   <sql id="fromHuimin">
+	  select 
+	    id as id,
+	    pay_seq as paySeq, 
+	    user_id as userId, 
+	    score as score, 
+	    amount as amount, 
+	    is_calcuated as isCalcuated, 
+	    pay_status as payStatus,
+	    return_code as returnCode, 
+	    pay_amount_type as payAmountType, 
+	    active_flag as activeFlag, 
+	    delete_flag as deleteFlag, 
+	    created_date as createdDate, 
+	    created_by as createdBy, 
+	    last_updated_date as lastUpdatedDate, 
+	    last_updated_by as lastUpdatedBy
+	from wallet_platform_pay_detail_huimin_t
+	where pay_status='PAYPREED'
+	and (UNIX_TIMESTAMP(now())-UNIX_TIMESTAMP(created_date))>1800
+  </sql>
+  
+   <sql id="fromXingmin">
+	  select 
+	    id as id,
+	    pay_seq as paySeq, 
+	    user_id as userId, 
+	    score as score, 
+	    amount as amount, 
+	    is_calcuated as isCalcuated, 
+	    pay_status as payStatus,
+	    return_code as returnCode, 
+	    pay_amount_type as payAmountType, 
+	    active_flag as activeFlag, 
+	    delete_flag as deleteFlag, 
+	    created_date as createdDate, 
+	    created_by as createdBy, 
+	    last_updated_date as lastUpdatedDate, 
+	    last_updated_by as lastUpdatedBy
+	from wallet_platform_pay_detail_xingmin_t
+	where pay_status='PAYPREED'
+	and (UNIX_TIMESTAMP(now())-UNIX_TIMESTAMP(created_date))>1800
+  </sql>
+ 
+</mapper>

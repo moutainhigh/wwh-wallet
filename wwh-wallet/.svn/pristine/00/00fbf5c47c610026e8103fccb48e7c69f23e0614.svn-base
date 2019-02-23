@@ -1,0 +1,137 @@
+package com.wwh.util;
+
+import java.io.Serializable;
+
+/**
+ * 
+ * @ClassName: ReturnConstant
+ * @Description: 返回结果常量类
+ * @author: ranletian
+ * @date: 2016年10月26日 上午9:47:44
+ */
+public class ReturnConstant implements Serializable {
+
+	/**
+	 * @fieldName: serialVersionUID
+	 * @fieldType: long
+	 * @Description: 序列ID
+	 */
+	private static final long serialVersionUID = 9183529020534587175L;
+
+	/**
+	 * 返回成功状态
+	 */
+	public static String RETURN_STATUS_SUCCESS = "0";
+
+	/**
+	 * 返回失败状态
+	 */
+	public static String RETURN_STATUS_FAIL = "1";
+
+	/**
+	 * 返回成功
+	 */
+	public static String RETURN_CODE_200 = "200";
+
+	/**
+	 * 参数错误
+	 */
+	public static String RETURN_CODE_400 = "400";
+
+	/**
+	 * 页面404未找到
+	 */
+	public static String RETURN_CODE_404 = "404";
+	
+	/**
+	 * 未登录
+	 */
+	public static String RETURN_CODE_401 = "401";
+
+	/**
+	 * 未经授权
+	 */
+	public static String RETURN_CODE_403 = "403";
+
+	/**
+	 * 程序错误
+	 */
+	public static String RETURN_CODE_500 = "500";
+
+	/**
+	 * 未知错误
+	 */
+	public static String RETURN_CODE_999 = "999";
+
+	/**
+	 * 返回成功
+	 */
+	public static String RETURN_MSG_200 = "返回成功";
+
+	/**
+	 * 参数错误
+	 */
+	public static String RETURN_MSG_400 = "参数错误";
+
+	/**
+	 * 页面404未找到
+	 */
+	public static String RETURN_MSG_404 = "页面404未找到";
+
+	/**
+	 * 未经授权
+	 */
+	public static String RETURN_MSG_403 = "未经授权";
+	
+	
+	/**
+	 * 未经登陆
+	 */
+	public static String RETURN_MSG_401 = "未经登陆";
+
+	/**
+	 * 程序错误
+	 */
+	public static String RETURN_MSG_500 = "程序错误";
+
+	/**
+	 * 未知错误
+	 */
+	public static String RETURN_MSG_999 = "未知错误";
+	
+	
+	/**
+	 * 登录验证通过
+	 */
+	public static String RETURN_MSG_900 = "登录验证通过";
+	
+	/**
+	 * 账户已锁定
+	 */
+	public static String RETURN_MSG_901 = "账户已锁定";
+		
+	/**
+	 * 用户名或密码错误次数过多
+	 */
+	public static String RETURN_MSG_902 = "用户名或密码错误次数过多";
+	
+	/**
+	 * 用户名或密码不正确
+	 */
+	public static String RETURN_MSG_903 = "用户名或密码不正确";
+	
+	/**
+	 * 账户已锁定
+	 */
+	public static String RETURN_CODE_901 = "901";
+	
+	/**
+	 * 用户名或密码错误次数过多
+	 */
+	public static String RETURN_CODE_902 = "902";
+	
+	/**
+	 * 用户名或密码不正确
+	 */
+	public static String RETURN_CODE_903 = "903";
+}

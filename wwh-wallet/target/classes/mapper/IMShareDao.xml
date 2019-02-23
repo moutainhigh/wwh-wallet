@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wwh.dao.IMShareDao">
+	<!-- 查询我的一级推荐人-->
+	<select id="getLevel1Recommend" resultType="com.wwh.vo.UserVO">
+		SELECT
+			user_id userId,
+			user_name userName,
+			real_name realName,
+			reference_id referenceId,
+			mobile_phone mobilePhone
+		FROM
+			wwh_user_t
+		WHERE
+			reference_id = #{userId}
+	</select>
+	
+	<!-- 查询我的二级推荐人 -->
+	<select id="getLevel2Recommend" resultType="com.wwh.vo.UserVO">
+		SELECT
+			user_id userId,
+			user_name userName,
+			real_name realName,
+			reference_id referenceId,
+			mobile_phone mobilePhone
+		FROM
+			wwh_user_t
+		WHERE
+			reference_id in 
+			<foreach collection="userVoList" index="index" item="item" separator="," open="(" close=")">
+				 #{item.userId,jdbcType=BIGINT}
+	        </foreach>
+	</select>
+	
+	<!-- 查询用户的里程碑信息 -->
+	<select id="getMillStoneInfo" resultType="java.lang.String">
+		SELECT disk_type FROM wallet_member_milestone_t WHERE user_id = #{userId}
+	</select>
+	
+	<!-- 统计各种等级的会员数量 -->
+	<select id="countByDiskType" resultType="java.lang.Integer"> 
+		SELECT
+			count(1)
+		FROM
+			wallet_member_milestone_t
+		WHERE
+			1 = 1
+		AND user_id IN 
+		<foreach collection="userVoList" index="index" item="item" separator="," open="(" close=")">
+				 #{item.userId,jdbcType=BIGINT}
+	    </foreach>
+		AND active_flag = 'Y'
+		AND delete_flag = 'N'
+		AND disk_type = #{diskType}
+	</select>
+	
+	<!-- 获取用户的图片 -->
+	<select id="getPicByUserId" resultType="java.lang.String">
+		select pic_url from t_member where MEMBER_ID=#{userId}
+	</select>
+	
+	<!-- 获取用户信息 -->
+	<select id="getUserInfo" resultType="com.wwh.vo.UserVO">
+		select 
+			u.user_name userName,
+			u.user_id userId
+			from wallet_member_milestone_t mst 
+			left join wwh_user_t u on mst.user_id = u.user_id
+			where 
+				mst.user_id in 
+			<foreach collection="userVoList" index="index" item="item" separator="," open="(" close=")">
+				 #{item.userId,jdbcType=BIGINT}
+	   		</foreach>
+			and mst.disk_type =#{diskType}
+	</select>
+	
+	<!-- 获取推荐人种没有成为会员得用户详情-->
+	<select  id="getOtherUserInfo" resultType="com.wwh.vo.UserVO">
+		SELECT
+			user_name userName,
+			user_id userId
+		FROM wwh_user_t
+		WHERE
+			user_id in 
+			<foreach collection="userVoList" index="index" item="item" separator="," open="(" close=")">
+				 #{item.userId,jdbcType=BIGINT}
+	   		</foreach>	
+		AND user_id NOT IN (
+			SELECT	user_id FROM wallet_member_milestone_t WHERE user_id IN 
+			<foreach collection="userVoList" index="index" item="item" separator="," open="(" close=")">
+				 #{item.userId,jdbcType=BIGINT}
+	   		</foreach>	
+		)
+	</select>
+	
+	<!-- 查询用户的基本信息 -->
+	<select id="queryUserInfo" resultType="com.wwh.vo.MShareVO">
+		SELECT
+			u1.user_name userName,
+			u2.user_name referenceName,
+			u2.user_id referenceId
+		FROM
+			wwh_user_t u1
+		LEFT JOIN wwh_user_t u2 ON u1.reference_id = u2.user_id
+		WHERE
+			u1.user_id = #{userId}
+	</select>
+</mapper>  

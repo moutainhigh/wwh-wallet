@@ -1,0 +1,101 @@
+﻿<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>提现</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="金融、钱包、理财、高收益">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="renderer" content="webkit" />
+    <link rel="stylesheet" href="/wwh-wallet/css/bootstrap.css">
+    <link rel="stylesheet" href="/wwh-wallet/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/wwh-wallet/css/plugin.css">
+    <link rel="stylesheet" href="/wwh-wallet/css/landing.css">
+    <link rel="stylesheet" href="/wwh-wallet/css/common.css">
+    <link href="/wwh-wallet/css/mall/private-benefit.css" rel="stylesheet" />
+    <script type="text/javascript" src="/wwh-wallet/js/jquery.min.js"></script>
+    <script src="/wwh-wallet/js/bootstrap.js"></script>
+    <script src="/wwh-wallet/js/app.js"></script>
+    <script src="/wwh-wallet/js/app.plugin.js"></script>
+    <script src="/wwh-wallet/js/app.data.js"></script>
+    <script src="/wwh-wallet/js/fuelux/fuelux.js"></script>
+    <script src="/wwh-wallet/js/datepicker/bootstrap-datepicker.js"></script>
+    <script src="/wwh-wallet/js/slider/bootstrap-slider.js"></script>
+    <script src="/wwh-wallet/js/file-input/bootstrap.file-input.js"></script>
+    <script src="/wwh-wallet/js/combodate/moment.min.js"></script>
+    <script src="/wwh-wallet/js/parsley/parsley.min.js"></script>
+    <script src="/wwh-wallet/js/angular.js"></script>
+    <script src="/wwh-wallet/js/tm.pagination.js"></script>
+
+</head>
+<body>
+    <div ng-include src="'/wwh-wallet/pages/wallet/common/header.html'"></div>
+    <div class="charge-wrap fixed" ng-controller="siteCtrl">
+        <div class="charge-box m-box fixed">
+            <div class="title-wrap">
+                <div class="title">提现记录</div>
+            </div>
+            <div class="containner-middle fixed">
+                <div style="min-height:500px" ng-class="currentGradeCss">
+                    <table class="takecash-table">
+                        <tr>
+                            <th style="width: 80px;">申请时间</th>
+                            <th style="width: 80px;">提现金额 </th>
+                            <th style="width: 60px;">银行名称</th>
+                            <th style="width: 100px;">微信名称</th>
+                            <th style="width: 110px;">微信号</th>
+                            <th style="width: 100px;">申请人</th>
+                            <th style="width: 110px;"> 状态</th>
+                        </tr>
+                        <tr ng-repeat="x in datasource1">
+                            <td class="td01" ng-bind="x.createdDate"></td>
+                            <td class="td02" ng-bind="x.withdrawAmount"></td>
+                            <td class="td03" ng-bind="x.bankName"></td>
+                            <td class="td04" ng-bind="x.weixinName"></td>
+                            <td class="td05" ng-bind="x.weixinNum"></td>
+                            <td class="td06" ng-bind="x.realName"></td>
+                            <td class="td07" ng-bind="x.withdrawStatusName"></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="page-position fixed">
+                    <div class="fixed float-R">
+                        <tm-pagination conf="paginationConf"></tm-pagination>
+                    </div>
+                </div>
+                <script type="text/javascript">
+           	 		var app = angular.module('myApp', ['tm.pagination']);
+       	 			console.log("dfdf");
+           	 		app.controller('siteCtrl', function($scope, $http) { //交易记录
+           				$scope.paginationConf = {
+           					currentPage : 1, //当前页
+           					totalItems : 3, //数据库一共有多少个数据
+           					itemsPerPage : 3, //一页有多少数据显示
+           					pagesLength : 3,
+           					perPageOptions : [ 1 ],
+           					onChange : function() {
+           						$http.get("/wwh-wallet/withraw/getwithrawdetail/" + $scope.paginationConf.currentPage + "/10")
+           							.success(function(response) {
+                                       if(response != null){
+                                    	    console.log("dfdf");
+             								$scope.paginationConf.totalItems = response.total;
+             								$scope.paginationConf.itemsPerPage = 5;
+             								$scope.datasource1 = response.dataList;
+             								function getCssNum() {
+             								    if (response.dataList.length == 0) {
+             								        return 'tablenodataselected';
+             								    }
+             								}
+             								$scope.currentGradeCss = getCssNum();
+                                       }
+           							});
+           					}
+           				};
+           	 		})
+                </script>
+            </div>
+        </div>
+    </div>
+    <div ng-include src="'/wwh-wallet/pages/wallet/common/footer.html'"></div>
+</body>
+</html>

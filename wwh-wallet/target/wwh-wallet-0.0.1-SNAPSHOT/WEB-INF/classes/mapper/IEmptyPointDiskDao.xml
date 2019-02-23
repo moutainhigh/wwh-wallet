@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wwh.dao.IEmptyPointDiskDao" >
+
+
+  <sql id="Base_Column_List" >
+    id as id, 
+    disk_type as diskType, 
+    empty_point as emptyPoint, 
+    disk_seq as diskSeq, 
+    director_id_card as directorIdCard, 
+    active_flag as activeFlag, 
+    delete_flag as deleteFlag, 
+    created_date as createdDate, 
+    created_by as createdBy, 
+    last_updated_date as lastUpdatedDate, 
+    last_updated_by as lastUpdatedBy
+  </sql>
+  
+  
+<!-- 查询空点记录 -->
+ <select id="selectByEmptyPointDisk" resultMap="BaseResultMap" parameterType="com.wwh.vo.NullPointVO" >
+    select <include refid="Base_Column_List" />
+    from wallet_empty_point_disk_t
+    where 1=1 
+    <if test="id != null" >
+        and  id = #{id,jdbcType=BIGINT}
+      </if>
+     <if test="diskType != null" >
+        and disk_type = #{diskType,jdbcType=VARCHAR}
+      </if>
+      <if test="emptyPoint != null" >
+      and   empty_point = #{emptyPoint,jdbcType=INTEGER}
+      </if>
+      <if test="diskSeq != null" >
+      and  disk_seq = #{diskSeq,jdbcType=VARCHAR}
+      </if>
+      <if test="directorIdCard != null" >
+       and director_id_card = #{directorIdCard,jdbcType=VARCHAR}
+      </if>
+      <if test="activeFlag != null" >
+       and active_flag = #{activeFlag,jdbcType=CHAR}
+      </if>
+      <if test="deleteFlag != null" >
+       and delete_flag = #{deleteFlag,jdbcType=CHAR}
+      </if>
+      <if test="createdDate != null" >
+       and created_date = #{createdDate,jdbcType=TIMESTAMP}
+      </if>
+      <if test="createdBy != null" >
+       and created_by = #{createdBy,jdbcType=BIGINT}
+      </if>
+      <if test="lastUpdatedDate != null" >
+       and last_updated_date = #{lastUpdatedDate,jdbcType=TIMESTAMP}
+      </if>
+      <if test="lastUpdatedBy != null" >
+        and last_updated_by = #{lastUpdatedBy,jdbcType=BIGINT}
+      </if>
+  </select>
+  
+    <!-- 插入空点表 -->
+	<insert id="insertEmptyPointDisk" parameterType="com.wwh.vo.NullPointVO" >
+	    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+	      SELECT LAST_INSERT_ID()
+	    </selectKey>
+	    insert into wallet_empty_point_disk_t (disk_type, 
+	      empty_point, use_up_status, disk_seq, 
+	      director_id_card, active_flag, delete_flag, 
+	      created_date, created_by, last_updated_date, 
+	      last_updated_by)
+	    values (
+	    #{diskType,jdbcType=VARCHAR}, 
+	    #{remainEmptyPoint,jdbcType=INTEGER}, 
+	    #{usedEmptyPoint,jdbcType=INTEGER}, 
+	      #{emptyPoint,jdbcType=INTEGER}, 
+	      #{useUpStatus,jdbcType=VARCHAR}, 
+	      #{diskSeq,jdbcType=VARCHAR}, 
+	      #{directorUserId,jdbcType=BIGINT},
+	      #{directorIdCard,jdbcType=VARCHAR},
+	       #{activeFlag,jdbcType=CHAR}, 
+	       #{deleteFlag,jdbcType=CHAR}, 
+	      now(), 
+	      #{createdBy,jdbcType=BIGINT}, 
+	      now(), 
+	      #{lastUpdatedBy,jdbcType=BIGINT})
+	  </insert>
+  
+   <resultMap id="BaseResultMap" type="com.wwh.vo.NullPointVO" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="disk_type" property="diskType" jdbcType="VARCHAR" />
+    <result column="empty_point" property="emptyPoint" jdbcType="INTEGER" />
+    <result column="use_up_status" property="useUpStatus" jdbcType="VARCHAR" />
+    <result column="disk_seq" property="diskSeq" jdbcType="VARCHAR" />
+    <result column="director_id_card" property="directorIdCard" jdbcType="VARCHAR" />
+    <result column="active_flag" property="activeFlag" jdbcType="CHAR" />
+    <result column="delete_flag" property="deleteFlag" jdbcType="CHAR" />
+    <result column="created_date" property="createdDate" jdbcType="TIMESTAMP" />
+    <result column="created_by" property="createdBy" jdbcType="BIGINT" />
+    <result column="last_updated_date" property="lastUpdatedDate" jdbcType="TIMESTAMP" />
+    <result column="last_updated_by" property="lastUpdatedBy" jdbcType="BIGINT" />
+  </resultMap>
+  	<select id="getNullPointByIdCards" resultType="com.wwh.vo.NullPointVO">
+  		SELECT
+			disk_type diskType,
+			disk_seq diskSeq,
+			empty_point emptyPoint,
+			user_id userId,
+			id_card idCard,
+			is_usable isUsable,
+			active_flag activeFlag,
+			created_date createdDate,
+			delete_flag deleteFlag,
+			created_by createdBy,
+			last_updated_by lastUpdatedBy,
+			last_updated_date lastUpdatedDate
+		FROM
+			wallet_empty_point_disk_t
+		WHERE
+			id_card IN 
+		<foreach item="item" index="index" collection="records"  separator="," open="(" close=")">
+     		#{item}
+	 	</foreach>
+		AND is_usable = 'Y'
+  	</select>
+  	<update id="updateNullPointIsUsableByDiskSeq">
+  		UPDATE wallet_empty_point_disk_t
+  		SET is_usable = #{isUsable}
+  		WHERE disk_seq = #{diskSeq}
+  	</update>
+  
+  </mapper>

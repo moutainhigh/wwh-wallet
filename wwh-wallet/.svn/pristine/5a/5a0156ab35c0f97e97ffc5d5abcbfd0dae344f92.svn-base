@@ -1,0 +1,211 @@
+package com.wwh.util;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+
+/**
+ * 
+ * @ClassName: CommonConstant
+ * @Description: 公共常量类
+ * @author: ranletian
+ * @date: 2016年10月28日 上午11:52:23
+ */
+public class CommonConstant implements Serializable {
+
+	/**
+	 * @fieldName: serialVersionUID
+	 * @fieldType: long
+	 * @Description: 序列ID
+	 */
+	private static final long serialVersionUID = -3344161215691505730L;
+
+	public final static String WALLET_USER_ID = "CURRENT_USER";
+
+	/**
+	 * 平台注册默认奖励积分 100
+	 */
+	public static final double PLATFORM_REGISTER_SCORE_AWARD_DEFAULT = 100;
+
+	// ===============================================用户
+
+	/**
+	 * 系统用户ID
+	 */
+	public static final Long SYSTEM_USER_ID = -999999L;
+
+	/**
+	 * 系统用户IDCard
+	 */
+	public static final String SYSTEM_USER_ID_CARD = "SYSTEMUSERIDCARD";
+
+	/**
+	 * 角色编号(超级管理员)
+	 */
+	public static final Long SYSTEM_ROLE_ID = 1L;
+
+	/**
+	 * 角色编号(会员)
+	 */
+	public static final Long MEMBER_ROLE_ID = 2L;
+
+	/**
+	 * 角色编号(商家)
+	 */
+	public static final Long SELLER_ROLE_ID = 3L;
+
+	public static final Long SYSTEM_DISK_SEQ = -888888L;
+
+	public static final int ENOUGH_POINT_NUM = 6;
+
+	// ===============================================用户
+
+	public static final String PROFIT_REGISTER_SCORE_REMARK = "注册获得积分";
+
+	public static final String PROFIT_RECHARGE_SCORE_REMARK = "充值获得积分";
+
+	public static final String PLATFORM_SCORE_REMAIN = "积分余额不足";
+
+	public static final Integer INIT_DISK_COUNTER = 13;
+
+	/**
+	 * 一个盘最大允许的人数，
+	 */
+	public static final Integer MAX_DISK_COUNTER = 40;
+
+	/**
+	 * 返还获得积分类型
+	 */
+	public static final String PROFIT_RETURN_SCORE_REMARK = "返还获得积分";
+
+	/**
+	 * 被邀请者注册获得积分类型
+	 */
+	public static final String PROFIT_REGISTER_SCORE_TYPE = "REGISTERPROFIT";
+
+	/**
+	 * 邀请者获得积分类型
+	 */
+	public static final String PROFIT_INVIITE_SCORE_TYPE = "INVIITEPROFIT";
+
+	/**
+	 * 充值获得积分
+	 */
+	public static final String PROFIT_RECHARGE_SCORE_TYPE = "RECHARGEPROFIT";
+
+	/**
+	 * 返还积分类型
+	 */
+	public static final String PROFIT_RETURN_SCORE_TYPE = "RETURNPROFIT";
+
+	/**
+	 * 商家来源(用户推荐商家)
+	 */
+	public static final String BUSINESS_INVITE_REGISTER_TYPE = "INVITEREGISTER";
+
+	/**
+	 * 商家来源(商家自己注册)
+	 */
+	public static final String BUSINESS_SELF_REGISTER_TYPE = "SELFREGISTER";
+
+	/**
+	 * 招商商家配置类型(平台默认配置)
+	 */
+	public static final String BUSINESS_CONFIT_PLATFORM_DEFAULT = "PLATFORMDEFAULT";
+
+	/**
+	 * 招商商家配置类型(商家自定义配置)
+	 */
+	public static final String BUSINESS_CONFIT_USE_DEFINED = "USEDEFINED";
+
+	/**
+	 * 西安 地区编码
+	 */
+	public static final String XIAN_CODE = "XA300374";
+	/**
+	 * 体验金额
+	 */
+	public static final BigDecimal TIYAN_AMOUNT = BigDecimal.valueOf(500);
+	/**
+	 * 惠民金额
+	 */
+	public static final BigDecimal HUIMIN_AMOUNT = BigDecimal.valueOf(5000);
+	/**
+	 * 富民金额
+	 */
+	public static final BigDecimal FUMIN_AMOUNT = BigDecimal.valueOf(50000);
+	/**
+	 * 兴民金额
+	 */
+	public static final BigDecimal XINGMIN_AMOUNT = BigDecimal.valueOf(500000);
+	/**
+	 * 区收益比例
+	 */
+	public static final BigDecimal AREA_RATIO = BigDecimal.valueOf(0);
+	/**
+	 * 城市收益比例
+	 */
+	public static final BigDecimal CITY_RATIO = BigDecimal.valueOf(0.04);
+	/**
+	 * 省份收益比例
+	 */
+	public static final BigDecimal PROVINCE_RATIO = BigDecimal.valueOf(0.07);
+	/**
+	 * 国家收益比例
+	 */
+	public static final BigDecimal COUNTRY_RATIO = BigDecimal.valueOf(0);
+	/**
+	 * 总收益比例
+	 */
+	public static final BigDecimal ALL_RATIO = BigDecimal.valueOf(0.11);
+
+	// ==================抢点相关=====================================
+
+	/**
+	 * 总点分数， 最多 3 份
+	 */
+	public static final Integer TOTAL_POINT_PHR = 3;
+
+	/**
+	 * 默认抢点数,单个经理,抢1 点
+	 */
+	public static final Integer DEFAULT_GRAP_POINT_NUM = 1;
+	/**
+	 * 最大抢点数,单个经理,抢1 点
+	 */
+	public static final Integer MAX_GRAP_POINT_NUM = 3;
+
+	/**
+	 * 默认使用点数
+	 */
+	public static final Integer DEFAULT_USE_UP_POINT_NUM = 0;
+
+	public static final String PAYTYPE_1_499 = "OTHER";
+
+	// ============================订单状态====================================
+
+	public static final String MALL_ORDER_STATUS_SUCCESSED = "SUCCESSED";
+
+	public static final String MALL_ORDER_STATUS_REFUNDMENT = "REFUNDMENT";
+	
+	//=======================定返开关（是否开启定返功能）===========================
+	/**
+	 * 是否开启获取定返充值记录（true会在充值后往定返统计表新增充值数据，false关闭环节）
+	 */
+	public static final boolean ONOFF_FIXEDREBATE = false;
+	/**
+	 * 是否开启入盘开始定返（默认入盘定返，true会在入盘时更新统计表记录状态为running，开启定返，false关闭环节）
+	 */
+	public static final boolean ONOFF_DISKFIXEDREBATE = false;
+	/**
+	 * 是否开启充值开始定返（给充值就开始定返留开口，true会在充值时新增统计表记录状态为running，开启定返，false关闭环节。将入盘开启关闭）
+	 */
+	public static final boolean ONOFF_PAYFIXEDREBATE = false;
+	/**
+	 * 是否开启定返返钱自动任务（true开启定返的自动任务，false不开启）
+	 */
+	public static final boolean ONOFF_TASK_FIXEDREBATE = false;
+	/**
+	 * 总定返倍数
+	 */
+	public static final double FIXEDREBATE_RATE = 1.2;
+}

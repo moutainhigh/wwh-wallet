@@ -1,0 +1,30 @@
+package com.wwh.loginwx.service.impl;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.wwh.loginwx.dao.ILoginwxDao;
+import com.wwh.loginwx.service.ILoginwxService;
+import com.wwh.loginwx.vo.WXUserInfoVO;
+@Service
+public class LoginwxService implements ILoginwxService{
+	@Autowired
+	ILoginwxDao loginwxDao;
+	/**
+	 * 新增微信用户信息
+	 */
+	public Long insertWXUserInfo(WXUserInfoVO wxUserInfoVO) {
+		
+		return loginwxDao.insertWXUserInfo(wxUserInfoVO);
+	}
+	@Override
+	public WXUserInfoVO getWXUserInfoByUserId(Long userId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public WXUserInfoVO getWXUserInfoByUnionId(String unionId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+}

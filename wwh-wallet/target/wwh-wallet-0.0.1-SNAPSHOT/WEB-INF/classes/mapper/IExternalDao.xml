@@ -1,0 +1,846 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wwh.dao.IExternalDao">
+	<!-- 记录钱包用户信息 -->
+	<insert id="recordWalletUser" parameterType="com.wwh.vo.OrderVO">
+		INSERT INTO wwh_user_t
+			(
+				user_id,
+				user_name,
+				gender,
+				reference_id,
+				mobile_phone,
+				real_name,
+				email,
+				password,
+				active_flag,
+				delete_flag,
+				created_date,
+				created_by,
+				last_updated_date,
+				last_updated_by
+			)
+		VALUES
+			(
+				#{memberId,jdbcType=NUMERIC},
+				#{userName,jdbcType=VARCHAR},
+				#{gender,jdbcType=NUMERIC},
+				#{referenceId,jdbcType=NUMERIC},
+				#{mobilePhone,jdbcType=VARCHAR},
+				#{realName,jdbcType=VARCHAR},
+				#{email,jdbcType=VARCHAR},
+				#{password,jdbcType=VARCHAR},
+				'Y',
+				'N',
+				now(),
+				#{memberId,jdbcType=NUMERIC},
+				now(),
+				#{memberId,jdbcType=NUMERIC}
+			)
+	</insert>
+	
+	<!-- 记录钱包用户角色关系 -->
+	<insert id="recordWalletUserRole" parameterType="java.lang.Long">
+		INSERT INTO wwh_user_role_t
+			(
+				user_id,
+				role_id,
+				active_flag,
+				delete_flag,
+				created_date,
+				created_by,
+				last_updated_date,
+				last_updated_by
+			)
+		VALUES
+			(
+				#{0,jdbcType=NUMERIC},
+				#{1,jdbcType=NUMERIC},
+				'Y',
+				'N',
+				now(),
+				#{0,jdbcType=NUMERIC},
+				now(),
+				#{0,jdbcType=NUMERIC}
+			)
+	</insert>
+
+	<!-- 记录邀请关系流水信息 -->
+	<insert id="recordUserRelation" parameterType="java.lang.Long">
+		INSERT INTO wallet_platform_invite_detail_t
+			(
+				invite_user_id,
+				receive_user_id,
+				active_flag,
+				delete_flag,
+				created_date,
+				created_by,
+				last_updated_date,
+				last_updated_by
+			)
+		VALUES
+			(
+				#{0,jdbcType=NUMERIC},
+				#{1,jdbcType=NUMERIC},
+				'Y',
+				'N',
+				now(),
+				#{1,jdbcType=NUMERIC},
+				now(),
+				#{1,jdbcType=NUMERIC}
+			)
+	</insert>
+
+	<!-- 计算邀请人一级用户数量 -->
+	<insert id="calcInvitationNum" parameterType="java.lang.Long">
+		INSERT INTO wallet_platform_invite_t
+			(
+				invite_user_id,
+				invite_total_counter,
+				invite_pay_counter,
+				level1_user_counter,
+				level2_user_counter,
+				active_flag,
+				delete_flag,
+				created_date,
+				created_by,
+				last_updated_date,
+				last_updated_by
+			)
+		VALUES
+			(
+				#{0,jdbcType=NUMERIC},
+				1,
+				0,
+				1,
+				0,
+				'Y',
+				'N',
+				now(),
+				#{1,jdbcType=NUMERIC},
+				now(),
+				#{1,jdbcType=NUMERIC}
+			)
+		ON DUPLICATE KEY UPDATE 
+			invite_total_counter = invite_total_counter+1,
+			level1_user_counter = level1_user_counter+1,
+			last_updated_date = now(),
+			last_updated_by = #{1,jdbcType=NUMERIC}
+	</insert>
+	
+	<!-- 计算邀请者上级的二级用户数量 -->
+	<insert id="calcParentInvitationNum" parameterType="java.lang.Long">
+		INSERT INTO wallet_platform_invite_t
+			(
+				invite_user_id,
+				invite_total_counter,
+				invite_pay_counter,
+				level1_user_counter,
+				level2_user_counter,
+				active_flag,
+				delete_flag,
+				created_date,
+				created_by,
+				last_updated_date,
+				last_updated_by
+			)
+		VALUES
+			(
+				(SELECT reference_id FROM wwh_user_t 
+					WHERE user_id = #{0,jdbcType=NUMERIC}),
+				1,
+				0,
+				0,
+				1,
+				'Y',
+				'N',
+				now(),
+				#{1,jdbcType=NUMERIC},
+				now(),
+				#{1,jdbcType=NUMERIC}
+			)
+		ON DUPLICATE KEY UPDATE 
+			invite_total_counter = invite_total_counter+1,
+			level2_user_counter = level2_user_counter+1,
+			last_updated_date = now(),
+			last_updated_by = #{1,jdbcType=NUMERIC}
+	</insert>
+	
+	<!-- 记录邀请者所得收益积分流水信息 -->
+	<insert id="recordInviteProfitScore">
+		INSERT INTO wallet_platform_profit_score_t
+			(
+				user_id,
+				profit_score,
+				profit_score_type,
+				profit_score_remark,
+				recharge_amount,
+				source_user_id,
+				active_flag,
+				delete_flag,
+				created_date,
+				created_by,
+				last_updated_date,
+				last_updated_by
+			)
+		VALUES
+			(
+				#{0,jdbcType=NUMERIC},
+				#{2,jdbcType=DOUBLE},
+				#{3,jdbcType=VARCHAR},
+				#{4,jdbcType=VARCHAR},
+				0,
+				#{1,jdbcType=NUMERIC},
+				'Y',
+				'N',
+				now(),
+				#{1,jdbcType=NUMERIC},
+				now(),
+				#{1,jdbcType=NUMERIC}
+			)
+	</insert>
+	
+	<!-- 记录被邀请者所得收益积分流水信息 -->
+	<insert id="recordReceiveProfitScore">
+		INSERT INTO wallet_platform_profit_score_t
+			(
+				user_id,
+				profit_score,
+				profit_score_type,
+				profit_score_remark,
+				recharge_amount,
+				source_user_id,
+				active_flag,
+				delete_flag,
+				created_date,
+				created_by,
+				last_updated_date,
+				last_updated_by
+			)
+		VALUES
+			(
+				#{1,jdbcType=NUMERIC},
+				#{2,jdbcType=DOUBLE},
+				#{3,jdbcType=VARCHAR},
+				#{4,jdbcType=VARCHAR},
+				0,
+				#{1,jdbcType=NUMERIC},
+				'Y',
+				'N',
+				now(),
+				#{1,jdbcType=NUMERIC},
+				now(),
+				#{1,jdbcType=NUMERIC}
+			)
+	</insert>
+	
+	<!-- 计算邀请者钱包收益积分 -->
+	<insert id="calcInviteWalletProfitScore">
+		INSERT INTO wallet_amount_t
+			(
+				user_id,
+				total_score,
+				recharge_amount,
+				platform_total_amount,
+				used_score,
+				remain_score,
+				active_flag,
+				delete_flag,
+				created_date,
+				created_by,
+				last_updated_date,
+				last_updated_by
+			)
+		VALUES
+			(
+				#{0,jdbcType=NUMERIC},
+				#{2,jdbcType=DOUBLE},
+				0,
+				0,
+				0,
+				#{2,jdbcType=DECIMAL},
+				'Y',
+				'N',
+				now(),
+				#{1,jdbcType=NUMERIC},
+				now(),
+				#{1,jdbcType=NUMERIC}
+			)
+		ON DUPLICATE KEY UPDATE
+			total_score = total_score + #{2,jdbcType=DECIMAL},
+			remain_score = remain_score + #{2,jdbcType=DECIMAL},
+			last_updated_date = now(),
+			last_updated_by = #{1,jdbcType=NUMERIC}
+	</insert>
+	
+	<!-- 计算被邀请者钱包收益积分 -->
+	<insert id="calcReceiveWalletProfitScore">
+		INSERT INTO wallet_amount_t
+			(
+				user_id,
+				total_score,
+				recharge_amount,
+				platform_total_amount,
+				used_score,
+				remain_score,
+				active_flag,
+				delete_flag,
+				created_date,
+				created_by,
+				last_updated_date,
+				last_updated_by
+			)
+		VALUES
+			(
+				#{1,jdbcType=NUMERIC},
+				#{2,jdbcType=DOUBLE},
+				0,
+				0,
+				0,
+				#{2,jdbcType=DECIMAL},
+				'Y',
+				'N',
+				now(),
+				#{1,jdbcType=NUMERIC},
+				now(),
+				#{1,jdbcType=NUMERIC}
+			)
+		ON DUPLICATE KEY UPDATE
+			total_score = total_score + #{2,jdbcType=DECIMAL},
+			remain_score = remain_score + #{2,jdbcType=DECIMAL},
+			last_updated_date = now(),
+			last_updated_by = #{1,jdbcType=NUMERIC}
+	</insert>
+	
+	<select id="getRegisterAwardScore" resultType="java.math.BigDecimal">
+		SELECT award_score as score FROM wallet_platform_register_score_award_config_t 
+					WHERE status = 'Y' AND ACTIVE_FLAG = 'Y' AND DELETE_FLAG = 'N'
+	</select>
+	
+	<!-- 获取平台注册奖励积分 -->
+	<select id="getRemainScore" parameterType="java.lang.Long" resultType="java.math.BigDecimal">
+		SELECT remain_score as score FROM wallet_amount_t 
+				WHERE user_id = #{0,jdbcType=NUMERIC} AND ACTIVE_FLAG = 'Y' AND DELETE_FLAG = 'N'
+	</select>
+	
+	<update id="returnScore">
+		update wallet_amount_t set
+			total_score = total_score + #{1,jdbcType=DECIMAL},
+			remain_score = remain_score + #{1,jdbcType=DECIMAL},
+			used_score = used_score + #{1,jdbcType=DECIMAL},
+			last_updated_date = now()
+		WHERE user_id = #{0,jdbcType=VARCHAR}
+			  
+	</update>
+	
+	<update id="subScore">
+		update wallet_amount_t set
+			remain_score = remain_score - #{1,jdbcType=DECIMAL},
+			used_score = used_score + #{1,jdbcType=DECIMAL},
+			last_updated_date = now()
+		WHERE user_id = #{0,jdbcType=VARCHAR}
+	</update>
+	
+	<!-- 记录已使用积分流水信息-->
+	<insert id="recordUsageScore">
+		INSERT INTO wallet_platform_score_usage_t
+			(
+				user_id,
+				uasge_score,
+				order_number,
+				order_amount,
+				uasge_score_status,
+				active_flag,
+				delete_flag,
+				created_date,
+				created_by,
+				last_updated_date,
+				last_updated_by
+			)
+		VALUES
+			(
+				#{0,jdbcType=NUMERIC},
+				#{1,jdbcType=DECIMAL},
+				#{2,jdbcType=VARCHAR},
+				#{3,jdbcType=DECIMAL},
+				'Y',
+				'Y',
+				'N',
+				now(),
+				#{0,jdbcType=NUMERIC},
+				now(),
+				#{0,jdbcType=NUMERIC}
+			)
+	</insert>
+	
+	<!-- 记录商家销售所产生的推广收益流水信息  -->
+	<insert id="recordBonus" parameterType="com.wwh.vo.OrderVO">
+		INSERT INTO wallet_seller_relation_product_sales_detail_t
+			(
+				user_id,
+				business_user_id,
+				order_number,
+				score_usage,
+				order_amount,
+				order_status,
+				profit_amount,
+				sale_time,
+				active_flag,
+				delete_flag,
+				created_date,
+				created_by,
+				last_updated_date,
+				last_updated_by
+			)
+		VALUES
+			(
+				#{referenceId,jdbcType=NUMERIC},
+				#{sellderId,jdbcType=NUMERIC},
+				#{orderNumber,jdbcType=VARCHAR},
+				#{uasgeScore,jdbcType=DECIMAL},
+				#{realPayableAmount,jdbcType=DECIMAL},
+				#{orderStatus,jdbcType=VARCHAR},
+				#{businessAmount,jdbcType=VARCHAR},
+				#{saleTime,jdbcType=DATE},
+				'Y',
+				'N',
+				now(),
+				#{sellderId,jdbcType=NUMERIC},
+				now(),
+				#{sellderId,jdbcType=NUMERIC}
+			)
+	</insert>
+	
+	<!-- 商家交易配置返红利金额  -->
+	<select id="getSaleAmount" resultType="java.lang.Float">
+		SELECT default_percentage as percentage FROM wallet_business_default_sales_config_t 
+				WHERE ACTIVE_FLAG = 'Y' AND DELETE_FLAG = 'N' limit 0,1
+	</select>
+	
+	<!-- 计算用户平台收益 -->
+	<insert id="calcPlatformAmount" parameterType="com.wwh.vo.OrderVO">
+		INSERT INTO wallet_platform_profit_t
+			(
+				user_id,
+				platform_total_amount,
+				platform_withdrawals_amount,
+				platform_used_amount,
+				platform_remain_amount,
+				member_total_amount,
+				member_withdrawals_amount,
+				save_amount,
+				member_used_amount,
+				member_remain_amount,
+				business_total_amount,
+				business_used_amount,
+				business_withdrawals_amount,
+				xingmin_save_amount,
+				fumin_save_amount,
+				huimin_save_amount,
+				tiyan_save_amount,
+				xingmin_withdrawals_amount,
+				fumin_withdrawals_amount,
+				huimin_withdrawals_amount,
+				tiyan_withdrawals_amount,
+				xingmin_disk_profit_amount,
+				fumin_disk_profit_amount,
+				huimin_disk_profit_amount,
+				tiyan_disk_profit_amount,
+				platform_grap_total_amount,
+				xingmin_disk_profit_amount,
+				fumin_disk_profit_amount,
+				huimin_disk_profit_amount,
+				tiyan_disk_profit_amount,
+				xingmin_grap_amount,
+				fumin_grap_amount,
+				huimin_grap_amount,
+				tiyan_grap_amount,
+				active_flag,
+				delete_flag,
+				created_date,
+				created_by,
+				last_updated_date,
+				last_updated_by
+			)
+		VALUES
+			(
+				#{referenceId,jdbcType=NUMERIC},
+				IFNULL(#{profitAmount,jdbcType=DECIMAL},0),
+				IFNULL(#{profitAmount,jdbcType=DECIMAL},0),
+				0,
+				IFNULL(#{profitAmount,jdbcType=DECIMAL},0),
+				0,
+				0,
+				0,
+				0,
+				0,
+				IFNULL(#{businessAmount,jdbcType=DECIMAL},0),
+				0,
+				IFNULL(#{businessAmount,jdbcType=DECIMAL},0),
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				'Y',
+				'N',
+				now(),
+				#{memberId,jdbcType=NUMERIC},
+				now(),
+				#{memberId,jdbcType=NUMERIC}
+			)
+		ON DUPLICATE KEY UPDATE 
+			PLATFORM_TOTAL_AMOUNT = PLATFORM_TOTAL_AMOUNT + IFNULL(#{profitAmount,jdbcType=DECIMAL},0) + IFNULL(#{businessAmount,jdbcType=DECIMAL},0),
+			PLATFORM_WITHDRAWALS_AMOUNT = PLATFORM_WITHDRAWALS_AMOUNT + IFNULL(#{profitAmount,jdbcType=DECIMAL},0) + IFNULL(#{businessAmount,jdbcType=DECIMAL},0),
+			PLATFORM_REMAIN_AMOUNT = PLATFORM_REMAIN_AMOUNT + IFNULL(#{profitAmount,jdbcType=DECIMAL},0) + IFNULL(#{businessAmount,jdbcType=DECIMAL},0),
+			BUSINESS_TOTAL_AMOUNT = BUSINESS_TOTAL_AMOUNT + IFNULL(#{businessAmount,jdbcType=DECIMAL},0),
+			BUSINESS_WITHDRAWALS_AMOUNT = BUSINESS_WITHDRAWALS_AMOUNT + IFNULL(#{businessAmount,jdbcType=DECIMAL},0),
+			last_updated_date = now(),
+			last_updated_by = #{memberId,jdbcType=NUMERIC}
+	</insert>
+	
+	
+	<!-- 计算用户钱包收入支出金额 -->
+	<insert id="calcWalletAmount" parameterType="com.wwh.vo.OrderVO">
+		INSERT INTO wallet_amount_t
+			(
+				user_id,
+				total_score,
+				recharge_amount,
+				platform_total_amount,
+				used_score,
+				remain_score,
+				active_flag,
+				delete_flag,
+				created_date,
+				created_by,
+				last_updated_date,
+				last_updated_by
+			)
+		VALUES
+			(
+				#{referenceId,jdbcType=NUMERIC},
+				0,
+				0,
+				#{profitAmount,jdbcType=DECIMAL},
+				0,
+				0,
+				'Y',
+				'N',
+				now(),
+				#{memberId,jdbcType=NUMERIC},
+				now(),
+				#{memberId,jdbcType=NUMERIC}
+			)
+		ON DUPLICATE KEY UPDATE 
+			PLATFORM_TOTAL_AMOUNT = PLATFORM_TOTAL_AMOUNT + IFNULL(#{profitAmount,jdbcType=DECIMAL},0),
+			last_updated_date = now(),
+			last_updated_by = #{memberId,jdbcType=NUMERIC}
+	</insert>
+	
+	<!-- 记录商家和用户关系 -->
+	<insert id="recordBusiness" parameterType="com.wwh.vo.OrderVO">
+		INSERT INTO wallet_business_relation_t
+			(
+				user_id,
+				business_user_id,
+				business_user_name,
+				business_register_type,
+				business_config_type,
+				active_flag,
+				delete_flag,
+				created_date,
+				created_by,
+				last_updated_date,
+				last_updated_by
+			)
+		VALUES
+			(
+				#{referenceId,jdbcType=NUMERIC},
+				#{sellderId,jdbcType=NUMERIC},
+				#{sellderName,jdbcType=VARCHAR},
+				#{sellderRegisterType,jdbcType=VARCHAR},
+				#{sellderConfigType,jdbcType=VARCHAR},
+				'Y',
+				'N',
+				now(),
+				#{sellderId,jdbcType=NUMERIC},
+				now(),
+				#{sellderId,jdbcType=NUMERIC}
+			)
+	</insert>
+	
+	<!-- 记录平台支出记录  -->
+	<insert id="recordExpenditureAmount" parameterType="com.wwh.vo.OrderVO">
+		INSERT INTO wwh_asset_expenditure_detail_t
+			(
+				user_id,
+				expenditure_amount,
+				target_user_id,
+				status,
+				active_flag,
+				delete_flag,
+				created_date,
+				created_by,
+				last_updated_date,
+				last_updated_by
+			)
+		VALUES
+			(
+				#{referenceId,jdbcType=NUMERIC},
+				#{profitAmount,jdbcType=DECIMAL},
+				#{memberId,jdbcType=NUMERIC},
+				'SUCCESSED',
+				'Y',
+				'N',
+				now(),
+				#{memberId,jdbcType=NUMERIC},
+				now(),
+				#{memberId,jdbcType=NUMERIC}
+			)
+	</insert>
+	
+	<!-- 计算系统钱包金额 -->
+	<update id="calcSystemAmount" parameterType="com.wwh.vo.OrderVO">
+	    update wwh_system_wallet_t
+	    	set system_profit_amount = system_profit_amount - #{profitAmount,jdbcType=DECIMAL},
+	    		system_expenditure_amount = system_expenditure_amount + #{profitAmount,jdbcType=DECIMAL},
+	    		last_updated_date = now(),
+			    last_updated_by = #{memberId,jdbcType=NUMERIC}
+	     where system_id = #{referenceId,jdbcType=NUMERIC}
+	</update>
+	
+	<!-- 计算系统钱包积分 -->
+	<update id="calcSystemScore" >
+	    update wwh_system_wallet_t
+	    	set system_expenditure_score = system_expenditure_score + #{1,jdbcType=DECIMAL},
+	    	    last_updated_date = now()
+	     where system_id = #{0,jdbcType=NUMERIC}
+	</update>
+	
+	<!-- 记录用户分润明细  -->
+	<insert id="recordUserProfit" parameterType="com.wwh.vo.OrderVO">
+		INSERT INTO wallet_user_relation_profit_detail_t
+			(
+				user_id,
+				order_number,
+				score_usage,
+				order_amount,
+				order_status,
+				profit_amount,
+				sale_time,
+				customer_user_id,
+				active_flag,
+				delete_flag,
+				created_date,
+				created_by,
+				last_updated_date,
+				last_updated_by
+			)
+		VALUES
+			(
+				#{referenceId,jdbcType=NUMERIC},
+				#{orderNumber,jdbcType=VARCHAR},
+				#{uasgeScore,jdbcType=DECIMAL},
+				#{realPayableAmount,jdbcType=DECIMAL},
+				#{orderStatus,jdbcType=VARCHAR},
+				#{profitAmount,jdbcType=VARCHAR},
+				#{saleTime,jdbcType=DATE},
+				#{memberId,jdbcType=NUMERIC},
+				'Y',
+				'N',
+				now(),
+				#{memberId,jdbcType=NUMERIC},
+				now(),
+				#{memberId,jdbcType=NUMERIC}
+			)
+	</insert>
+	
+	<insert id="registerMemberForWallet" parameterType="java.util.Map">
+		insert into T_MEMBER(
+			MEMBER_ID,
+			MEMBER_NAME,
+			NICK_NAME,
+			PASSWORD,
+			EMAIL,
+			state_no,
+			MOBILE_PHONE,
+			PIC_URL,
+			GENDER,
+			BIRTHDAY,
+			REAL_NAME,
+			ID_CARD_TYPE,
+			ID_CARD_NO,
+			ID_CARD_PIC1,
+			ID_CARD_PIC2,
+			ID_CARD_PIC3,
+			IS_ID_VALID,
+			IS_MOBILE_VALID,
+			IS_EMAIL_VALID,
+			MEMBER_LEVEL_ID,
+			MEMBER_POINT,
+			REFERENCE_TYPE,
+			REFERENCE_ID,
+			IS_BLACKLIST,
+			LAST_LOGIN_TIME,
+			CREATE_TIME,
+			UPDATE_TIME,
+			OPERATOR_TYPE,
+			OPERATOR_ID,
+			DISTRIBUTOR_ID,
+			token,
+			token_time,
+			is_verify_token
+		) values (
+			#{memberId,jdbcType = BIGINT},
+			#{memberName,jdbcType = VARCHAR},
+			#{nickName,jdbcType = VARCHAR},
+			#{password,jdbcType = VARCHAR},
+			#{email,jdbcType = VARCHAR},
+			#{stateNo,jdbcType = VARCHAR},
+			#{mobilePhone,jdbcType = VARCHAR},
+			#{picUrl,jdbcType = VARCHAR},
+			#{gender,jdbcType = TINYINT},
+			#{birthday,jdbcType = TIMESTAMP},
+			#{realName,jdbcType = VARCHAR},
+			#{idCardType,jdbcType = TINYINT},
+			#{idCardNo,jdbcType = VARCHAR},
+			#{idCardPic1,jdbcType = VARCHAR},
+			#{idCardPic2,jdbcType = VARCHAR},
+			#{idCardPic3,jdbcType = VARCHAR},
+			#{isIdValid,jdbcType = TINYINT},
+			#{isMobileValid,jdbcType = TINYINT},
+			#{isEmailValid,jdbcType = TINYINT},
+			#{memberLevelId,jdbcType = BIGINT},
+			#{memberPoint,jdbcType = INTEGER},
+			#{referenceType,jdbcType = TINYINT},
+			#{referenceId,jdbcType = BIGINT},
+			#{isblackList,jdbcType = TINYINT},
+			#{lastLoginTime,jdbcType = TIMESTAMP},
+			now(),
+			now(),
+			#{operatorType,jdbcType = TINYINT},
+			#{operatorId,jdbcType = BIGINT},
+			#{distributorId,jdbcType = BIGINT},
+			#{token,jdbcType = VARCHAR},
+			#{tokenTime,jdbcType = TIMESTAMP},
+			#{isVerifyToken,jdbcType = INTEGER}
+		)
+	</insert>
+	
+	<insert id="addRegionUser" parameterType="java.util.Map">
+		INSERT INTO wwh_region_user_t
+		(
+			user_id,
+			region_code,
+			region_level,
+			active_flag,
+			delete_flag,
+			created_date,
+			created_by,
+			last_updated_date,
+			last_updated_by
+		)
+		VALUES
+		(
+			#{userid},
+			#{regioncode},
+			#{regionlevel},
+			'Y',
+			'N',
+			NOW(),
+			#{userid},
+			NOW(),
+			#{userid}
+		)
+	</insert>
+	<select id="queryRegionUserByAgent" parameterType="java.util.Map" resultType="java.util.Map">
+			SELECT 
+						r.region_code regioncode,r.region_level regionlevel
+			FROM 	
+						wwh_agent_region_t r,wwh_agent_t a,wwh_agent_user_t au, wwh_user_t u
+			WHERE 
+							r.agent_id = a.agent_id 
+						AND a.agent_id =au.agent_id
+					    AND au.user_id =u.user_id
+						 AND a.ACTIVE_FLAG = 'Y' 
+						 AND a.DELETE_FLAG = 'N' 
+						 AND r.ACTIVE_FLAG = 'Y' 
+						 AND r.DELETE_FLAG = 'N'
+						 AND a.mobile_phone = #{userId}
+	</select>
+	
+	<select id="queryRegionUserByUser" parameterType="java.util.Map" resultType="java.util.Map">
+			SELECT 
+						t.region_code regioncode,
+						t.region_level regionlevel
+			FROM 
+					wwh_region_user_t  t,wwh_user_t u
+					WHERE
+					u.mobile_phone = #{userId} 
+					AND u.user_id = t.user_id
+					AND u.ACTIVE_FLAG = 'Y' AND u.DELETE_FLAG = 'N'
+					AND t.ACTIVE_FLAG = 'Y' AND t.DELETE_FLAG = 'N'
+	</select>
+	
+	<select id="queryAgentInfoById" parameterType="java.util.Map" resultType="java.util.Map">
+		select 
+			 			a.agent_id agentid,
+						a.agent_name agentname,
+						a.mobile_phone mobilephone,
+						a.password pwd,
+						a.real_name realname,
+						a.corporate_name corporatename,
+						a.id_card idcard,
+						a.login_count logincount
+			from 
+						wwh_agent_t a
+		   where    
+					   a.mobile_phone = #{mobilephone}					
+						AND a.ACTIVE_FLAG = 'Y' 
+			 			AND a.DELETE_FLAG = 'N'
+			 			AND a.agent_flag = 1
+	</select>
+	
+	<update id="modifyMobilePhoneByUserId" parameterType="com.wwh.vo.UserVO">
+			update 
+					wwh_user_t set
+					<if test="userName != null"> 
+						user_name = #{userName}, 
+					</if>
+					<if test="mobilePhone != null"> 
+						mobile_phone = #{mobilePhone}, 
+					</if>
+					<if test="email != null">
+						email = #{email} , 
+					</if>	
+					<if test="birthday != null">
+						birthday=#{birthday} ,
+					</if>	
+					<if test="gender != null">
+						gender=#{gender}  ,
+					</if>	
+					<if test="password != null">
+						password = #{password},
+					</if>	 
+						last_updated_date = now()
+			where 
+					user_id =#{userId}
+	</update>
+</mapper>  

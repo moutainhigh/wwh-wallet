@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wwh.dao.IMsgDao" >
+	<select id="queryMsgInfoByCondition"   parameterType="java.util.Map" resultType="java.util.Map">
+		select 
+				t.user_id userId,
+				t.msg_code msgCode,
+				t.tel 
+		from 
+				wwh_msg_t t 
+		where 
+				t.active_flag = 'Y' 
+		and 	t.delete_flag = 'N' 
+		and		(10-(now() -t.created_date)/60) > 0
+		and 	t.user_id = #{userId}  
+		and 	t.msg_code =#{msgCode}  
+		order by 
+				t.created_date desc limit 0,1
+	</select>
+	
+	<!-- 查询短信信息 -->
+	<select id="getMsgInfo"   parameterType="java.util.Map" resultType="java.util.Map">
+	select 
+				t.user_id userId,
+				t.msg_code msgCode,
+				t.tel tel,
+                t.created_date,
+				round((UNIX_TIMESTAMP(now()) - UNIX_TIMESTAMP(t.created_date))/60,2) minute
+		from  
+				wwh_msg_t t 
+		where 
+				t.active_flag = 'Y' 
+		and 	t.delete_flag = 'N' 
+		and 	t.user_id = #{userId} 
+		and     t.tel = #{tel}
+		order by 
+				t.created_date desc limit 0,1
+		 
+	</select>
+	
+	<insert id ="addMsg" parameterType="java.util.Map">
+   		<selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+	      SELECT LAST_INSERT_ID()
+	    </selectKey>
+   		INSERT INTO wwh_msg_t 
+		(
+		  user_id,
+		  msg_code,
+		  msg_content,
+		  result,
+		  tel,
+		  msg_type,
+		  active_flag,
+		  delete_flag,
+		  created_date,
+		  created_by,
+		  last_updated_date,
+		  last_updated_by
+		) 
+		VALUES (
+		#{userId,jdbcType=BIGINT}, 
+		#{msgCode,jdbcType=BIGINT},
+		#{msgContent,jdbcType=VARCHAR},
+		#{result,jdbcType=VARCHAR},
+		#{tel,jdbcType=VARCHAR},
+		#{msgType,jdbcType=BIGINT},
+		'Y','N',  
+		now(), 
+		#{createdBy,jdbcType=BIGINT}, 
+		now(), 
+		#{lastUpdatedBy,jdbcType=BIGINT}
+		)
+	</insert>
+	
+	<update id="modifyMsg" parameterType="java.util.Map">
+			update 
+					wwh_msg_t 
+			set 
+					active_flag = 'N' 
+			where  	
+					user_id = #{userId}  
+			and 	msg_code =#{msgCode}
+	</update>
+	
+	
+	
+</mapper>
+ 

@@ -1,0 +1,433 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wwh.dao.IWalletProfitDetailDao" >
+  
+	  <!-- increaseDiskProfit 累加盘总收益表记录 wallet_disk_profit_t -->
+	  <insert id="increaseDiskProfit" parameterType="com.wwh.vo.DiskProfitVO" >
+		  INSERT INTO wallet_disk_profit_t (
+				user_id,
+				disk_seq,
+				disk_type,
+				withdrawals_amount,
+				save_amount,
+				role_id,
+				disk_counter,
+				join_disk_time,
+				id_card,
+				disk_status,
+				is_this_disk,
+				active_flag,
+				delete_flag,
+				created_date,
+				created_by,
+				last_updated_date,
+				last_updated_by
+			)
+			VALUES
+				(
+					#{userId},
+					#{diskSeq},
+					#{diskType},
+					#{withdrawalsAmount},
+					#{saveAmount},
+					#{roleId},
+					#{diskCounter},
+					#{joinDiskTime},
+					#{idCard},
+					#{diskStatus},
+					#{isThisDisk},
+					'Y',
+					'N',
+					NOW(),
+					#{createdBy},
+					NOW(),
+					#{lastUpdatedBy}
+				) 
+			ON DUPLICATE KEY UPDATE 
+				withdrawals_amount = withdrawals_amount + #{withdrawalsAmount},
+				save_amount = save_amount + #{saveAmount},
+				disk_counter = #{diskCounter},
+				disk_status = #{diskStatus},
+				last_updated_date = NOW(),
+				last_updated_by = #{lastUpdatedBy}
+	  </insert>
+  
+
+	<!--  查询盘总收益表记录 wallet_disk_profit_t -->
+	 <select id="selectDiskProfitByDiskProfit" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+	    select 
+	    <include refid="Base_Column_List" />
+	    from wallet_disk_profit_t
+	    where 1=1
+	     <if test="id != null" >
+	      and   id = #{id,jdbcType=BIGINT}
+	      </if>
+	     <if test="userId != null" >
+	       and user_id = #{userId,jdbcType=BIGINT}
+	      </if>
+	      <if test="diskSeq != null" >
+	      and  disk_seq = #{diskSeq,jdbcType=VARCHAR}
+	      </if>
+	      <if test="diskType != null" >
+	      and  disk_type = #{diskType,jdbcType=VARCHAR}
+	      </if>
+	      <if test="withdrawalsAmount != null" >
+	      and  withdrawals_amount = #{withdrawalsAmount,jdbcType=DECIMAL}
+	      </if>
+	      <if test="saveAmount != null" >
+	       and save_amount = #{saveAmount,jdbcType=DECIMAL}
+	      </if>
+	      <if test="roleId != null" >
+	       and role_id = #{roleId,jdbcType=BIGINT}
+	      </if>
+	      <if test="diskCounter != null" >
+	      and  disk_counter = #{diskCounter,jdbcType=INTEGER}
+	      </if>
+	      <if test="joinDiskTime != null" >
+	       and join_disk_time = #{joinDiskTime,jdbcType=TIMESTAMP}
+	      </if>
+	      <if test="idCard != null" >
+	       and id_card = #{idCard,jdbcType=VARCHAR}
+	      </if>
+	      <if test="diskStatus != null" >
+	      and  disk_status = #{diskStatus,jdbcType=VARCHAR}
+	      </if>
+	      <if test="activeFlag != null" >
+	       and active_flag = #{activeFlag,jdbcType=CHAR}
+	      </if>
+	      <if test="deleteFlag != null" >
+	       and delete_flag = #{deleteFlag,jdbcType=CHAR}
+	      </if>
+	      <if test="createdDate != null" >
+	        and created_date = #{createdDate,jdbcType=TIMESTAMP}
+	      </if>
+	      <if test="createdBy != null" >
+	      and  created_by = #{createdBy,jdbcType=BIGINT}
+	      </if>
+	      <if test="lastUpdatedDate != null" >
+	      and  last_updated_date = #{lastUpdatedDate,jdbcType=TIMESTAMP}
+	      </if>
+	      <if test="lastUpdatedBy != null" >
+	      and  last_updated_by = #{lastUpdatedBy,jdbcType=BIGINT}
+	      </if>
+	  </select>
+
+ <resultMap id="BaseResultMap" type="com.wwh.vo.DiskProfitVO">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="disk_seq" jdbcType="VARCHAR" property="diskSeq" />
+    <result column="disk_type" jdbcType="VARCHAR" property="diskType" />
+    <result column="withdrawals_amount" jdbcType="DECIMAL" property="withdrawalsAmount" />
+    <result column="save_amount" jdbcType="DECIMAL" property="saveAmount" />
+    <result column="role_id" jdbcType="BIGINT" property="roleId" />
+    <result column="disk_counter" jdbcType="INTEGER" property="diskCounter" />
+    <result column="join_disk_time" jdbcType="TIMESTAMP" property="joinDiskTime" />
+    <result column="id_card" jdbcType="VARCHAR" property="idCard" />
+    <result column="disk_status" jdbcType="VARCHAR" property="diskStatus" />
+    <result column="active_flag" jdbcType="CHAR" property="activeFlag" />
+    <result column="delete_flag" jdbcType="CHAR" property="deleteFlag" />
+    <result column="created_date" jdbcType="TIMESTAMP" property="createdDate" />
+    <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+    <result column="last_updated_date" jdbcType="TIMESTAMP" property="lastUpdatedDate" />
+    <result column="last_updated_by" jdbcType="BIGINT" property="lastUpdatedBy" />
+  </resultMap>
+  
+   <sql id="Base_Column_List">
+    id as id, 
+    user_id as userId, 
+    disk_seq as diskSeq, 
+    disk_type as diskType, 
+    withdrawals_amount as withdrawalsAmount, 
+    save_amount as saveAmount, 
+    role_id as roleId, 
+    disk_counter as diskCounter, 
+    join_disk_time as joinDiskTime, 
+    id_card as idCard, 
+    disk_status as diskStatus, 
+    active_flag as activeFlag, 
+    delete_flag as deleteFlag, 
+    created_date as createdDate, 
+    created_by as createdBy, 
+    last_updated_date as lastUpdatedDate, 
+    last_updated_by  as lastUpdatedBy
+  </sql>
+  
+  
+  
+  <!-- 累加某人某类盘的收益金额  ;可用于 累加 某人 在某系统盘中的     disk_profit_amount    收益-->
+   <update id="increaseDiskTypeProfitBySelective" parameterType="com.wwh.vo.DiskTypeProfitVO" >
+    update wallet_disk_type_profit_t
+    <set >
+      <if test="diskProfitAmount != null" >
+        disk_profit_amount =disk_profit_amount+ #{diskProfitAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="activeFlag != null" >
+        active_flag = #{activeFlag,jdbcType=CHAR},
+      </if>
+      <if test="deleteFlag != null" >
+        delete_flag = #{deleteFlag,jdbcType=CHAR},
+      </if>
+      <if test="userId != null and userId !='' and diskType !=null and diskType!='' " >
+        last_updated_date = now(),
+      </if>
+      <if test="userId != null and userId !=''" >
+        last_updated_by = #{userId,jdbcType=BIGINT} ,
+      </if>
+    </set>
+    where  user_id = #{userId,jdbcType=BIGINT} and  disk_type = #{diskType,jdbcType=VARCHAR}
+      
+  </update>
+  
+  
+  <!-- 插入收益详情 -->
+  <insert id="insertProfitDetail" parameterType="com.wwh.vo.ProfitDetailVO" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into  
+    <if test="roleId != null">
+     <choose>
+			<when test="diskType == 'TIYAN'">
+				wallet_profit_detail_tiyan_t
+			</when>
+			<when test="diskType == 'HUIMIN'">
+				wallet_profit_detail_huimin_t
+			</when>
+			<when test="diskType == 'FUMIN'">
+				wallet_profit_detail_fumin_t
+			</when>
+			<when test="diskType == 'XINGMIN'">
+				wallet_profit_detail_xingmin_t
+			</when>
+		</choose>
+	</if>
+	<if test="roleId == null">
+		wallet_grap_profit_detail_t
+	</if>
+    (
+      profit_user_id,
+      profit_amount, 
+      <if test="saveAmount != null">
+      	save_amount, 
+      </if>
+      <if test="withdrawalsAmount != null">
+     	withdrawals_amount, 
+      </if>
+      profit_target_type, 
+      disk_seq, 
+      id_card, 
+      pay_user_id, 
+      <if test="joinDiskTime != null">
+      	join_disk_time,
+      </if>
+      <if test="roleId != null"> 
+      	role_id,
+      </if> 
+      disk_type,
+      active_flag, 
+      delete_flag, 
+      created_date, 
+      created_by, 
+      last_updated_date, 
+      last_updated_by
+      )
+    values (
+	    #{profitUserId,jdbcType=BIGINT}, 
+	    #{profitAmount,jdbcType=DECIMAL},
+    	<if test="saveAmount != null"> 
+ 	 		#{saveAmount,jdbcType=DECIMAL},
+ 	 	</if> 
+ 	 	<if test="withdrawalsAmount != null">
+      		#{withdrawalsAmount,jdbcType=DECIMAL},
+      	</if> 
+      	#{profitTargetType,jdbcType=VARCHAR}, 
+      	#{diskSeq,jdbcType=VARCHAR}, 
+     	#{idCard,jdbcType=VARCHAR}, 
+      	#{payUserId,jdbcType=BIGINT},
+      	<if test="joinDiskTime != null"> 
+      		#{joinDiskTime,jdbcType=TIMESTAMP},
+      	</if>
+      	<if test="roleId != null"> 
+       		#{roleId,jdbcType=BIGINT}, 
+       	</if>
+       	#{diskType,jdbcType=VARCHAR}, 
+      	'Y',
+      	'N',
+      	now(), 
+      	#{createdBy,jdbcType=BIGINT}, 
+      	now(), 
+      	#{lastUpdatedBy,jdbcType=BIGINT}
+      )
+  </insert>
+  <!-- 批量插入收益详情 -->
+  <insert id="insertBatchProfitDetail"  >
+    insert into 
+    <choose>
+			<when test="diskType == 'TIYAN'">
+				wallet_profit_detail_tiyan_t
+			</when>
+			<when test="diskType == 'HUIMIN'">
+				wallet_profit_detail_huimin_t
+			</when>
+			<when test="diskType == 'FUMIN'">
+				wallet_profit_detail_fumin_t
+			</when>
+			<when test="diskType == 'XINGMIN'">
+				wallet_profit_detail_xingmin_t
+			</when>
+			<!-- <otherwise>
+				wallet_platform_pay_detail_other_t
+			</otherwise> -->
+		</choose> 
+    (profit_user_id, 
+      profit_amount, save_amount, withdrawals_amount, 
+      profit_target_type, disk_seq, 
+      profit_from, id_card, pay_user_id, 
+      join_disk_time, role_id, disk_type,active_flag, 
+      delete_flag, created_date, created_by, 
+      last_updated_date, last_updated_by
+      )
+    values <foreach item="item" index="index" collection="records"  separator="," > (
+    #{item.profitUserId,jdbcType=BIGINT}, 
+      #{item.profitAmount,jdbcType=DECIMAL}, 
+      #{item.saveAmount,jdbcType=DECIMAL},
+	#{item.withdrawalsAmount,jdbcType=DECIMAL}, 
+      #{item.profitTargetType,jdbcType=VARCHAR}, 
+      #{item.diskSeq,jdbcType=VARCHAR}, 
+      #{item.profitFrom,jdbcType=VARCHAR}, 
+      #{item.idCard,jdbcType=VARCHAR}, 
+      #{item.payUserId,jdbcType=BIGINT}, 
+      #{item.joinDiskTime,jdbcType=TIMESTAMP}, 
+      #{item.roleId,jdbcType=BIGINT}, 
+      #{item.diskType,jdbcType=VARCHAR}, 
+      #{item.activeFlag,jdbcType=CHAR}, 
+      #{item.deleteFlag,jdbcType=CHAR}, 
+      now(), 
+      #{item.createdBy,jdbcType=BIGINT}, 
+      now(), 
+      #{item.lastUpdatedBy,jdbcType=BIGINT}
+      )</foreach>
+  </insert>
+  
+  <!-- 新增盘总收益表记录 wallet_disk_profit_t -->
+  <insert id="insertDiskProfit" parameterType="com.wwh.vo.DiskProfitVO" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into wallet_disk_profit_t (user_id, disk_seq, disk_type, 
+      withdrawals_amount, save_amount, role_id, 
+      disk_counter, join_disk_time, id_card, 
+      disk_status, is_this_disk,active_flag, delete_flag, 
+      created_date, created_by, last_updated_date, 
+      last_updated_by)
+    values (
+    #{userId,jdbcType=BIGINT}, 
+    #{diskSeq,jdbcType=VARCHAR}, 
+    #{diskType,jdbcType=VARCHAR}, 
+      #{withdrawalsAmount,jdbcType=DECIMAL}, 
+      #{saveAmount,jdbcType=DECIMAL}, 
+      #{roleId,jdbcType=BIGINT}, 
+      #{diskCounter,jdbcType=INTEGER}, 
+      #{joinDiskTime,jdbcType=TIMESTAMP}, 
+      #{idCard,jdbcType=VARCHAR}, 
+      #{diskStatus,jdbcType=VARCHAR}, 
+      #{isThisDisk,jdbcType=VARCHAR},
+      #{activeFlag,jdbcType=CHAR}, 
+      #{deleteFlag,jdbcType=CHAR}, 
+      now(), 
+      #{createdBy,jdbcType=BIGINT}, 
+      now(), 
+      #{lastUpdatedBy,jdbcType=BIGINT})
+  </insert>
+  
+  
+  <!-- 修改某人在某盘的收益情况; 储备金,可提现，累加增加 -->
+  <update id="updateDiskProfitByDiskSeqAndUserIdSelective" parameterType="com.wwh.vo.DiskProfitVO" >
+    update wallet_disk_profit_t
+    <set >
+      <if test="isThisDisk != null">
+      	is_this_disk = #{isThisDisk,jdbcType=VARCHAR},
+      </if>
+      <if test="diskType != null" >
+        disk_type = #{diskType,jdbcType=VARCHAR},
+      </if>
+      <if test="withdrawalsAmount != null" >
+        withdrawalsAmount = withdrawalsAmount + #{withdrawalsAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="saveAmount != null" >
+        save_amount =save_amount+ #{saveAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="roleId != null" >
+        role_id = #{roleId,jdbcType=BIGINT},
+      </if>
+      <if test="diskCounter != null" >
+        disk_counter = #{diskCounter,jdbcType=INTEGER},
+      </if>
+      <if test="joinDiskTime != null" >
+        join_disk_time = #{joinDiskTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="idCard != null" >
+        id_card = #{idCard,jdbcType=VARCHAR},
+      </if>
+      <if test="diskStatus != null" >
+        disk_status = #{diskStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="activeFlag != null" >
+        active_flag = #{activeFlag,jdbcType=CHAR},
+      </if>
+      <if test="deleteFlag != null" >
+        delete_flag = #{deleteFlag,jdbcType=CHAR},
+      </if>
+      <if test="last_updated_date != null" >
+        last_updated_date = now(),
+      </if>
+      <if test="userId != null and userId !='' and diskSeq !=null and diskSeq!='' " >
+        last_updated_by = #{userId,jdbcType=BIGINT}
+      </if>
+    </set>
+    where user_id = #{userId,jdbcType=BIGINT} and  disk_seq = #{diskSeq,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 新增系统类型收益表 -->
+  <insert id="insertDiskTypeProfit" parameterType="com.wwh.vo.DiskTypeProfitVO" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into wallet_disk_type_profit_t (user_id, disk_type, disk_profit_amount, 
+      active_flag, delete_flag, created_date, 
+      created_by, last_updated_date, last_updated_by
+      )
+    values (
+    #{userId,jdbcType=BIGINT}, 
+    #{diskType,jdbcType=VARCHAR}, 
+    #{diskProfitAmount,jdbcType=DECIMAL}, 
+      #{activeFlag,jdbcType=CHAR}, 
+      #{deleteFlag,jdbcType=CHAR}, 
+      now(), 
+      #{createBy,jdbcType=BIGINT}, 
+      now(), 
+      #{lastUpdatedBy,jdbcType=BIGINT}
+      )
+  </insert>
+  
+  <!-- 修改盘收益表的盘运行状态 (所有人) -->
+  <update id="updateDiskStatus" >
+  	UPDATE wallet_disk_profit_t
+	SET 
+	<if test="diskStatus != null">
+		disk_status = #{diskStatus},
+	</if>
+	<if test="diskCounter != null">
+		disk_counter = #{diskCounter}
+	</if>
+	WHERE
+		disk_seq = #{diskSeq}
+  </update>
+	<select id="getDiskProfitByIdCard" resultType="com.wwh.vo.DiskProfitVO">
+		SELECT <include refid="Base_Column_List" />
+		FROM wallet_disk_profit_t
+		WHERE id_card = #{idCard}
+		AND active_flag = 'Y'
+		AND delete_flag = 'N'
+	</select>
+</mapper>

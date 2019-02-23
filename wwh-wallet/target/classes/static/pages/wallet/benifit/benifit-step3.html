@@ -1,0 +1,107 @@
+﻿<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>提现-唯沃惠</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="金融、钱包、理财、高收益">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="renderer" content="webkit" />
+    <link rel="stylesheet" href="/wwh-wallet/css/bootstrap.css">
+    <link rel="stylesheet" href="/wwh-wallet/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/wwh-wallet/css/plugin.css">
+    <link rel="stylesheet" href="/wwh-wallet/css/landing.css">
+    <link rel="stylesheet" href="/wwh-wallet/css/common.css">
+    <link href="/wwh-wallet/css/mall/private-benefit.css" rel="stylesheet" />
+    <link href="/wwh-wallet/css/style.css" rel="stylesheet" />
+    <script type="text/javascript" src="/wwh-wallet/js/jquery.min.js"></script>
+    <script src="/wwh-wallet/js/bootstrap.js"></script>
+    <script src="/wwh-wallet/js/app.js"></script>
+    <script src="/wwh-wallet/js/app.plugin.js"></script>
+    <script src="/wwh-wallet/js/app.data.js"></script>
+    <script src="/wwh-wallet/js/fuelux/fuelux.js"></script>
+    <script src="/wwh-wallet/js/datepicker/bootstrap-datepicker.js"></script>
+    <script src="/wwh-wallet/js/slider/bootstrap-slider.js"></script>
+    <script src="/wwh-wallet/js/file-input/bootstrap.file-input.js"></script>
+    <script src="/wwh-wallet/js/combodate/moment.min.js"></script>
+    <script src="/wwh-wallet/js/parsley/parsley.min.js"></script>
+    <script src="/wwh-wallet/js/angular.js"></script>
+</head>
+<body>
+    <div ng-include src="'/wwh-wallet/pages/wallet/common/header.html'"></div>
+    <div class="charge-wrap fixed">
+        <div class="charge-box m-box fixed">
+            <div class="title-wrap">
+                <div class="title">我的银行卡</div>
+                <div class="title-third">已添加：<span id="cardnum">0</span>张储蓄卡</div>
+            </div>
+            <div class="containner-middle fixed">
+                <div class="bank-card-box fixed">
+                    <div class="card-full" id="cardlist">
+                    </div>
+                    <a href="/wwh-wallet/pages/wallet/charge/charge-step3.html" class="b-card-box b-card-box02 add-card">
+                        <div> 添加银行卡 </div>
+                    </a>
+                    <a href="/wwh-wallet/pages/wallet/charge/charge-step5.html" class="b-card-box b-card-box02 add-card">
+                        <div> 添加微信号 </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script type="text/javascript">
+        $.ajax({     // 请求 ajax
+            url: "/wwh-wallet/unionpay/queryBindingBankCard",
+            type: "post",
+            data: "",
+            error: function () {
+                //alert("异常");
+            },
+            success: function (msg) {
+                for (var i = 0; i < msg.data.length; i++) {
+                    $("#cardnum").html(msg.data.length);
+                    initDom(msg.data[i]);
+                }
+            },
+            complete: function () {
+                //完成之后执行回调函数
+            },
+        });
+
+        function initDom(data) {
+            var userName = "";
+            if (data.realName != null && data.realName != "") {
+                userName = data.realName.substring(data.realName.length - 1);
+            }
+
+            var dom = '<div class="b-card-box b-card-box01">' +
+                '<div class="s-card-box12">' +
+                '<div class="s-card-box1">' +
+                ' <img src="/wwh-wallet/images/bank-logo/bank-zggs-small.png" />' +
+                ' </div>' +
+                '<div class="s-card-box2">' +
+                ' <div class="s-card-cati">' +
+                '<div class="sd-cati01">' + data.bankCardNumber.substring(data.bankCardNumber.length - 4) + '</div>' +
+                '<div class="sd-cati02"><i></i>储蓄卡</div>' +
+                '</div>' +
+                '</div>' +
+                ' </div>' +
+                ' <div class="s-card-box34">' +
+                '<div class="s-card-box3">持卡人姓名：' + "*" + userName +
+                '</div>' +
+                '<div class="s-card-box4">手机号：' + data.phoneNumber.substring(0, 3) + "****" + data.phoneNumber.substring(data.phoneNumber.length - 4) +
+                '</div>' +
+                ' </div>' +
+                '</div>';
+            $("#cardlist").append(dom);
+        }
+    </script>
+
+    <div ng-include src="'/wwh-wallet/pages/wallet/common/footer.html'"></div>
+    <script type="text/javascript">
+        var app = angular.module('myApp', []);
+    </script>
+</body>
+</html>

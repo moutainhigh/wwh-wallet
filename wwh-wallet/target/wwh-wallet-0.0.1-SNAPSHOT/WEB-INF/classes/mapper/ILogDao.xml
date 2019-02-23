@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wwh.dao.ILogDao">
+
+	<insert id="addLog">
+		INSERT INTO wwh_system_log_t (
+			system_method_name,
+			system_param_name,
+			system_remark,
+			active_flag,
+			delete_flag,
+			created_date,
+			created_by,
+			last_updated_date,
+			last_updated_by
+		)
+		VALUES
+			(
+				#{systemMethodName}, 
+				#{systemParamName},
+				#{systemRemark},
+				'Y',
+				'N',
+				NOW(),
+				#{userId},
+				NOW(),
+				#{userId}
+			)
+	</insert>
+
+</mapper>  

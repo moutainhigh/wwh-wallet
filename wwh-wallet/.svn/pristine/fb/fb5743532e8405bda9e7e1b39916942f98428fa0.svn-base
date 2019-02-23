@@ -1,0 +1,204 @@
+package com.wwh.loginwx.service.impl;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.wwh.common.DatabaseContextHolder;
+import com.wwh.common.ResultMsg;
+import com.wwh.dao.ILoginwxDao;
+import com.wwh.dao.IUserDao;
+import com.wwh.enums.DatabaseType;
+import com.wwh.loginwx.config.WeixinConfig;
+import com.wwh.loginwx.controller.LoginwxControlller;
+import com.wwh.loginwx.service.ILoginwxService;
+import com.wwh.loginwx.util.HttpRequestUtil;
+import com.wwh.loginwx.vo.WXUserInfoVO;
+import com.wwh.loginwx.vo.WeChatQRCodeVO;
+import com.wwh.service.IExternalService;
+import com.wwh.vo.ExternalVO;
+import com.wwh.vo.UserVO;
+
+import net.sf.json.JSONObject;
+
+@Service
+public class LoginwxService implements ILoginwxService {
+	private static Logger logger = LogManager.getLogger(LoginwxControlller.class);
+	private static String POST = "POST";
+
+	@Autowired
+	ILoginwxDao loginwxDao;
+	
+	@Autowired
+	IUserDao userDao;
+
+	@Autowired
+	IExternalService externalService;
+
+	/**
+	 * 新增微信用户信息
+	 */
+	public Long insertWXUserInfo(WXUserInfoVO wxUserInfoVO) {
+		logger.info("新增微信用户信息");
+		wxUserInfoVO.setUserId(System.currentTimeMillis());
+		wxUserInfoVO.setCreatedBy(wxUserInfoVO.getUserId());
+		wxUserInfoVO.setLastUpdatedBy(wxUserInfoVO.getUserId());
+		return loginwxDao.insertWXUserInfo(wxUserInfoVO);
+	}
+
+	/**
+	 * 通过userId查询微信信息
+	 */
+	@Override
+	public WXUserInfoVO getWXUserInfoByUserId(Long userId) {
+		logger.info("查询微信用户信息userId={}", userId);
+		return loginwxDao.getWXUserInfoByUserId(userId);
+	}
+
+	/**
+	 * 通过unionId查询微信信息
+	 */
+	@Override
+	public WXUserInfoVO getWXUserInfoByUnionId(String uniontId) {
+		logger.info("查询微信用户信息uniontId={}", uniontId);
+		return loginwxDao.getWXUserInfoByUnionId(uniontId);
+	}
+
+	/**
+	 * 注册
+	 */
+	@Override
+	public void registerMember(Long userId,WXUserInfoVO wxUserInfoVO){
+		logger.info("注册微信用户信息userId={},nickName={}",userId,wxUserInfoVO.getNickName());
+		try {
+			ExternalVO externalVO = new ExternalVO();
+			externalVO.setUserId(userId);
+			externalVO.setUserName(wxUserInfoVO.getNickName());
+			externalVO.setImgUrl(wxUserInfoVO.getHeadImgUrl());
+			externalVO.setPassword("123456");
+			//注册
+			externalService.registerMember(externalVO);
+			//添加推荐关系
+			externalService.relation(externalVO);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	/**
+	 * 创建临时带参数二维码
+	 * 
+	 * @param accessToken
+	 * @expireSeconds 该二维码有效时间，以秒为单位。 最大不超过2592000（即30天），此字段如果不填，则默认有效期为30秒。
+	 * @param sceneId
+	 *            场景Id
+	 * @return
+	 */
+	public WeChatQRCodeVO createTemporaryORCode(String accessToken, String jsmMsg) {
+		WeChatQRCodeVO weChatQRCode = null;
+		String requestUrl = "https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=TOKEN";
+		requestUrl = requestUrl.replace("TOKEN", accessToken);
+		// 需要提交的JSON数据
+		// String outputStr = "{\"expire_seconds\": %d,\"action_name\":
+		// \"QR_SCENE\", \"action_info\": {\"scene\": {\"scene_id\"：%d}}}";
+
+		// 创建临时带参数二维码
+		JSONObject jsonObject = HttpRequestUtil.httpRequestJSONObject(requestUrl, POST, jsmMsg);
+		if (null != jsonObject) {
+			try {
+				weChatQRCode = new WeChatQRCodeVO();
+				weChatQRCode.setTicket(jsonObject.getString("ticket"));
+				weChatQRCode.setExpire_seconds(jsonObject.getInt("expire_seconds"));
+				logger.info("创建临时带参二维码成功,ticket=" + weChatQRCode.getTicket() + ",expire_seconds="
+						+ weChatQRCode.getExpire_seconds());
+			} catch (Exception e) {
+				weChatQRCode = null;
+				String errorMsg = jsonObject.getString("errmsg");
+				logger.info("创建临时带参二维码失败,错误码是=" + errorMsg);
+			}
+		}
+		return weChatQRCode;
+	}
+
+	// 用ticket获取二维码
+	public boolean chageQr(String ticket) {
+		boolean result = false;
+		String requestUrl = "https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=TICKET";
+		requestUrl = requestUrl.replace("TICKET", ticket);
+		JSONObject jsonObject = HttpRequestUtil.httpRequestJSONObject(requestUrl, "GET", null);
+		System.out.println(jsonObject + "");
+		if (null != jsonObject) {
+			System.out.println(jsonObject);
+			int errorCode = jsonObject.getInt("errcode");
+			String errorMsg = jsonObject.getString("errmsg");
+			if (0 == errorCode) {
+				result = true;
+				logger.info("成功errorCode:{" + errorCode + "},errmsg:{" + errorMsg + "}");
+				System.out.println("成功errorCode:{" + errorCode + "},errmsg:{" + errorMsg + "}");
+			} else {
+				logger.info("失败errorCode:{" + errorCode + "},errmsg:{" + errorMsg + "}");
+				System.out.println("失败errorCode:{" + errorCode + "},errmsg:{" + errorMsg + "}");
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * 封装生成二维码需要的参数
+	 * 
+	 * @param wxUserInfo
+	 * @return
+	 */
+	public String getParam(WXUserInfoVO wxUserInfo) {
+		JSONObject object = new JSONObject();
+		JSONObject object2 = new JSONObject();
+		JSONObject object3 = new JSONObject();
+		object.put("expire_seconds", WeixinConfig.expireSeconds);
+		object.put("action_name", "QR_SCENE");
+		object2.put("object2", object3);
+		object.put("action_info", object2);
+		object3.put("scene_id", wxUserInfo.getUserId());
+		object2.put("user_id", wxUserInfo.getUserId());
+		object2.put("phone", wxUserInfo.getMobilePhone());
+		return object.toString();
+	}
+	/**
+	 * 得到用户信息
+	 */
+	@Override
+	public UserVO getUserByUserId(Long userId) {
+		
+		return userDao.getUserByUserId(userId);
+	}
+	/**
+	 * 绑定微信用户手机号
+	 */
+	@Override
+	public ResultMsg<Object> bindWXUser(WXUserInfoVO wxUserInfoVO) {
+		logger.info("进入绑定手机号userId={}",wxUserInfoVO.getUserId());
+		ResultMsg<Object> msg=new ResultMsg<Object>();
+		//先查询是否已经存在此手机号，存在直接关联此用户
+		UserVO userVO=userDao.getUserByMobilePhone(wxUserInfoVO.getMobilePhone());
+		if(null!=userVO){
+			//已经存在，先更新微信表中关联的userId改为已存在的用户ID
+			loginwxDao.updateWXUserId(userVO.getUserId(),wxUserInfoVO.getUnionId());
+			//将微信登陆创建的用户失效掉
+			loginwxDao.loseWXUser(wxUserInfoVO.getUserId());
+		}else{
+			//如果不存在手机号则，为微信登陆创建的用户增加手机号信息
+			userVO=new UserVO();
+			userVO.setUserId(wxUserInfoVO.getUserId());
+			userVO.setMobilePhone(wxUserInfoVO.getMobilePhone());
+			userDao.updateUserInfoById(userVO);
+			DatabaseContextHolder.setDatabaseType(DatabaseType.mallDataSource);
+			userDao.updateTmemeberInfo(userVO);
+			DatabaseContextHolder.setDatabaseType(DatabaseType.walletdataSource);
+		}
+		msg.setReturnCode("0");
+		msg.setReturnMsg("绑定手机号成功");
+		return msg;
+	}
+
+}

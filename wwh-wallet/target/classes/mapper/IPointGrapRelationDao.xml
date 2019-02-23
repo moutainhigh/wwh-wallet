@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wwh.dao.IPointGrapRelationDao" >
+  <resultMap id="BaseResultMap" type="com.wwh.vo.PointGrapRelationVO" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="amount" property="amount" jdbcType="DECIMAL" />
+    <result column="passive_empty_point" property="passiveEmptyPoint" jdbcType="INTEGER" />
+    <result column="use_up_point" property="useUpPoint" jdbcType="INTEGER" />
+    <result column="passive_user_id" property="passiveUserId" jdbcType="BIGINT" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="passive_id_card" property="passiveIdCard" jdbcType="VARCHAR" />
+    <result column="id_card" property="idCard" jdbcType="VARCHAR" />
+    <result column="disk_seq" property="diskSeq" jdbcType="VARCHAR" />
+    <result column="role_id" property="roleId" jdbcType="BIGINT" />
+    <result column="disk_type" property="diskType" jdbcType="VARCHAR" />
+    <result column="is_grap_ok" property="isGrapOk" jdbcType="VARCHAR" />
+    <result column="active_flag" property="activeFlag" jdbcType="CHAR" />
+    <result column="delete_flag" property="deleteFlag" jdbcType="CHAR" />
+    <result column="created_date" property="createdDate" jdbcType="TIMESTAMP" />
+    <result column="created_by" property="createdBy" jdbcType="BIGINT" />
+    <result column="last_updated_date" property="lastUpdatedDate" jdbcType="TIMESTAMP" />
+    <result column="last_updated_by" property="lastUpdatedBy" jdbcType="BIGINT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id_card idCard,
+	disk_seq diskSeq,
+	is_director isDirector,
+	profit_points profitPoints,
+	disk_type diskType,
+	created_date as createdDate,
+	created_by as createdBy,
+	last_updated_date as lastUpdatedDate,
+	last_updated_by as lastUpdatedBy
+  </sql>
+  
+  <!-- 通过抢点关系条件 查询抢点关系 -->
+  <select id="selectByPointGrapRelationVO" resultMap="BaseResultMap" parameterType="com.wwh.vo.PointGrapRelationVO" >
+    select 
+    <include refid="Base_Column_List" />
+    from wallet_point_grap_relation_t
+    where 1=1
+    <if test="id != null" >
+      and  id = #{id,jdbcType=BIGINT}
+      </if>
+    <if test="diskSeq != null" >
+    and   disk_seq = #{diskSeq,jdbcType=VARCHAR}
+      </if>
+      <if test="idCard != null" >
+      and  id_card = #{idCard,jdbcType=VARCHAR}
+      </if>
+      <if test="diskType != null" >
+      and  disk_type = #{diskType,jdbcType=VARCHAR}
+      </if>
+      <if test="profitPoints != null" >
+      and  profit_points = #{profitPoints,jdbcType=CHAR}
+      </if>
+      <if test="isDirector != null" >
+      and  is_director = #{isDirector,jdbcType=CHAR}
+      </if>
+      <if test="activeFlag != null" >
+      and  active_flag = #{activeFlag,jdbcType=CHAR}
+      </if>
+      <if test="deleteFlag != null" >
+       and delete_flag = #{deleteFlag,jdbcType=CHAR}
+      </if>
+      <if test="createdDate != null" >
+     and   created_date = #{createdDate,jdbcType=TIMESTAMP}
+      </if>
+      <if test="createdBy != null" >
+     and   created_by = #{createdBy,jdbcType=BIGINT}
+      </if>
+      <if test="lastUpdatedDate != null" >
+     and   last_updated_date =#{lastUpdatedDate,jdbcType=BIGINT}
+      </if>
+      <if test="lastUpdatedBy != null" >
+      and  last_updated_by = #{lastUpdatedBy,jdbcType=BIGINT}
+      </if>
+     
+  </select>
+  
+  <!-- 根据diskSeq 修改某些属性  -->
+  <update id="updateByDiskSeqSelective" parameterType="com.wwh.vo.PointGrapRelationVO" >
+    update wallet_point_grap_relation_t
+    <set >
+    <if test="profitPoints != null" >
+        profit_points = #{profitPoints,jdbcType=CHAR}
+      </if>
+      <if test="isDirector != null" >
+       is_director = #{isDirector,jdbcType=CHAR}
+      </if>
+      <if test="idCard != null" >
+        id_card = #{idCard,jdbcType=VARCHAR},
+      </if>
+      <if test="diskType != null" >
+        disk_type = #{diskType,jdbcType=VARCHAR},
+      </if>
+      <if test="activeFlag != null" >
+        active_flag = #{activeFlag,jdbcType=CHAR},
+      </if>
+      <if test="deleteFlag != null" >
+        delete_flag = #{deleteFlag,jdbcType=CHAR},
+      </if>
+      <if test="diskSeq != null" >
+        last_updated_date =now(),
+      </if>
+      <if test="lastUpdatedBy != null" >
+        last_updated_by = #{lastUpdatedBy,jdbcType=BIGINT},
+      </if>
+    </set>
+    where disk_seq = #{diskSeq,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 新增抢点关系表 -->
+  <insert id="insert" parameterType="com.wwh.vo.PointGrapRelationVO" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into wallet_point_grap_relation_t (
+      id_card, disk_seq,is_director,profit_points,
+      disk_type,  active_flag, 
+      delete_flag, created_date, created_by, 
+      last_updated_date, last_updated_by)
+    values ( 
+      #{idCard,jdbcType=VARCHAR}, 
+      #{diskSeq,jdbcType=VARCHAR}, 
+      #{isDirector,jdbcType=VARCHAR},
+      #{profitPoints,jdbcType=VARCHAR},
+      #{diskType,jdbcType=VARCHAR}, 
+      #{activeFlag,jdbcType=CHAR}, 
+      #{deleteFlag,jdbcType=CHAR}, 
+      now(), 
+      #{createdBy,jdbcType=BIGINT}, 
+      now(), 
+      #{lastUpdatedBy,jdbcType=BIGINT})
+  </insert>
+  
+  <!-- 批量新增抢点关系 -->
+  <insert id="insertBatch" parameterType="java.util.List" >
+    insert into wallet_point_grap_relation_t (
+      id_card, disk_seq,is_director,profit_points,
+      disk_type,  active_flag, 
+      delete_flag, created_date, created_by, 
+      last_updated_date, last_updated_by
+      )
+    values <foreach item="item" index="index" collection="records"  separator="," > (
+    #{item.amount,jdbcType=DECIMAL}, 
+      #{idCard,jdbcType=VARCHAR}, 
+      #{diskSeq,jdbcType=VARCHAR}, 
+      #{isDirector,jdbcType=VARCHAR},
+      #{profitPoints,jdbcType=VARCHAR},
+      #{diskType,jdbcType=VARCHAR}, 
+      #{activeFlag,jdbcType=CHAR}, 
+      #{deleteFlag,jdbcType=CHAR}, 
+      now(), 
+      #{createdBy,jdbcType=BIGINT}, 
+      now(), 
+      #{lastUpdatedBy,jdbcType=BIGINT}
+      )</foreach>
+  </insert>
+  <!-- 获取某个IDCARD 的收益点数 -->
+  <select id="getProfitPointsByIdCard" parameterType="java.lang.String" resultType="com.wwh.vo.PointGrapRelationVO">
+	SELECT
+		id_card idCard,
+		disk_seq diskSeq,
+		is_director isDirector,
+		profit_points profitPoints,
+		disk_type diskType,
+		created_date createdDate
+	FROM
+		wallet_point_grap_relation_t
+	WHERE
+		id_card = #{idCard}
+	AND disk_seq = #{diskSeq}
+	AND active_flag = 'Y'
+	AND delete_flag = 'N'
+  </select>
+  <!-- 获取某个盘的总监职位的利益分配(多条) -->
+  <select id="getProfitPointsByDiskSeq" parameterType="java.lang.String" resultType="com.wwh.vo.PointGrapRelationVO">
+  	SELECT
+		id_card idCard,
+		disk_seq diskSeq,
+		is_director isDirector,
+		profit_points profitPoints,
+		disk_type diskType,
+		created_date createdDate
+	FROM
+		wallet_point_grap_relation_t
+	WHERE
+		disk_seq = #{diskSeq}
+	AND active_flag = 'Y'
+	AND delete_flag = 'N'
+  </select>
+  
+  <select id="getAKeyPointsFromUserIds" resultType="com.wwh.vo.KeyPointRecommendVO">
+  	SELECT
+  		id id,
+		poin_status poinStatus,
+		disk_type diskType,
+		role_id roleId,
+		user_id userId,
+		id_card idCard,
+		is_usable isUsable,
+		created_date createdDate
+	FROM
+		wallet_key_point_recommend_t
+	WHERE
+		active_flag = 'Y'
+	AND 
+		delete_flag = 'N'
+	AND
+		disk_type = #{diskType}
+	AND
+		poin_status = 'A'
+	AND
+		is_usable = 'Y'
+	AND
+		user_id IN
+	<foreach item="item" index="index" collection="records"  separator="," open="("  close=")" >
+		  #{item}
+	</foreach>
+	ORDER BY created_date ASC 
+	<if test="remainCount != null">
+		LIMIT 0,#{remainCount}
+	</if>
+  </select>
+  
+  <select id="getBKeyPointsFromIdCard" resultType="com.wwh.vo.KeyPointRecommendVO">
+	  SELECT
+	  		id id,
+			poin_status poinStatus,
+			disk_type diskType,
+			role_id roleId,
+			user_id userId,
+			id_card idCard,
+			is_usable isUsable,
+			created_date createdDate
+		FROM
+			wallet_key_point_recommend_t
+		WHERE
+			active_flag = 'Y'
+		AND 
+			delete_flag = 'N'
+		AND
+			poin_status = 'B'
+		AND
+			is_usable = 'Y'
+		AND
+			id_card = #{idCard}
+		ORDER BY created_date ASC LIMIT 0,#{remainCount}
+  </select>
+  <select id="getBKeyPointsFromGetoutDirector" resultType="com.wwh.vo.KeyPointRecommendVO">
+  		SELECT
+	  		id id,
+			poin_status poinStatus,
+			disk_type diskType,
+			role_id roleId,
+			user_id userId,
+			id_card idCard,
+			is_usable isUsable,
+			created_date createdDate
+		FROM
+			wallet_key_point_recommend_t
+		WHERE
+			active_flag = 'Y'
+		AND 
+			delete_flag = 'N'
+		AND
+			poin_status = 'B'
+		AND
+			is_usable = 'Y'
+		AND
+			disk_type = #{diskType}
+		ORDER BY created_date ASC LIMIT 0,#{remainCount}
+  </select>
+  <select id="getKeyPointFromIdCards" resultType="com.wwh.vo.KeyPointRecommendVO">
+  	SELECT
+		poin_status poinStatus,
+		disk_type diskType,
+		role_id roleId,
+		user_id userId,
+		id_card idCard,
+		is_usable isUsable,
+		created_date createdDate
+	FROM
+		wallet_key_point_recommend_t
+	WHERE
+		active_flag = 'Y'
+	AND 
+		delete_flag = 'N'
+	AND
+		disk_type = #{diskType}
+	AND
+		poin_status = #{poinStatus}
+	AND
+		is_usable = 'Y'
+	AND
+		id_card IN
+	<foreach item="item" index="index" collection="records"  separator="," open="(" close=")">
+		  #{item}
+	</foreach>
+	ORDER BY created_date ASC
+  </select>
+  <update id="updateIsUsableToN">
+  	UPDATE wallet_key_point_recommend_t
+	SET is_usable = #{isUsable},
+		id_card = #{idCard},
+		last_updated_by = #{lastUpdatedBy},
+		last_updated_date = NOW()
+	WHERE
+		id = #{id}
+  </update>
+  
+  <insert id="addGrapRelationVO">
+  	INSERT INTO wallet_point_grap_relation_t (
+			id_card,
+			disk_seq,
+			is_director,
+			profit_points,
+			disk_type,
+			active_flag,
+			delete_flag,
+			created_date,
+			created_by,
+			last_updated_date,
+			last_updated_by
+		)
+		VALUES
+			(
+				#{idCard},
+				#{diskSeq},
+				#{isDirector},
+				#{profitPoints},
+				#{diskType},
+				'Y',
+				'N',
+				NOW(),
+				#{createdBy},
+				NOW(),
+				#{lastUpdatedBy}
+			) ON DUPLICATE KEY UPDATE
+			profit_points = profit_points + #{profitPoints},
+			last_updated_date = NOW(),
+			last_updated_by = #{lastUpdatedBy}
+  </insert>
+  
+  <select id="getGrapRelationsByDiskSeqs" resultType="com.wwh.vo.PointGrapRelationVO">
+	  SELECT
+			id_card idCard,
+			disk_seq diskSeq,
+			is_director isDirector,
+			profit_points profitPoints,
+			disk_type diskType,
+			created_date createdDate
+		FROM
+			wallet_point_grap_relation_t
+		WHERE
+			active_flag = 'Y'
+		AND 
+			delete_flag = 'N'
+		AND
+			disk_seq IN
+		<foreach item="item" index="index" collection="records"  separator="," open="(" close=")">
+			  #{item}
+		</foreach>
+  </select>
+</mapper>

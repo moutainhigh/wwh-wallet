@@ -1,0 +1,453 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wwh.dao.IPointDao">
+	<!-- 插入对应推荐点流水表记录 -->
+	<insert id="addPoint" parameterType="com.wwh.vo.RecommendVO">
+		INSERT INTO 
+		<choose>
+			<when test="diskType == 'TIYAN'">wallet_recommend_point_detail_tiyan_t</when>
+			<when test="diskType == 'HUIMIN'">wallet_recommend_point_detail_huimin_t</when>
+			<when test="diskType == 'FUMIN'">wallet_recommend_point_detail_fumin_t</when>
+			<when test="diskType == 'XINGMIN'">wallet_recommend_point_detail_xingmin_t</when>
+		</choose> 
+		(
+			invite_user_id,
+			receive_user_id,
+			is_direct,
+			active_flag,
+			delete_flag,
+			created_date,
+			created_by,
+			last_updated_date,
+			last_updated_by
+		)
+		VALUES
+			(
+				#{inviteUserId},
+				#{receiveUserId},
+				#{isDirect},
+				'Y',
+				'N',
+				NOW(),
+				#{createdBy},
+				NOW(),
+				#{lastUpdatedBy}
+			)
+	</insert>
+	
+	<!-- 获取某个IDCARD身份还有多少B状态推荐点(通过IdCard查询。) -->
+	<select id="getBPointCountByIdCard" resultType="com.wwh.vo.RecommendBPointStatisticsVO">
+		SELECT
+			total_recommend_point totalRecommendPoint,
+			use_up_recommend_point useUpRecommendPoint,
+			remain_recommend_point remainRecommendPoint,
+			user_id userId,
+			id_card idCard,
+			disk_type diskType,
+			active_flag activeFlag,
+			delete_flag deleteFlag,
+			created_date createdDate,
+			created_by createdBy,
+			last_updated_by lastUpdatedBy,
+			last_updated_date lastUpdatedDate
+		FROM
+			wallet_recommend_point_b_statistics_t
+		WHERE
+			id_card = #{idCard}
+		AND active_flag = 'Y'
+		AND delete_flag = 'N'
+	</select>
+	<!-- 获取某个用户在某个系统下的所有B状态点所有纪录 -->
+	<select id="getBPointCountByUserIdAndDiskType" resultType="com.wwh.vo.RecommendBPointStatisticsVO">
+		SELECT
+			total_recommend_point totalRecommendPoint,
+			use_up_recommend_point useUpRecommendPoint,
+			remain_recommend_point remainRecommendPoint,
+			user_id userId,
+			id_card idCard,
+			disk_type diskType,
+			active_flag activeFlag,
+			delete_flag deleteFlag,
+			created_date createdDate,
+			created_by createdBy,
+			last_updated_by lastUpdatedBy,
+			last_updated_date lastUpdatedDate
+		FROM
+			wallet_recommend_point_b_statistics_t
+		WHERE
+			user_id = #{userId}
+		AND disk_type = #{diskType}
+		AND active_flag = 'Y'
+		AND delete_flag = 'N'
+	</select>
+	<!-- 更新A状态统计表中的总点数和剩余点数 -->
+	<insert id="updateAPointStatistics" parameterType="com.wwh.vo.RecommendAPointStatisticsVO">
+		INSERT INTO wallet_recommend_point_a_statistics_t (
+			total_recommend_point,
+			use_up_recommend_point,
+			remain_recommend_point,
+			user_id,
+			disk_type,
+			active_flag,
+			delete_flag,
+			created_date,
+			created_by,
+			last_updated_date,
+			last_updated_by
+		)
+		VALUES
+			(
+				#{totalRecommendPoint},
+				#{useUpRecommendPoint},
+				#{remainRecommendPoint},
+				#{userId},
+				#{diskType},
+				'Y',
+				'N',
+				NOW(),
+				#{createdBy},
+				NOW(),
+				#{lastUpdatedBy}
+			) ON DUPLICATE KEY UPDATE 
+			<choose>
+				<when test="reduce == 'Y'">
+					use_up_recommend_point = use_up_recommend_point + #{useUpRecommendPoint},
+					remain_recommend_point = remain_recommend_point - #{remainRecommendPoint},
+					last_updated_date = NOW(),
+					last_updated_by = #{lastUpdatedBy}
+				</when>
+				<otherwise>
+					total_recommend_point = total_recommend_point + #{totalRecommendPoint},
+					remain_recommend_point = remain_recommend_point + #{remainRecommendPoint},
+					last_updated_date = NOW(),
+					last_updated_by = #{lastUpdatedBy}
+				</otherwise>
+			</choose>
+	</insert>
+	<!-- 更新B状态统计表中的总点数和剩余点数 -->
+	<insert id="updateBPointStatistics" parameterType="com.wwh.vo.RecommendBPointStatisticsVO">
+		INSERT INTO wallet_recommend_point_b_statistics_t (
+			total_recommend_point,
+			use_up_recommend_point,
+			remain_recommend_point,
+			user_id,
+			id_card,
+			disk_type,
+			active_flag,
+			delete_flag,
+			created_date,
+			created_by,
+			last_updated_date,
+			last_updated_by
+		)
+		VALUES
+			(
+				#{totalRecommendPoint},
+				#{useUpRecommendPoint},
+				#{remainRecommendPoint},
+				#{userId},
+				#{idCard},
+				#{diskType},
+				'Y',
+				'N',
+				NOW(),
+				#{createdBy},
+				NOW(),
+				#{lastUpdatedBy}
+			) ON DUPLICATE KEY UPDATE 
+			<choose>
+				<when test="reduce == 'Y'">
+					use_up_recommend_point = use_up_recommend_point + 2,
+					remain_recommend_point = remain_recommend_point - 2,
+					last_updated_date = NOW(),
+					last_updated_by = #{lastUpdatedBy}
+				</when>
+				<otherwise>
+					total_recommend_point = total_recommend_point + 1,
+					remain_recommend_point = remain_recommend_point + 1,
+					last_updated_date = NOW(),
+					last_updated_by = #{lastUpdatedBy}
+				</otherwise>
+			</choose>
+	</insert>
+	<!-- 增加关键推荐点表记录 -->
+	<insert id="addKeyPointByPointType" parameterType="com.wwh.vo.KeyPointRecommendVO">
+		INSERT INTO wallet_key_point_recommend_t (
+			poin_status,
+			disk_type,
+			role_id,
+			user_id,
+			id_card,
+			is_usable,
+			active_flag,
+			delete_flag,
+			created_date,
+			created_by,
+			last_updated_date,
+			last_updated_by
+		)
+		VALUES
+			(
+				#{poinStatus},
+				#{diskType},
+				#{roleId},
+				#{userId},
+				#{idCard},
+				#{isUsable},
+				'Y',
+				'N',
+				NOW(),
+				#{createdBy},
+				NOW(),
+				#{lastUpdatedBy}
+			)
+	</insert>
+	
+	<!-- 获取用户某个系统的A状态推荐点统计 -->
+	<select id="getUserAPointBydiskType" resultType="com.wwh.vo.RecommendAPointStatisticsVO">
+		SELECT
+			total_recommend_point totalRecommendPoint,
+			use_up_recommend_point useUpRecommendPoint,
+			remain_recommend_point remainRecommendPoint,
+			user_id userId,
+			disk_type diskType
+		FROM
+			wallet_recommend_point_a_statistics_t
+		WHERE
+			user_id = #{userId}
+		AND disk_type = #{diskType}
+	</select>
+	
+	<!-- 获取用户上级推荐人在某个系统中的推荐点数量 -->
+	<select id="getRecommendCounterBydiskType" resultType="java.lang.Integer">
+		SELECT
+			count(1)
+		FROM
+		<choose>
+			<when test="diskType == 'TIYAN'">wallet_recommend_point_detail_tiyan_t</when>
+			<when test="diskType == 'HUIMIN'">wallet_recommend_point_detail_huimin_t</when>
+			<when test="diskType == 'FUMIN'">wallet_recommend_point_detail_fumin_t</when>
+			<when test="diskType == 'XINGMIN'">wallet_recommend_point_detail_xingmin_t</when>
+		</choose>
+		WHERE
+			invite_user_id = #{userId}
+		AND active_flag = 'Y'
+		AND delete_flag = 'N'
+		AND is_direct ='N'
+	</select>
+	
+	<select id="getAStatisticsByUserIds" resultType="com.wwh.vo.RecommendAPointStatisticsVO">
+		SELECT
+			total_recommend_point totalRecommendPoint,
+			use_up_recommend_point useUpRecommendPoint,
+			remain_recommend_point remainRecommendPoint,
+			user_id userId,
+			disk_type diskType,
+			created_date createdDate,
+			last_updated_date lastUpdatedDate
+		FROM
+			wallet_recommend_point_a_statistics_t
+		WHERE
+			user_id IN 
+		<foreach item="item" index="index" collection="records"  separator="," open="(" close=")">
+     		#{item}
+	 	</foreach>
+		AND disk_type = #{diskType}
+		AND active_flag = 'Y'
+		AND delete_flag = 'N'
+		ORDER BY last_updated_date DESC
+	</select>
+	
+	<select id="getAStatisticsByUserId" resultType="com.wwh.vo.RecommendAPointStatisticsVO">
+		SELECT
+			total_recommend_point totalRecommendPoint,
+			use_up_recommend_point useUpRecommendPoint,
+			remain_recommend_point remainRecommendPoint,
+			user_id userId,
+			disk_type diskType,
+			created_date createdDate,
+			last_updated_date lastUpdatedDate
+		FROM
+			wallet_recommend_point_a_statistics_t
+		WHERE
+			user_id = #{userId}
+		AND disk_type = #{diskType}
+		AND active_flag = 'Y'
+		AND delete_flag = 'N'
+	</select>
+	<insert id="addNullPoint">
+		INSERT INTO wallet_empty_point_disk_t
+		(
+			disk_type,
+			disk_seq,
+			empty_point,
+			user_id,
+			id_card,
+			is_usable,
+			active_flag,
+			delete_flag,
+			created_date,
+			created_by,
+			last_updated_date,
+			last_updated_by
+		)
+		VALUES(
+			#{diskType},
+			#{diskSeq},
+			#{emptyPoint},
+			#{userId},
+			#{idCard},
+			#{isUsable},
+			'Y',
+			'N',
+			NOW(),
+			#{createdBy},
+			NOW(),
+			#{lastUpdatedBy}
+		)ON DUPLICATE KEY UPDATE 
+		empty_point = #{emptyPoint},
+		is_usable = #{isUsable},
+		last_updated_date = NOW(),
+		last_updated_by = #{lastUpdatedBy}
+	</insert>
+	
+	<update id="updateEmptyPoint" parameterType="com.wwh.vo.NullPointVO">
+		update  wallet_empty_point_disk_t  set
+			is_usable = #{isUsable},
+			last_updated_date= now(),
+		    last_updated_by =#{lastUpdatedBy}
+		where id_card=#{idCard}
+	</update>
+
+	<insert id="addLevel2PointDetail">
+		INSERT INTO wallet_level2_recommend_detail_t
+		(
+			user_id,
+			level1_user_id,
+			tiyan_user_id,
+			huimin_user_id,
+			fumin_user_id,
+			xingmin_user_id,
+			remain_count,
+			active_flag,
+			delete_flag,
+			created_date,
+			created_by,
+			last_updated_date,
+			last_updated_by
+		)
+		VALUES(
+			#{userId},
+			#{level1UserId},
+			#{tiyanUserId},
+			#{huiminUserId},
+			#{fuminUserId},
+			#{xingminUserId},
+			#{remainCount},
+			'Y',
+			'N',
+			NOW(),
+			#{createdBy},
+			NOW(),
+			#{lastUpdatedBy}
+		)ON DUPLICATE KEY UPDATE 
+		<if test="tiyanUserId != null">
+			tiyan_user_id = #{tiyanUserId},
+		</if>
+		<if test="huiminUserId != null">
+			huimin_user_id = #{huiminUserId},
+		</if>
+		<if test="fuminUserId != null">
+			fumin_user_id = #{fuminUserId},
+		</if>
+		<if test="xingminUserId != null">
+			xingmin_user_id = #{xingminUserId},
+		</if>
+		remain_count = remain_count - 1,
+		last_updated_date = NOW(),
+		last_updated_by = #{lastUpdatedBy}
+	</insert>
+	
+	<select id="getAllSysReceiveUserIdByUserId" resultType="java.lang.Long">
+		SELECT DISTINCT(receive_user_id) from (
+			SELECT DISTINCT(receive_user_id) FROM wallet_recommend_point_detail_tiyan_t WHERE invite_user_id = #{userId} AND is_direct = #{isDirect}
+			UNION ALL
+			SELECT DISTINCT(receive_user_id) FROM wallet_recommend_point_detail_huimin_t WHERE invite_user_id = #{userId} AND is_direct = #{isDirect}
+			UNION ALL
+			SELECT DISTINCT(receive_user_id) FROM wallet_recommend_point_detail_fumin_t WHERE invite_user_id = #{userId} AND is_direct = #{isDirect}
+			UNION ALL
+			SELECT DISTINCT(receive_user_id) FROM wallet_recommend_point_detail_xingmin_t WHERE invite_user_id = #{userId} AND is_direct = #{isDirect}
+		) a
+	</select>
+	<select id="getLevel2PointDetailsByUserIds" resultType="com.wwh.vo.Level2RecommendDetailVO">
+		SELECT
+			user_id userId,
+			level1_user_id level1UserId,
+			tiyan_user_id tiyanUserid,
+			huimin_user_id huiminUserId,
+			fumin_user_id fuminUserId,
+			xingmin_user_id xingminUserId,
+			remain_count remainCount,
+			last_updated_date lastUpdatedDate
+		FROM
+			wallet_level2_recommend_detail_t
+		WHERE
+			user_id = #{userId}
+		AND active_flag = 'Y'
+		AND delete_flag = 'N'
+		<if test="level1UserIds != null">
+			AND 
+				level1_user_id IN 
+		<foreach item="level1UserId" index="index" collection="level1UserIds"  separator="," open="(" close=")">
+     		#{level1UserId}
+	 	</foreach>
+		</if>
+	</select>
+	
+	<select id="getBPointCountByIdCards" resultType="com.wwh.vo.RecommendBPointStatisticsVO">
+		SELECT
+			total_recommend_point totalRecommendPoint,
+			use_up_recommend_point useUpRecommendPoint,
+			remain_recommend_point remainRecommendPoint,
+			user_id userId,
+			id_card idCard,
+			disk_type diskType,
+			active_flag activeFlag,
+			delete_flag deleteFlag,
+			created_date createdDate,
+			created_by createdBy,
+			last_updated_by lastUpdatedBy,
+			last_updated_date lastUpdatedDate
+		FROM
+			wallet_recommend_point_b_statistics_t
+		WHERE
+			id_card IN
+		<foreach item="idCard" index="index" collection="idCards"  separator="," open="(" close=")">
+    		#{idCard}
+ 		</foreach>
+		AND active_flag = 'Y'
+		AND delete_flag = 'N'
+	</select>
+	
+	<select id="getLevel2PointDetailsByUserId" resultType="com.wwh.vo.Level2RecommendDetailVO">
+		SELECT
+			user_id userId,
+			level1_user_id level1UserId,
+			tiyan_user_id tiyanUserid,
+			huimin_user_id huiminUserId,
+			fumin_user_id fuminUserId,
+			xingmin_user_id xingminUserId,
+			remain_count remainCount,
+			last_updated_date lastUpdatedDate
+		FROM
+			wallet_level2_recommend_detail_t
+		WHERE
+			user_id = #{userId}
+		AND active_flag = 'Y'
+		AND delete_flag = 'N'
+		<if test="level1UserId != null">
+			AND 
+				level1_user_id = #{level1UserId} 
+		</if>
+	</select>
+</mapper>  

@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wwh.dao.IWithdrawReserveConfigDao" >
+  <resultMap id="BaseResultMap" type="com.wwh.vo.DirectorConfigVO" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="disk_type" property="diskType" jdbcType="VARCHAR" />
+    <result column="get_empty_points" property="getEmptyPoints" jdbcType="VARCHAR" />
+    <result column="reserve_amount" property="reserveAmount" jdbcType="DECIMAL" />
+    <result column="can_withdraw_amount" property="canWithdrawAmount" jdbcType="DECIMAL" />
+    <result column="passive_amount" property="passiveAmount" jdbcType="DECIMAL" />
+    <result column="active_flag" property="activeFlag" jdbcType="CHAR" />
+    <result column="delete_flag" property="deleteFlag" jdbcType="CHAR" />
+    <result column="created_date" property="createdDate" jdbcType="TIMESTAMP" />
+    <result column="created_by" property="createdBy" jdbcType="BIGINT" />
+    <result column="last_updated_date" property="lastUpdatedDate" jdbcType="TIMESTAMP" />
+    <result column="last_updated_by" property="lastUpdatedBy" jdbcType="BIGINT" />
+  </resultMap>
+  
+  
+  <sql id="Base_Column_List" >
+    id as id, 
+    disk_type as diskType, 
+    get_empty_points as getEmptyPoints, 
+    reserve_amount as reserveAmount, 
+    can_withdraw_amount as canWithdrawAmount, 
+    passive_amount as passiveAmount, 
+    active_flag as activeFlag, 
+    delete_flag as deleteFlag, 
+    created_date as createdDate, 
+    created_by as createdBy, 
+    last_updated_date as lastUpdatedDate, 
+    last_updated_by as lastUpdatedBy
+  </sql>
+  
+  
+  <!-- 查询所有总监可提现、储备金的配置表  -->
+  <select id="getAllConfig" resultMap="BaseResultMap" parameterType="com.wwh.vo.DirectorConfigVO" >
+    select 
+    <include refid="Base_Column_List" />
+    from wallet_director_withdraw_reserve_config_t
+    where 1=1
+    <if test="id != null" >
+        id = #{id,jdbcType=BIGINT},
+      </if>
+    <if test="diskType != null" >
+        disk_type = #{diskType,jdbcType=VARCHAR},
+      </if>
+      <if test="getEmptyPoints != null" >
+        get_empty_points = #{getEmptyPoints,jdbcType=VARCHAR},
+      </if>
+      <if test="reserveAmount != null" >
+        reserve_amount = #{reserveAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="canWithdrawAmount != null" >
+        can_withdraw_amount = #{canWithdrawAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="passiveAmount != null" >
+        can_withdraw_amount = #{passiveAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="activeFlag != null" >
+        active_flag = #{activeFlag,jdbcType=CHAR},
+      </if>
+      <if test="deleteFlag != null" >
+        delete_flag = #{deleteFlag,jdbcType=CHAR},
+      </if>
+      <if test="id != null" >
+        last_updated_date = now(),
+      </if>
+      <if test="lastUpdatedBy != null" >
+        last_updated_by = #{lastUpdatedBy,jdbcType=BIGINT},
+      </if>
+  </select>
+  
+  
+  
+  <update id="updateWithdrawReserveConfig" parameterType="com.wwh.vo.DirectorConfigVO" >
+    update wallet_director_withdraw_reserve_config_t
+    <set >
+      <if test="diskType != null" >
+        disk_type = #{diskType,jdbcType=VARCHAR},
+      </if>
+      <if test="getEmptyPoints != null" >
+        get_empty_points = #{getEmptyPoints,jdbcType=VARCHAR},
+      </if>
+      <if test="reserveAmount != null" >
+        reserve_amount = #{reserveAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="canWithdrawAmount != null" >
+        can_withdraw_amount = #{canWithdrawAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="activeFlag != null" >
+        active_flag = #{activeFlag,jdbcType=CHAR},
+      </if>
+      <if test="deleteFlag != null" >
+        delete_flag = #{deleteFlag,jdbcType=CHAR},
+      </if>
+      <if test="id != null" >
+        last_updated_date = now(),
+      </if>
+      <if test="lastUpdatedBy != null" >
+        last_updated_by = #{lastUpdatedBy,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
+  <insert id="insertWithdrawReserveConfig" parameterType="com.wwh.vo.DirectorConfigVO" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into wallet_director_withdraw_reserve_config_t (disk_type, get_empty_points, reserve_amount, 
+      can_withdraw_amount, active_flag, delete_flag, 
+      created_date, created_by, last_updated_date, 
+      last_updated_by)
+    values (
+    #{diskType,jdbcType=VARCHAR}, 
+    #{getEmptyPoints,jdbcType=VARCHAR}, 
+    #{reserveAmount,jdbcType=DECIMAL}, 
+      #{canWithdrawAmount,jdbcType=DECIMAL}, 
+      #{activeFlag,jdbcType=CHAR}, 
+      #{deleteFlag,jdbcType=CHAR}, 
+      now(), 
+      #{createdBy,jdbcType=BIGINT}, 
+      now(), 
+      #{lastUpdatedBy,jdbcType=BIGINT})
+  </insert>
+  
+  
+  <!-- 提现申请  查询页面初始化需要的相关信息 -->
+  <select id="getApplyWithrawInfo" resultType="com.wwh.vo.ApplyWithdrawVO">
+  		select 
+			a.platform_withdrawals_amount as platformWithdrawalsAmount,
+			a.business_withdrawals_amount as businessWithdrawalsAmount,
+			a.member_withdrawals_amount   as memberWithdrawalsAmount,
+			b.REAL_NAME as realName,
+			(select weixin_name from wallet_weixin_t where user_id=#{userId,jdbcType=BIGINT}) weixinName,
+            (select weixin_num from wallet_weixin_t where user_id=#{userId,jdbcType=BIGINT}) weixinNum
+			from wwh_user_t b
+			left join wallet_platform_profit_t a  on a.user_id = b.user_id
+			where b.user_id=#{userId,jdbcType=BIGINT}
+  </select>
+ 
+  <!-- 插入提现申请记录信息 -->
+  <insert id="insertApplyWithdrawDetilInfo" parameterType="com.wwh.vo.WithdrawalVO">
+  		insert into wallet_profit_withdrawal_detail_t
+  		    (
+  		    	withdrawal_seq,
+  		    	user_id,
+  		    	disk_type,
+  		    	target_account,
+  		    	weixin_name,
+  		    	weixin_num,
+  		    	business_withdrawals_amount,
+  		    	member_withdrawals_amount,
+  		    	savegold_withdrawals_amount,
+  		    	withdrawal_way,
+  		    	withdrawal_status,
+  		    	active_flag,
+  		    	delete_flag,
+  		    	created_date,
+  		    	created_by,
+  		    	last_updated_date,
+  		    	last_updated_by
+  		    )values
+  		    (
+	  		    #{withdrawalId,jdbcType=BIGINT},
+	  		    #{userId,jdbcType=BIGINT},
+	  		    #{diskType,jdbcType=VARCHAR},
+	  		    #{targetAccount,jdbcType=VARCHAR},
+	  		    #{weixinName,jdbcType=VARCHAR},
+	  		    #{weixinNum,jdbcType=VARCHAR},
+	  		    #{busWithdrawAmount,jdbcType=DECIMAL},
+	  		    #{memberWithdrawAmount,jdbcType=DECIMAL},
+	  		    #{saveGoldWithdrawAmount,jdbcType=DECIMAL},
+	  		    #{withdrawalWay,jdbcType=VARCHAR},
+	  		    #{withdrawalStatus,jdbcType=VARCHAR},
+	  		    #{activeFlag,jdbcType=CHAR}, 
+	     		#{deleteFlag,jdbcType=CHAR}, 
+	      		now(), 
+	      		#{createdBy,jdbcType=BIGINT}, 
+	      		now(), 
+	      		#{lastUpdatedBy,jdbcType=BIGINT}
+  		    )
+  </insert>
+  
+  <!-- 提现申请记录  -->
+  <select id="getWithdrawDetilInfo" resultType="com.wwh.vo.WithdrawDetilVO">
+  		select 
+			withd.created_date as createdDate,
+			(withd.business_withdrawals_amount + withd.member_withdrawals_amount +withd.savegold_withdrawals_amount)  as withdrawAmount,
+			withd.business_withdrawals_amount as busWithdrawAmount,
+			withd.member_withdrawals_amount  as memberWithdrawAmount,
+			withd.savegold_withdrawals_amount as saveGoldWithdrawalsAmount,
+			withd.withdrawal_status as withdrawStatus,
+			withd.user_id as userId,
+			bank.bank_name as bankName,
+			m.REAL_NAME as realName,
+			w.weixin_name as weixinName,
+			w.weixin_num as weixinNum
+			from wallet_profit_withdrawal_detail_t withd
+			left join  wallet_bank_card_t bank on withd.target_account = bank.bank_card_number
+			left join wwh_user_t m on withd.user_id = m.user_id
+			left join wallet_weixin_t w on withd.user_id = w.user_id 
+			where withd.active_flag='Y'
+			and withd.delete_flag='N'
+			and withd.user_id=#{userId,jdbcType=BIGINT}
+  </select>
+  
+  
+  <select id="countWithdrawals" resultType="com.wwh.vo.CountWithdrawalsVO">
+  		select 
+			sum(wp.business_withdrawals_amount)  totalBusWithdAmount,
+			sum(wp.member_withdrawals_amount)    totalMeWithdAmount,
+			sum(wp.savegold_withdrawals_amount)  toitalSaWithdAmount,
+			p.platform_withdrawals_amount        platWithdAmount,
+			p.member_withdrawals_amount          meWithdAmount,
+			p.business_withdrawals_amount        buWithdAmount,
+			p.tiyan_save_amount                  tiyanSaveAmount,
+			p.huimin_save_amount                 huiminSaveAmount,
+			p.fumin_save_amount                  fuminSaveAmount,
+			p.xingmin_save_amount                xingminSaveAmount
+			from wallet_profit_withdrawal_detail_t wp
+			left join wallet_platform_profit_t  p on wp.user_id =  p.user_id
+			where wp.withdrawal_status = 'NO' 
+			and wp.user_id= #{userId}
+			and wp.active_flag ='Y'
+			and wp.delete_flag='N'
+			and p.active_flag='Y'
+			and p.delete_flag ='N'
+  </select>
+  
+  <select id="getTotalSaveGoldAmount" resultType="java.math.BigDecimal">
+		SELECT
+				SUM(
+					savegold_withdrawals_amount
+				)
+			FROM
+				wallet_profit_withdrawal_detail_t
+			WHERE
+				withdrawal_status = 'NO'
+			AND user_id = #{userId}
+			AND active_flag = 'Y'
+			AND delete_flag = 'N'
+			AND disk_type = #{diskType}
+  
+  </select>
+  <select id="checkHaveRuninfo" resultType="java.lang.Long">
+		SELECT
+				count(1) 
+			FROM
+				wallet_profit_withdrawal_detail_t
+			WHERE
+				withdrawal_status = 'NO'
+			AND user_id = #{userId}
+			AND active_flag = 'Y'
+			AND delete_flag = 'N'
+  </select>
+  
+  </mapper>

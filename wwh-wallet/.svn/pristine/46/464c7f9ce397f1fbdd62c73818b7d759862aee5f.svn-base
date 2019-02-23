@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wwh.loginwx.dao.ILoginwxDao">
+	<!-- 查询个人信息 -->
+	<select id="getWXUserInfoByUserId" resultType="com.wwh.loginwx.vo.WXUserInfoVO">
+		select 
+			a.user_id userId,
+			a.unionid unionId,
+			a.openid openId,
+			a.subscribe subScribe,
+			a.subscribetime subScribeTime,
+			a.nickname nickName,
+			a.sex sex,
+			a.country country,
+			a.province province,
+			a.city city,
+			a.language language,
+			a.headimgurl headImgUrl,
+			a.privilege privilege,
+			b.mobile_phone
+		 from wallet_wx_user_t a
+		 left join wwh_user_t b on a.user_id=b.user_id	
+		 where 
+		    a.user_id=#{userId}
+			and a.active_flag='Y'
+			and a.delete_flag ='N'
+	</select>
+	<!-- 查询个人信息 -->
+	<select id="getWXUserInfoByUnionId" resultType="com.wwh.loginwx.vo.WXUserInfoVO">
+		select 
+			a.user_id userId,
+			a.unionid unionId,
+			a.openid openId,
+			a.subscribe subScribe,
+			a.subscribetime subScribeTime,
+			a.nickname nickName,
+			a.sex sex,
+			a.country country,
+			a.province province,
+			a.city city,
+			a.language language,
+			a.headimgurl headImgUrl,
+			a.privilege privilege,
+			b.mobile_phone
+		 from wallet_wx_user_t a
+		 left join wwh_user_t b on a.user_id=b.user_id	
+		 where 
+		    a.unionid=#{unionId}
+			and a.active_flag='Y'
+			and a.delete_flag ='N'
+	</select>
+	<insert id="insertWXUserInfo" useGeneratedKeys="true" keyProperty="user_id" parameterType="com.wwh.loginwx.vo.WXUserInfoVO">
+     insert into wallet_wx_user_t 
+	    (
+	      	user_id,
+			unionid,
+			openid,
+			subscribe,
+			subscribetime,
+			nickname,
+			sex,
+			country,
+			province,
+			city,
+			language,
+			headimgurl,
+			privilege,
+			active_flag,
+			delete_flag,	
+			created_date,	
+			created_by,	
+			last_updated_date,	
+			last_updated_by	
+	      )
+	    values (
+		    #{userId,jdbcType=BIGINT}, 
+	     	#{unionId,jdbcType=VARCHAR}, 
+		    #{openId,jdbcType=VARCHAR},
+	 	 	#{subScribe,jdbcType=BIGINT},
+	      	#{subScribeTime,jdbcType=TIMESTAMP},
+	      	#{nickName,jdbcType=VARCHAR}, 
+	      	#{sex,jdbcType=BIGINT}, 
+	      	#{country,jdbcType=VARCHAR}, 
+	      	#{province,jdbcType=VARCHAR}, 
+	      	#{city,jdbcType=VARCHAR}, 
+	      	#{language,jdbcType=VARCHAR},
+	      	#{headimgurl,jdbcType=VARCHAR},
+	      	#{privilege,jdbcType=VARCHAR},
+	      	'Y',
+	      	'N',
+	      	now(), 
+	      	#{createdBy,jdbcType=BIGINT}, 
+	      	now(), 
+	      	#{lastUpdatedBy,jdbcType=BIGINT}
+	      )
+	</insert>
+	<update id="loseWXUser" parameterType="java.lang.Long">
+		update 
+			wwh_user_t 
+		set 
+			active_flag='N',
+		   	delete_flag='Y'
+		where user_id=#{userId}   	
+	</update>
+	<update id="updateWXUserId" >
+		update 
+			wallet_wx_user_t 
+		set 
+			user_id=#{userId}
+		where 
+			unionid=#{unionId}   	
+	</update>
+	
+</mapper>

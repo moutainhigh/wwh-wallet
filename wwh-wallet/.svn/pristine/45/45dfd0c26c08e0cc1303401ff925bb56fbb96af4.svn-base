@@ -1,0 +1,479 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>个人收益</title>
+<meta charset="utf-8" />
+<meta name="description" content="金融、钱包、理财、高收益">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1">
+<link rel="stylesheet" href="/wwh-wallet/css/bootstrap.css">
+<link rel="stylesheet" href="/wwh-wallet/css/font-awesome.min.css">
+<link rel="stylesheet" href="/wwh-wallet/css/plugin.css">
+<link rel="stylesheet" href="/wwh-wallet/css/landing.css">
+<link rel="stylesheet" href="/wwh-wallet/css/common.css">
+<link href="/wwh-wallet/css/mall/private-benefit.css" rel="stylesheet" />
+<link href="/wwh-wallet/css/style.css" rel="stylesheet" />
+<script type="text/javascript" src="/wwh-wallet/js/jquery.min.js"></script>
+<script src="/wwh-wallet/js/bootstrap.js"></script>
+<!-- app -->
+
+<script src="/wwh-wallet/js/app.js"></script>
+
+<script src="/wwh-wallet/js/app.plugin.js"></script>
+
+<script src="/wwh-wallet/js/app.data.js"></script>
+
+<!-- fuelux -->
+
+<script src="/wwh-wallet/js/fuelux/fuelux.js"></script>
+
+<!-- datepicker -->
+
+<script src="/wwh-wallet/js/datepicker/bootstrap-datepicker.js"></script>
+
+<!-- slider -->
+
+<script src="/wwh-wallet/js/slider/bootstrap-slider.js"></script>
+
+<!-- file input -->
+
+<script src="/wwh-wallet/js/file-input/bootstrap.file-input.js"></script>
+
+<!-- combodate -->
+
+<script src="/wwh-wallet/js/combodate/moment.min.js"></script>
+
+
+<!-- parsley -->
+
+<script src="/wwh-wallet/js/parsley/parsley.min.js"></script>
+</head>
+<body>
+    <div ng-include src="'/wwh-wallet/pages/wallet/common/header.html'"></div>
+	<div class="banner-box">
+		<div class="m-box">
+			<div class="my-benefit-box">
+				<div class="fixed mb-box12-wrap">
+					<div class="mb-box-1 fixed">
+						<div class="mb-12-box fixed">
+							<div class="mb-title01">我的收益（个）</div>
+							<div class="mb-title02">5000.00</div>
+						</div>
+						<div class="mb-line"></div>
+						<div class="mb-34-box fixed">
+							<div class="mb-title03">已提现（个）</div>
+							<div class="mb-title04">200.00</div>
+						</div>
+					</div>
+					<div class="mb-box-2 fixed">
+						<div class="mb-title05">
+							进入下一系统：<a href="#">惠民系统</a>
+						</div>
+						<div class="mb-title06">
+							加入资金：5000.00 <a href="#">查看规则</a>
+						</div>
+					</div>
+				</div>
+				<div class="mb-box-3 fixed">
+					<a href="/wwh-wallet/pages/wallet/benifit/benifit-step3.html" class="mb-paycard"></a>
+					<a href="#" class="mb-takecash">提现</a> <a href="#"
+						class="mb-infodetail">查看提现明细</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="benefit-detaile-box">
+		<div class="m-box fixed">
+			<div id="bd-box-1" class="bd-box bd-box-1 selected">
+				<div class="bd-title-1">招商分红收益</div>
+				<div class="bd-title-2">可提现</div>
+				<div class="bd-title-3">400.00个</div>
+				<div class="bd-title-4">
+					<a href="#">怎样赚取招商分红</a>
+				</div>
+			</div>
+			<!--<div class="bd-box bd-box-2" style="display:none;">
+                <div class="bd-title-1">会员充值收益</div>
+                <div class="bd-title-2">可提现</div>
+                <div class="bd-title-3">400.00个</div>
+                <div class="bd-title-4"><a href="#">怎样赚取会员分红</a></div>
+            </div>-->
+			<div id="bd-box-3" class="bd-box bd-box-3 last">
+				<div class="bd-title-1">会员等级收益</div>
+				<div class="bd-title-2">可提现</div>
+				<div class="bd-title-3">500.00个</div>
+				<div class="bd-title-4">
+					<a href="#">怎样赚取等级分红</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="deals-details">
+		<div class="m-box fixed d-t-bg">
+			<div class="zg-box-w zg-w-box01 selected">
+				<div class="zg-box zg-box11 selected">
+					<div class="deals-title-wrap">
+						<div class="deals-title">交易记录</div>
+						<div class="deals-title2">
+							<div class="deals-title21">
+								招商分红收益：<span>4.00个</span>
+							</div>
+							<div class="deals-title22">订单交易成功金额400.00个×1%</div>
+						</div>
+						<div class="mall-btn-select">
+							<div class="btn-group">
+								<button data-toggle="dropdown"
+									class="btn btn-small btn-white dropdown-toggle">
+									<span class="dropdown-label">所有商家</span> <span class="caret"></span>
+								</button>
+								<ul class="dropdown-menu dropdown-select">
+									<li class="active"><a href="#"><input type="radio"
+											name="d-s-r" checked="">所有商家</a></li>
+									<li><a href="#"><input type="radio" name="d-s-r">商家1</a></li>
+									<li><a href="#"><input type="radio" name="d-s-r">商家2</a></li>
+									<li><a href="#"><input type="radio" name="d-s-r">商家3</a></li>
+								</ul>
+							</div>
+						</div>
+					</div>
+					<div class="pb-table-wrap">
+						<table class="pb-table">
+							<tr>
+								<th>交易时间</th>
+								<th>订单编号</th>
+								<th>使用积分</th>
+								<th>订单金额</th>
+								<th>抽佣金额</th>
+								<th>状态</th>
+							</tr>
+							<tr>
+								<td class="td01">2016-10-15 15:21:36</td>
+								<td class="td02">G152312345</td>
+								<td class="td03">400个</td>
+								<td class="td04">400.00个</td>
+								<td class="td05">4.0个</td>
+								<td class="td06">交易成功</td>
+							</tr>
+							<tr>
+								<td class="td01">2016-10-15 15:21:36</td>
+								<td class="td02">G152312345</td>
+								<td class="td03">400个</td>
+								<td class="td04">400.00个</td>
+								<td class="td05">4.0个</td>
+								<td class="td06">交易成功</td>
+							</tr>
+							<tr>
+								<td class="td01">2016-10-15 15:21:36</td>
+								<td class="td02">G152312345</td>
+								<td class="td03">400个</td>
+								<td class="td04">400.00个</td>
+								<td class="td05">4.0个</td>
+								<td class="td06">交易成功</td>
+							</tr>
+							<tr>
+								<td class="td01">2016-10-15 15:21:36</td>
+								<td class="td02">G152312345</td>
+								<td class="td03">400个</td>
+								<td class="td04">400.00个</td>
+								<td class="td05">4.0个</td>
+								<td class="td06">交易成功</td>
+							</tr>
+							<tr>
+								<td class="td01">2016-10-15 15:21:36</td>
+								<td class="td02">G152312345</td>
+								<td class="td03">400个</td>
+								<td class="td04">400.00个</td>
+								<td class="td05">4.0个</td>
+								<td class="td06">交易成功</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+			</div>
+			<div class="zg-box-w zg-w-box03">
+				<div class="s-tab-wrap">
+					<div class="s-tab-w width1164">
+						<div class="deals-title">
+							<div class="s-tab s-tab-01 selected">收益记录</div>
+							<div class="s-tab s-tab-02">空点列表</div>
+							<div class="s-tab s-tab-03 last">抢点列表</div>
+						</div>
+						<div class="s-sub-sle s-sub-sle01 selected">
+							<div class="deals-title2">
+								<div class="deals-title21">
+									招商分红收益：<span>4.00个</span>
+								</div>
+							</div>
+							<div class="mall-btn-select">
+								<div class="btn-group">
+									<button data-toggle="dropdown"
+										class="btn btn-small btn-white dropdown-toggle">
+										<span class="dropdown-label">我抢的</span> <span class="caret"></span>
+									</button>
+									<ul class="dropdown-menu dropdown-select">
+										<li class="active"><a href="#"><input type="radio"
+												name="d-s-r" checked="">我抢的</a></li>
+										<li><a href="#"><input type="radio" name="d-s-r">历史</a></li>
+										<li><a href="#"><input type="radio" name="d-s-r">进行中</a></li>
+									</ul>
+								</div>
+							</div>
+						</div>
+						<div class="s-sub-sle s-sub-sle02">
+							<div class="deals-title2">
+								<div class="deals-title21">
+									招商分红收益：<span>4.00个</span>
+								</div>
+							</div>
+							<div class="mall-btn-select">
+								<div class="btn-group">
+									<button data-toggle="dropdown"
+										class="btn btn-small btn-white dropdown-toggle">
+										<span class="dropdown-label">所有商家</span> <span class="caret"></span>
+									</button>
+									<ul class="dropdown-menu dropdown-select">
+										<li class="active"><a href="#"><input type="radio"
+												name="d-s-r" checked="">所有商家</a></li>
+										<li><a href="#"><input type="radio" name="d-s-r">商家1</a></li>
+										<li><a href="#"><input type="radio" name="d-s-r">商家2</a></li>
+										<li><a href="#"><input type="radio" name="d-s-r">商家3</a></li>
+									</ul>
+								</div>
+							</div>
+						</div>
+						<div class="s-sub-sle s-sub-sle03">
+							<div class="deals-title2">
+								<div class="deals-title21">
+									招商分红收益：<span>4.00个</span>
+								</div>
+							</div>
+							<div class="mall-btn-select">
+								<div class="btn-group">
+									<button data-toggle="dropdown"
+										class="btn btn-small btn-white dropdown-toggle">
+										<span class="dropdown-label">所有商家</span> <span class="caret"></span>
+									</button>
+									<ul class="dropdown-menu dropdown-select">
+										<li class="active"><a href="#"><input type="radio"
+												name="d-s-r" checked="">所有商家</a></li>
+										<li><a href="#"><input type="radio" name="d-s-r">商家1</a></li>
+										<li><a href="#"><input type="radio" name="d-s-r">商家2</a></li>
+										<li><a href="#"><input type="radio" name="d-s-r">商家3</a></li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="s-sub-w">
+						<div class="s-sub s-sub-00 selected">
+							<div class="dm-table-wrap">
+								<table class="dm-table dm-table1">
+									<tr>
+										<th>加入时间</th>
+										<th>我的分享</th>
+										<th>当前人数</th>
+										<th>盘号</th>
+										<th>系统</th>
+										<th>收益金额</th>
+										<th>身份</th>
+										<th></th>
+									</tr>
+									<tr>
+										<td class="td01">2016-10-15 15:21:36</td>
+										<td class="td02">3人</td>
+										<td class="td03">22人</td>
+										<td class="td04">盘1</td>
+										<td class="td05">体验系统</td>
+										<td class="td06">400.00个</td>
+										<td class="td07">理财师</td>
+										<td class="td08"><a href="#">查看</a></td>
+									</tr>
+									<tr>
+										<td class="td01">2016-10-15 15:21:36</td>
+										<td class="td02">3人</td>
+										<td class="td03">22人</td>
+										<td class="td04">盘1</td>
+										<td class="td05">惠民系统</td>
+										<td class="td06">400.00个</td>
+										<td class="td07">理财师</td>
+										<td class="td08"><a href="#">查看</a></td>
+									</tr>
+									<tr>
+										<td class="td01">2016-10-15 15:21:36</td>
+										<td class="td02">3人</td>
+										<td class="td03">22人</td>
+										<td class="td04">盘1</td>
+										<td class="td05">富民系统</td>
+										<td class="td06">400.00个</td>
+										<td class="td07">理财师</td>
+										<td class="td08"><a href="#">查看</a></td>
+									</tr>
+									<tr>
+										<td class="td01">2016-10-15 15:21:36</td>
+										<td class="td02">3人</td>
+										<td class="td03">22人</td>
+										<td class="td04">盘1</td>
+										<td class="td05">体验系统</td>
+										<td class="td06">400.00个</td>
+										<td class="td07">理财师</td>
+										<td class="td08">已结束</td>
+									</tr>
+									<tr>
+										<td class="td01">2016-10-15 15:21:36</td>
+										<td class="td02">3人</td>
+										<td class="td03">22人</td>
+										<td class="td04">盘1</td>
+										<td class="td05">体验系统</td>
+										<td class="td06">400.00个</td>
+										<td class="td07">理财师</td>
+										<td class="td08">已结束</td>
+									</tr>
+								</table>
+							</div>
+						</div>
+						<div class="s-sub s-sub-01">
+							<div class="dm-table-wrap">
+								<table class="dm-table">
+									<tr>
+										<th>2交易时间</th>
+										<th>交易金额</th>
+										<th>所得积分</th>
+										<th>订单编号</th>
+										<th>状态</th>
+									</tr>
+									<tr>
+										<td class="td01">2016-10-15 15:21:36</td>
+										<td class="td02">5000.00</td>
+										<td class="td03">1000个</td>
+										<td class="td04">G1568995666</td>
+										<td class="td05">交易成功</td>
+									</tr>
+									<tr class="suspend">
+										<td class="td01">2016-10-15 15:21:36</td>
+										<td class="td02">5000.00</td>
+										<td class="td03">1000个</td>
+										<td class="td04">G1568995666</td>
+										<td class="td05">交易成功</td>
+									</tr>
+									<tr class="cancle">
+										<td class="td01">2016-10-15 15:21:36</td>
+										<td class="td02">5000.00</td>
+										<td class="td03">1000个</td>
+										<td class="td04">G1568995666</td>
+										<td class="td05">交易成功</td>
+									</tr>
+								</table>
+							</div>
+						</div>
+						<div class="s-sub s-sub-02">
+							<div class="dm-table-wrap">
+								<table class="dm-table">
+									<tr>
+										<th>3交易时间</th>
+										<th>交易金额</th>
+										<th>所得积分</th>
+										<th>订单编号</th>
+										<th>状态</th>
+									</tr>
+									<tr>
+										<td class="td01">2016-10-15 15:21:36</td>
+										<td class="td02">5000.00</td>
+										<td class="td03">1000个</td>
+										<td class="td04">G1568995666</td>
+										<td class="td05">交易成功</td>
+									</tr>
+									<tr class="suspend">
+										<td class="td01">2016-10-15 15:21:36</td>
+										<td class="td02">5000.00</td>
+										<td class="td03">1000个</td>
+										<td class="td04">G1568995666</td>
+										<td class="td05">交易成功</td>
+									</tr>
+									<tr class="cancle">
+										<td class="td01">2016-10-15 15:21:36</td>
+										<td class="td02">5000.00</td>
+										<td class="td03">1000个</td>
+										<td class="td04">G1568995666</td>
+										<td class="td05">交易成功</td>
+									</tr>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+				<script type="text/javascript">
+					var tabsNodes = $('.s-tab-w'), tabsLists = tabsNodes
+							.find('.s-tab')
+					index = 0, subNodes = $('.s-sub');
+					tabsLists.click(function() {
+						index = $(this).index();
+						$(this).addClass('selected').siblings().removeClass(
+								'selected');
+						$('.s-sub-0' + index).addClass('selected').siblings()
+								.removeClass('selected');
+					});
+				</script>
+			</div>
+			<div class="page-position fixed">
+				<div class="fixed float-R">
+					<div id="Pagination" class="pagination">
+						<!-- 这里显示分页 -->
+					</div>
+					<div id="Searchresult">分页初始化完成后这里的内容会被替换。</div>
+					<div id="hiddenresult" style="display: none;">
+						<!-- 列表个素 -->
+						<div class="result">第1页</div>
+						<div class="result">第2页</div>
+						<div class="result">第3页</div>
+						<div class="result">第4页</div>
+						<div class="result">第5页</div>
+						<div class="result">第6页</div>
+						<div class="result">第7页</div>
+						<div class="result">第8页</div>
+					</div>
+					<script src="/wwh-wallet/js/pagination/jquery.pagination.js"></script>
+					<script type="text/javascript">
+						$(function() {
+							var initPagination = function() {
+								var num_entries = $("#hiddenresult div.result").length;// 创建分页
+								$("#Pagination").pagination(num_entries, {
+									num_edge_entries : 1, //边缘页数
+									num_display_entries : 4, //主体页数
+									callback : pageselectCallback,
+									items_per_page : 1
+								//每页显示1项
+								});
+							}();
+
+							function pageselectCallback(page_index, jq) {
+								var new_content = $(
+										"#hiddenresult div.result:eq("
+												+ page_index + ")").clone();
+								$("#Searchresult").empty().append(new_content); //装载对应分页的内容
+								return false;
+							}
+						});
+					</script>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript">
+			$(function() { //   alert(selectedNum);  zg-box;
+				var selectedNumB;
+				$('.benefit-detaile-box .bd-box').click(
+						function() {
+							selectedNumB = $(this).attr('id').substring(7);
+							$(this).addClass('selected').siblings()
+									.removeClass('selected');
+							$('.zg-w-box0' + selectedNumB).addClass('selected')
+									.siblings().removeClass('selected');
+							$('.s-sub-sle0' + selectedNumB)
+									.addClass('selected').siblings()
+									.removeClass('selected');
+						});
+			})
+		</script>
+	</div>
+</body>
+</html>

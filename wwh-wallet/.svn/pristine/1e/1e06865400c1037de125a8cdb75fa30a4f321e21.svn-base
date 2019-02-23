@@ -1,0 +1,217 @@
+package com.wwh.loginwx.controller;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.ExcessiveAttemptsException;
+import org.apache.shiro.authc.LockedAccountException;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.subject.Subject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.wwh.common.ResultMsg;
+import com.wwh.loginwx.req.LoginwxRequest;
+import com.wwh.loginwx.service.ILoginwxService;
+import com.wwh.loginwx.util.LoginwxUtil;
+import com.wwh.loginwx.vo.WXUserInfoVO;
+import com.wwh.loginwx.vo.WXUserTokenVO;
+import com.wwh.loginwx.vo.WeChatQRCodeVO;
+import com.wwh.service.IMemberService;
+import com.wwh.service.IUserService;
+import com.wwh.util.MD5Utils;
+import com.wwh.util.ReturnConstant;
+import com.wwh.vo.UserVO;
+
+@Controller
+@RequestMapping("/pages")
+public class LoginwxControlller {
+	private static Logger logger = LogManager.getLogger(LoginwxControlller.class);
+
+	@Autowired
+	ILoginwxService loginwxService;
+	@Autowired
+	IUserService userService;
+	@Autowired
+	IMemberService memberService;
+		// 请求授权微信授权回调后页面发送微信登陆
+		@RequestMapping(value = "/con", method = RequestMethod.GET)
+		public String reqInit(HttpServletRequest request,HttpServletResponse response) {
+			logger.info("进入微信登陆授权接口，开始请求授权");
+			   try {
+					// 获取授权链接
+					String url =LoginwxRequest.getWXAuthorizeUrl(LoginwxUtil.redirectUrl,LoginwxUtil.scopeUserinfo);
+					// 重定向，让用户授权
+					response.sendRedirect(url);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			return null;
+		}
+
+		// 请求授权微信授权回调后页面发送微信登陆
+		@RequestMapping(value = "/loginwx", method = RequestMethod.GET)
+		public String loginwx(HttpServletRequest request,HttpServletResponse response){
+			logger.info("用户已成功授权，开始获取用户信息");
+		        // 获取传递的参数
+		       	String code= request.getParameter("code");
+		        String state=request.getParameter("state");
+		        WXUserTokenVO wxUserTokenVO=null;
+		        WXUserInfoVO wxUserInfoVO=null;
+		        if(null!=code&&!"".equals(code)&&LoginwxUtil.state.equals(state)){
+		        	logger.info("成功得到了有效的授权码code={}",code);
+		        	//得到有效的授权码，获取授权凭证
+		        	 wxUserTokenVO=LoginwxRequest.getWXUserToken(code);
+		        	if(null!=wxUserTokenVO){
+		        		logger.info("成功得到了获取用户信息凭证接口AccessToken={},openId={}",wxUserTokenVO.getAccessToken(),wxUserTokenVO.getOpenId());
+		        		//得到微信用户信息
+		        		wxUserInfoVO =LoginwxRequest.getWXUserInfo(wxUserTokenVO.getAccessToken(), wxUserTokenVO.getOpenId());
+		        	}
+		        }
+			    if(null!=wxUserInfoVO){
+			    	WXUserInfoVO userInfoVO=loginwxService.getWXUserInfoByUnionId(wxUserInfoVO.getUnionid());
+			    	if(null!=userInfoVO){
+			    		//若已经注册过则直接登陆
+			    		UserVO userVO =  loginwxService.getUserByUserId(userInfoVO.getUserId());
+			    		try {
+			    			
+							response.sendRedirect(LoginwxUtil.loginURL+"?userName="+userVO.getUserName()+"&passWord="
+							+userVO.getPassword()+"&state="+LoginwxUtil.state+"&unionId="+wxUserInfoVO.getUnionid());
+						
+			    		} catch (IOException e) {
+							e.printStackTrace();
+						}
+			    	}else{
+			    		//得到了微信用户信息,存入微信用户表,则创建新用户.
+			    		Long userId=loginwxService.insertWXUserInfo(wxUserInfoVO);
+			    		//注册用户
+			    		loginwxService.registerMember(userId,wxUserInfoVO);
+			    		//登陆
+			    		try {
+			    			String passWord=MD5Utils.encryptMD5("123456");
+							response.sendRedirect(LoginwxUtil.loginURL+"?userName="+wxUserInfoVO.getUserName()+"&passWord="
+			    			+passWord+"&state="+LoginwxUtil.state+"&unionId="+wxUserInfoVO.getUnionid());
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+			    	}
+			    }
+			return null;
+	}
+
+
+		/**
+		 * 登陆
+		 * @param vo
+		 * @param request
+		 * @param redirectAttributes
+		 * @return
+		 */
+	    @RequestMapping(value="/loginctl",method=RequestMethod.POST)
+	    @ResponseBody
+	    public ResultMsg<Object> userLogin(@RequestBody UserVO vo){
+	    		ResultMsg<Object> rs = new ResultMsg<Object>();
+	    	try {
+	    		String userId = String.valueOf(vo.getUserId());
+		    	String password = vo.getPassword();
+		        UsernamePasswordToken token = new UsernamePasswordToken(userId, password);
+		        Subject currentUser = SecurityUtils.getSubject();  
+	            token.setRememberMe(true);
+	            currentUser.login(token);
+	            	List<Map<String,Object>> list =  memberService.getMemberById(Long.parseLong(userId));
+	            	if(list.size() > 0){
+	            		Map<String,Object> data = list.get(0);
+	            		data.remove("password");
+	            		rs.setData(data);
+	            	}
+	            rs.setReturnCode(ReturnConstant.RETURN_CODE_200);
+	            rs.setReturnMsg(ReturnConstant.RETURN_MSG_900);
+		        }
+		    	catch(LockedAccountException lae){
+		        	rs.setReturnCode(ReturnConstant.RETURN_CODE_901);
+		            rs.setReturnMsg(ReturnConstant.RETURN_MSG_901); 
+		        }catch(ExcessiveAttemptsException eae){  
+		        	rs.setReturnCode(ReturnConstant.RETURN_CODE_902);
+		            rs.setReturnMsg(ReturnConstant.RETURN_MSG_902);  
+		        }catch(AuthenticationException ae){  
+		        	rs.setReturnCode(ReturnConstant.RETURN_CODE_903);
+		            rs.setReturnMsg(ReturnConstant.RETURN_MSG_903);  
+		        }
+		        return rs;
+	    }
+	    /**
+		 * 绑定手机号
+		 * @param vo
+		 * @param request
+		 * @param redirectAttributes
+		 * @return
+		 */
+	    @RequestMapping(value="/bindPhone",method=RequestMethod.POST)
+	    @ResponseBody
+	    public ResultMsg<Object> bindPhone(@RequestBody WXUserInfoVO wxUserInfoVO){
+	    		ResultMsg<Object> msg = new ResultMsg<Object>();
+	    		msg=loginwxService.bindWXUser(wxUserInfoVO);
+		        return msg;
+	    }
+	    
+		// 请求授权微信授权回调后页面发送微信登陆
+		@RequestMapping(value = "/son", method = RequestMethod.POST)
+		public String reqInite(HttpServletRequest request, HttpServletResponse response) {
+			logger.info("进入微信登陆授权接口，开始请求授权");
+			try {
+				// 获取授权链接
+				String url = LoginwxRequest.getWXAuthorizeUrl(LoginwxUtil.codeRedirectUrl, LoginwxUtil.scopeUserinfo);
+				// 重定向，让用户授权
+				response.sendRedirect(url);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
+
+		@RequestMapping(value = "getTwoBarCode", method = { RequestMethod.POST, RequestMethod.GET })
+		public void getTwoBarCode(HttpServletRequest request, HttpServletResponse response) {
+			logger.info("进入获取二维码事件");
+			logger.info("用户已授权，开始获取用户信息");
+			// 获取传递的参数
+			String code = request.getParameter("code");
+			String state = request.getParameter("state");
+			WXUserTokenVO wxUserTokenVO = null;
+			WXUserInfoVO wxUserInfoVO = null;
+			if (null != code && !"".equals(code) && LoginwxUtil.state.equals(state)) {
+				// 得到有效的授权码，获取授权凭证
+				wxUserTokenVO = LoginwxRequest.getWXUserToken(code);
+				if (null != wxUserTokenVO) {
+					// 得到微信用户信息
+					wxUserInfoVO = LoginwxRequest.getWXUserInfo(wxUserTokenVO.getAccessToken(), wxUserTokenVO.getOpenId());
+				}
+			}
+			if (null != wxUserInfoVO) {
+				// 通过unionid获取用户注册信息
+				WXUserInfoVO wxUserInfo = loginwxService.getWXUserInfoByUnionId(wxUserInfoVO.getUnionid());
+				// 如果返回不为空 则标识用户注册过
+				if (null != wxUserInfo) {
+					String jsnMsg = loginwxService.getParam(wxUserInfo);
+					WeChatQRCodeVO wecarRecde = loginwxService.createTemporaryORCode(wxUserTokenVO.getAccessToken(),
+							jsnMsg);
+					logger.info("返回的ticket ={}", wecarRecde.getTicket());
+					// 获取二维码
+					boolean result = loginwxService.chageQr(wecarRecde.getTicket());
+					logger.info("获取二维码结果result={}", result);
+				}
+			}
+	}
+
+}

@@ -1,0 +1,402 @@
+package com.wwh.dao;
+
+import java.math.BigDecimal;
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.wwh.vo.DiskCustromVO;
+import com.wwh.vo.DiskRelationCustromVO;
+import com.wwh.vo.DiskRelationVO;
+import com.wwh.vo.DiskUserRelationVO;
+import com.wwh.vo.DiskVO;
+import com.wwh.vo.PointGrapRelationVO;
+import com.wwh.vo.ProfitExtendVO;
+
+public interface IDiskDao {
+
+	/**
+	 * 
+	 * @Title: insertBatch
+	 * @Description: 批量插入盘关系
+	 * @param records
+	 * @return
+	 * @return: Integer
+	 */
+	public Integer insertBatch(@Param("records") List<DiskVO> records);
+
+	/**
+	 * 
+	 * @Title: insertDisk
+	 * @Description: 新入盘
+	 * @param diskVO
+	 * @return
+	 * @return: Integer
+	 */
+	public Integer insertDisk(DiskVO diskVO);
+
+	/**
+	 * 
+	 * @Title: diskFinished
+	 * @Description: 修改盘完成状态
+	 * @param diskType
+	 * @param diskSeq
+	 * @return
+	 * @return: Integer
+	 */
+	public Integer diskFinished(@Param("diskType") String diskType, @Param("diskSeq") String diskSeq, @Param("lastUpdatedBy") Long lastUpdatedBy);
+
+	/**
+	 * 
+	 * @Title: increaseDiskCounter
+	 * @Description: 新增某盘的人数
+	 * @param diskSeq
+	 * @return
+	 * @return: Integer
+	 */
+	public Integer increaseDiskCounter(String diskSeq);
+
+	/**
+	 * 
+	 * @Title: getRunningTheFastestOrTheSlowestDisk
+	 * @Description: 查询最快的盘 ,查询最慢的盘
+	 * @param orderType
+	 *            null:找最快的盘 ;DESC 找出最快的盘, ASC 找出最慢的盘
+	 * @return
+	 * @return: DiskVO
+	 */
+	public DiskVO getRunningTheFastestOrTheSlowestDisk(@Param("diskType") String diskType, @Param("orderByType") String orderByType);
+	
+	public DiskVO getRunningTheFastestOrTheSlowestDisk2(@Param("diskType") String diskType, @Param("orderByType") String orderByType);	
+
+	/**
+	 * 
+	 * @Title: getItemByDiskType
+	 * @Description: 查询按照时间倒序的若干条收益记录
+	 * @param diskType
+	 * @param num
+	 * @return
+	 * @return: List<ProfitExtendVO>
+	 */
+	List<ProfitExtendVO> getItemByDiskType(@Param("diskType") String diskType, @Param("num") Integer num);
+
+	/**
+	 * 
+	 * 
+	 * @Title: showDiskCounter
+	 * @Description: 查询某个系统里面有多少参与人数
+	 * @param type
+	 * @return
+	 * @return: Integer
+	 */
+	Integer getDiskCounterByType(String type);
+
+	/**
+	 * 
+	 * 
+	 * @Title: selectByDiskVO
+	 * @Description: 按条件查询盘
+	 * @param diskVO
+	 * @return
+	 * @return: List<DiskVO>
+	 */
+	public List<DiskVO> selectByDiskVO(DiskVO diskVO);
+
+	/**
+	 * 
+	 * @Title: getByDiskSeq
+	 * @Description: 通过盘号获取盘信息
+	 * @param diskSeq
+	 * @return
+	 * @return: DiskVO
+	 */
+	public DiskVO getByDiskSeq(String diskSeq);
+
+	/**
+	 * 
+	 * @Title: getByDiskSeqS
+	 * @Description: 通过一堆盘号获取盘信息
+	 * @param diskSeqs
+	 * @return
+	 * @return: DiskVO
+	 */
+	public List<DiskVO> getByDiskSeqs(@Param("records") List<String> diskSeqs);
+
+	/**
+	 * 
+	 * @Title: getByDiskTypeAndDiskSeq
+	 * @Description: 通过盘类型and盘号获取盘信息
+	 * @param diskType
+	 *            必须字段
+	 * @param diskSeq
+	 *            必须字段
+	 * @return
+	 * @return: DiskVO
+	 */
+	public DiskVO getByDiskTypeAndDiskSeq(@Param("diskType") String diskType, @Param("diskSeq") String diskSeq);
+
+	/**
+	 * 
+	 * @Title: getDiskAll
+	 * @Description: 获取系统的信息 （资金，收益）
+	 * @return
+	 * @return: DiskCustromVO
+	 */
+	public DiskCustromVO getDiskAll();
+
+	/**
+	 * 
+	 * @Title: getDiskAmountByType
+	 * @Description: 获取某个系统的总收益
+	 * @param diskType
+	 * @return
+	 * @return: BigDecimal
+	 */
+	public BigDecimal getDiskAmountByType(String diskType);
+
+	/**
+	 * 
+	 * @Title: getDiskRechargeAmountByType
+	 * @Description: 获取某个系统的总充值金额
+	 * @param diskType
+	 * @return
+	 * @return: BigDecimal
+	 */
+	public BigDecimal getDiskRechargeAmountByType(String diskType);
+
+	/**
+	 * 
+	 * @Title: getAllBusinessAmount
+	 * @Description: 获取平台招商分红总收益
+	 * @return
+	 * @return: BigDecimal
+	 */
+	public BigDecimal getAllBusinessAmount();
+
+	/**
+	 * 
+	 * @Title: getDiskUserRelation
+	 * @Description: 获取用户在某个系统中的盘关系信息
+	 * @param userId
+	 * @param diskType
+	 * @return
+	 * @return: List<DiskUserRelationVO>
+	 */
+	public List<DiskUserRelationVO> getDiskUserRelation(@Param("userId") Long userId, @Param("diskType") String diskType);
+
+	/**
+	 * 
+	 * 
+	 * @Title: getDiskUserRelationExistsRecord
+	 * @Description: 获取用户在某个系统中的盘存在数量
+	 * @param userId
+	 *            必须字段
+	 * @param userIdCard
+	 *            不是必须字段 ，不填请赋值为 null
+	 * @param diskType
+	 *            必须字段
+	 * @param diskStatus
+	 *            必须字段
+	 * 
+	 * @return: List<DiskUserRelationVO>
+	 */
+	public List<DiskUserRelationVO> getDiskUserRelationExistsRecord(@Param("userId") Long userId, @Param("userIdCard") String userIdCard,
+			@Param("diskType") String diskType, @Param("diskStatus") String diskStatus);
+
+	/**
+	 * 
+	 * @Title: getDiskProfitDetail
+	 * @Description: 通过盘类型确定去哪个系统表查询，通过用户名获取该表中的所有收益记录
+	 * @param userId
+	 * @param diskType
+	 * @return
+	 * @return: List<ProfitExtendVO>
+	 */
+	public List<ProfitExtendVO> getDiskProfitDetail(@Param("userId") Long userId, @Param("diskType") String diskType);
+
+	/**
+	 * 
+	 * @Title: getDiskProfitDetail
+	 * @Description: 通过盘类型确定去哪个系统表查询，通过用户名和盘号获取该盘中的所有收益记录
+	 * @param userId
+	 * @param diskType
+	 * @return
+	 * @return: List<ProfitExtendVO>
+	 */
+	public List<ProfitExtendVO> getDiskProfitDetail2(@Param("userId") Long userId, @Param("diskType") String diskType, @Param("diskSeq") String diskSeq);
+
+	/**
+	 * 
+	 * @Title: getDiskByType
+	 * @Description: 查询各个系统中用户所有参与过该系统的会员人数(多个身份不叠加)
+	 * @param userId
+	 * @param diskType
+	 * @return
+	 * @return: DiskVO
+	 */
+	public Integer getDiskByType(@Param("userId") Long userId, @Param("diskType") String diskType);
+
+	/**
+	 * 
+	 * @Title: getDiskAmountByUserId
+	 * @Description: 获取用户在某个系统的历史总收益
+	 * @param userId
+	 * @param diskType
+	 * @return
+	 * @return: BigDecimal
+	 */
+	public BigDecimal getDiskAmountByUserId(@Param("userId") Long userId, @Param("diskType") String diskType);
+
+	/**
+	 * 
+	 * @Title: getDiskRechargeAmountByUserId
+	 * @Description: 获取用户在某个系统的总充值金额
+	 * @param userId
+	 * @param diskType
+	 * @return
+	 * @return: BigDecimal
+	 */
+	public BigDecimal getDiskRechargeAmountByUserId(@Param("userId") Long userId, @Param("diskType") String diskType);
+
+	/**
+	 * 
+	 * @Title: getPointGrapRelationByDiskSeq
+	 * @Description: 获取某个盘的抢点人
+	 * @param diskSeq
+	 * @return
+	 * @return: PointGrapRelationVO
+	 */
+	public List<PointGrapRelationVO> getPointGrapRelationByDiskSeq(String diskSeq);
+
+	/**
+	 * 
+	 * @Title: getDiskTodayNewCounter
+	 * @Description: 获取某个盘的今天新增人数
+	 * @param diskSeq
+	 * @param diskType
+	 * @return
+	 * @return: Integer
+	 */
+	public Integer getDiskTodayNewCounter(@Param("diskSeq") String diskSeq, @Param("diskType") String diskType);
+
+	/**
+	 * 
+	 * @Title: getUesrProfitByAllSys
+	 * @Description: 获取用户的所有系统各个的总收入
+	 * @param userId
+	 * @return
+	 * @return: List<BigDecimal>
+	 */
+	List<BigDecimal> getUesrProfitByAllSys(Long userId);
+
+	/**
+	 * 
+	 * @Title: getUserRcgByAllSys
+	 * @Description: 获取用户的所有系统各个的总充值金额
+	 * @param userId
+	 * @return
+	 * @return: List<BigDecimal>
+	 */
+	List<BigDecimal> getUserRcgByAllSys(Long userId);
+
+	/**
+	 * 修改用户的盘关系表当前收益
+	 * 
+	 * @Title: updateUserCurrentProfit
+	 * @Description: 修改用户的盘关系表当前收益
+	 * @param diskRelationVO
+	 * @return: void
+	 */
+	public void updateUserCurrentProfit(DiskRelationVO diskRelationVO);
+
+	/**
+	 * 根据系统类型查询当天系统中新增的盘数量
+	 * 
+	 * @param deskType
+	 * @return
+	 */
+	public Integer countPlatetNum(@Param("diskType") String diskType);
+
+	/**
+	 * 根据用户id系统类型查询a推荐点的个数
+	 * 
+	 * @param userId
+	 * @param diskType
+	 * @return
+	 */
+
+	public Integer selectRecommentPoint(@Param("userId") Long userId, @Param("diskType") String diskType);
+
+	/**
+	 * 
+	 * @Title: getDiskNamesByDiskSeqs
+	 * @Description: 获取盘假名字
+	 * @param diskSeqs
+	 * @return
+	 * @return: List<DiskVO>
+	 */
+	List<DiskVO> getDiskNamesByDiskSeqs(@Param("records") List<String> diskSeqs);
+
+	/**
+	 * 
+	 * @Title: getDiskByParentDiskSeqs
+	 * @Description: 获取通盘
+	 * @param diskSeqs
+	 * @return
+	 * @return: List<DiskVO>
+	 */
+	List<DiskVO> getDiskByParentDiskSeqs(@Param("records") List<String> diskSeqs);
+
+	/**
+	 * 查询用户所在系统最后一个盘的总监收益记录
+	 * 
+	 * @param userId
+	 * @param diskType
+	 * @return
+	 */
+	List<ProfitExtendVO> getDiskProfitDetailByDisk(@Param("userId") Long userId, @Param("diskType") String diskType);
+
+	/**
+	 * 获取用户在所在系统中最后一个盘的状态
+	 * 
+	 * @param userId
+	 * @param diskType
+	 * @return
+	 */
+	String getDiskStatus(@Param("userId") Long userId, @Param("diskType") String diskType);
+
+	/**
+	 * 
+	 * @Title: getNewestProfitIdCard
+	 * @Description: TODO
+	 * @param diskType
+	 * @return
+	 * @return: List<String>
+	 */
+	List<String> getNewestProfitIdCard(@Param("diskType") String diskType, @Param("count") Integer count);
+
+	/**
+	 * 
+	 * @Title: getDiskRelationCustromVO
+	 * @Description: 手机端 获取用户在对应系统中的盘详细信息
+	 * @param diskType
+	 * @param userId
+	 * @return
+	 * @return: DiskRelationCustromVO
+	 */
+	List<DiskRelationCustromVO> getDiskRelationCustromVO(@Param("diskType") String diskType, @Param("userId") Long userId);
+
+	/**
+	 * 
+	 * @Title: getDiskMemberCounter
+	 * @Description: 获取某个盘的当前会员数量
+	 * @param diskSeq
+	 * @param diskType
+	 * @return
+	 * @return: Integer
+	 */
+	Integer getDiskMemberCounter(@Param("diskSeq") String diskSeq, @Param("diskType") String diskType);
+
+	public List<DiskRelationCustromVO> getDiskRelationCustromVO1(String diskType, Long userId);
+
+}

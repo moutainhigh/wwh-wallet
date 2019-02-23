@@ -1,0 +1,9 @@
+package com.wwh.loginwx.dao;
+
+import com.wwh.loginwx.vo.WXUserInfoVO;
+
+public interface ILoginwxDao {
+
+	public Long insertWXUserInfo(WXUserInfoVO wxUserInfoVO) ;
+
+}

@@ -1,0 +1,266 @@
+﻿
+.locationico { width:88px; height:110px; position:absolute;   background:url(/wwh-wallet/images/reserve/greylocation.png) center center no-repeat;   
+}
+.dottedico { width:20px; height:20px; position:absolute; background:url(/wwh-wallet/images/reserve/yellow-dotted.png) no-repeat;display:none;
+}
+.dottedico.selected { width:30px; height:30px; position:absolute; background:url(/wwh-wallet/images/reserve/yellow-dotted.png) no-repeat;display:block;
+                          animation-name: skyset2; 
+animation-duration: 3s; 
+animation-iteration-count: infinite;
+animation-timing-function: linear;      
+
+    -webkit-animation-name: skyset2; 
+-webkit-animation-duration: 3s; 
+-webkit-animation-iteration-count: infinite;
+-webkit-animation-timing-function: linear;   
+}
+.locationico01 {  left:157px; top:-1px;              
+/*animation-name: myfirst;
+animation-duration: 0.5s;
+animation-timing-function: ease-in-out;
+animation-delay: 0s;
+animation-iteration-count: 5;
+animation-direction: alternate;
+animation-play-state: running;
+
+-moz-animation-name: myfirst;
+-moz-animation-duration: 0.5s;
+-moz-animation-timing-function: ease-in-out;
+-moz-animation-delay: 0s;
+-moz-animation-iteration-count: 5;
+-moz-animation-direction: alternate;
+-moz-animation-play-state: running;
+
+-webkit-animation-name: myfirst;
+-webkit-animation-duration: 0.5s;
+-webkit-animation-timing-function: ease-in-out;
+-webkit-animation-delay: 0s;
+-webkit-animation-iteration-count: 5;
+-webkit-animation-direction: alternate;
+-webkit-animation-play-state: running;
+
+-o-animation-name: myfirst;
+-o-animation-duration: 0.5s;
+-o-animation-timing-function: ease-in-out;
+-o-animation-delay: 0s;
+-o-animation-iteration-count: 5;
+-o-animation-direction: alternate;
+-o-animation-play-state: running;*/
+}
+.locationico02 { left:634px; top:215px;      
+
+}
+.locationico03 { left:239px; top:390px;               
+/*animation-name: myfirst3;
+animation-duration: 0.5s;
+animation-timing-function: ease-in-out;
+animation-delay: 3.6s;
+animation-iteration-count: 5;
+animation-direction: alternate;
+animation-play-state: running;
+
+-moz-animation-name: myfirst3;
+-moz-animation-duration: 0.5s;
+-moz-animation-timing-function: ease-in-out;
+-moz-animation-delay: 3.6s;
+-moz-animation-iteration-count: 5;
+-moz-animation-direction: alternate;
+-moz-animation-play-state: running;
+
+-webkit-animation-name: myfirst3;
+-webkit-animation-duration: 0.5s;
+-webkit-animation-timing-function: ease-in-out;
+-webkit-animation-delay: 3.6s;
+-webkit-animation-iteration-count: 5;
+-webkit-animation-direction: alternate;
+-webkit-animation-play-state: running;
+
+-o-animation-name: myfirst3;
+-o-animation-duration: 0.5s;
+-o-animation-timing-function: ease-in-out;
+-o-animation-delay: 3.6s;
+-o-animation-iteration-count: 5;
+-o-animation-direction: alternate;
+-o-animation-play-state: running;*/         
+}
+.locationico04 { left:567px; top:758px;              
+/*animation-name: myfirst4;
+animation-duration: 0.3s;
+animation-timing-function: ease-in-out;
+animation-delay: 5.4s;
+animation-iteration-count: 5;
+animation-direction: alternate;
+animation-play-state: running;
+
+-moz-animation-name: myfirst4;
+-moz-animation-duration: 0.3s;
+-moz-animation-timing-function: ease-in-out;
+-moz-animation-delay: 5.4s;
+-moz-animation-iteration-count: 5;
+-moz-animation-direction: alternate;
+-moz-animation-play-state: running;
+
+-webkit-animation-name: myfirst4;
+-webkit-animation-duration: 0.3s;
+-webkit-animation-timing-function: ease-in-out;
+-webkit-animation-delay: 5.4s;
+-webkit-animation-iteration-count: 5;
+-webkit-animation-direction: alternate;
+-webkit-animation-play-state: running;
+
+-o-animation-name: myfirst4;
+-o-animation-duration: 0.3s;
+-o-animation-timing-function: ease-in-out;
+-o-animation-delay: 5.4s;
+-o-animation-iteration-count: 5;
+-o-animation-direction: alternate;
+-o-animation-play-state: running;*/         
+}
+.dottedico01 { left:251px; top:89px;
+}
+.dottedico02 { left:821px; top:343px;
+}
+.dottedico03 { left:331px; top:472px;
+}
+.dottedico04 { left:612px; top:931px;
+}
+
+@keyframes myfirst
+{
+0% {top: -1px;} 
+50% {top: -15px;}
+100% {top: -1px;}
+}
+
+@-moz-keyframes myfirst /* Firefox */
+{
+0% {top: -1px;} 
+50% {top: -15px;}
+100% {top: -1px;}
+}
+
+@-webkit-keyframes myfirst /* Safari 和 Chrome */
+{
+0% {top: -1px;} 
+50% {top: -15px;}
+100% {top: -1px;}
+}
+
+@-o-keyframes myfirst /* Opera */
+{
+0% {top: -1px;} 
+50% {top: -15px;}
+100% {top: -1px;}
+}
+
+@keyframes myfirst2
+{
+0% {top: 225px;} 
+50% {top: 214px;}
+100% {top: 225px;}
+}
+
+@-moz-keyframes myfirst2 /* Firefox */
+{
+0% {top: 225px;} 
+50% {top: 214px;}
+100% {top: 225px;}
+}
+
+@-webkit-keyframes myfirst2 /* Safari 和 Chrome */
+{
+0% {top: 225px;} 
+50% {top: 214px;}
+100% {top: 225px;}
+}
+
+@-o-keyframes myfirst2 /* Opera */
+{
+0% {top: 225px;} 
+50% {top: 214px;}
+100% {top: 225px;}
+}
+
+
+@keyframes myfirst3
+{
+0% {top: 390px;} 
+50% {top: 381px;}
+100% {top: 390px;}
+}
+
+@-moz-keyframes myfirst3 /* Firefox */
+{
+0% {top: 390px;} 
+50% {top: 381px;}
+100% {top: 390px;}
+}
+
+@-webkit-keyframes myfirst3 /* Safari 和 Chrome */
+{
+0% {top: 390px;} 
+50% {top: 381px;}
+100% {top: 390px;}
+}
+
+@-o-keyframes myfirst3 /* Opera */
+{
+0% {top: 390px;} 
+50% {top: 381px;}
+100% {top: 390px;}
+}
+
+@keyframes myfirst4
+{
+from {top: 771px;}
+to {top: 757px;}
+}
+
+@-moz-keyframes myfirst4 /* Firefox */
+{
+from {top: 771px;}
+to {top: 757px;}
+}
+
+@-webkit-keyframes myfirst4 /* Safari 和 Chrome */
+{
+from {top: 771px;}
+to {top: 757px;}
+}
+
+@-o-keyframes myfirst4 /* Opera */
+{
+from {top: 771px;}
+to {top: 757px;}
+}
+
+
+
+
+
+.locationico.selected { background:url(/wwh-wallet/images/reserve/yellowlocation2.png) center center no-repeat;
+    animation-name: skyset; 
+animation-duration: 3s; 
+animation-iteration-count: infinite;
+animation-timing-function: linear;      
+
+    -webkit-animation-name: skyset; 
+-webkit-animation-duration: 3s; 
+-webkit-animation-iteration-count: infinite;
+-webkit-animation-timing-function: linear;      
+}
+@-webkit-keyframes skyset { 
+0% { background: url(/wwh-wallet/images/reserve/yellowlocation2.png) center center no-repeat;} 
+50%{ background: url(/wwh-wallet/images/reserve/yellowlocations.png) center center no-repeat;} 
+100% {background: url(/wwh-wallet/images/reserve/yellowlocation2.png) center center no-repeat;} 
+} 
+
+@-webkit-keyframes skyset2 { 
+0% { background: url(/wwh-wallet/images/reserve/yellow-dotted.png) center center no-repeat;} 
+50%{ background: url(/wwh-wallet/images/reserve/yellow-dotteds.png) center center no-repeat;} 
+100% {background: url(/wwh-wallet/images/reserve/yellow-dotted.png) center center no-repeat;} 
+} 
+
+
+
+

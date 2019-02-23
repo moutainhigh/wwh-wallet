@@ -1,0 +1,439 @@
+package com.wwh.loginwx.service.impl;
+
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Hashtable;
+import java.util.List;
+
+import javax.imageio.ImageIO;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.EncodeHintType;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.wwh.common.DatabaseContextHolder;
+import com.wwh.common.ResultMsg;
+import com.wwh.dao.ILoginwxDao;
+import com.wwh.dao.IUserDao;
+import com.wwh.enums.DatabaseType;
+import com.wwh.loginwx.config.WeixinConfig;
+import com.wwh.loginwx.controller.LoginwxControlller;
+import com.wwh.loginwx.service.ILoginwxService;
+import com.wwh.loginwx.util.HttpRequestUtil;
+import com.wwh.loginwx.util.LoginwxUtil;
+import com.wwh.loginwx.vo.WXUserInfoVO;
+import com.wwh.loginwx.vo.WeChatQRCodeVO;
+import com.wwh.service.IExternalService;
+import com.wwh.util.MD5Utils;
+import com.wwh.vo.ExternalVO;
+import com.wwh.vo.UserVO;
+
+import net.sf.json.JSONObject;
+
+@Service
+public class LoginwxService implements ILoginwxService {
+	private static Logger logger = LogManager.getLogger(LoginwxControlller.class);
+	private static String POST = "POST";
+
+	@Autowired
+	ILoginwxDao loginwxDao;
+
+	@Autowired
+	IUserDao userDao;
+
+	@Autowired
+	IExternalService externalService;
+
+	/**
+	 * 新增微信用户信息
+	 */
+	public Long insertWXUserInfo(WXUserInfoVO wxUserInfoVO) {
+		logger.info("新增微信用户信息");
+		return loginwxDao.insertWXUserInfo(wxUserInfoVO);
+	}
+
+	/**
+	 * 通过userId查询微信信息
+	 */
+	@Override
+	public WXUserInfoVO getWXUserInfoByUserId(Long userId) {
+		logger.info("查询微信用户信息userId={}", userId);
+		return loginwxDao.getWXUserInfoByUserId(userId);
+	}
+
+	/**
+	 * 通过unionId查询微信信息
+	 */
+	@Override
+	public WXUserInfoVO getWXUserInfoByUnionId(String uniontId) {
+		logger.info("查询微信用户信息uniontId={}", uniontId);
+		return loginwxDao.getWXUserInfoByUnionId(uniontId);
+	}
+
+	/**
+	 * 注册
+	 */
+	@Override
+	public void registerMember(WXUserInfoVO wxUserInfoVO) {
+		logger.info("注册微信用户信息userId={},nickName={}", wxUserInfoVO.getUserId(), wxUserInfoVO.getNickName());
+		try {
+			ExternalVO externalVO = new ExternalVO();
+			externalVO.setUserId(wxUserInfoVO.getUserId());
+			externalVO.setUserName(wxUserInfoVO.getNickName());
+			externalVO.setNickName(wxUserInfoVO.getNickName());
+			externalVO.setImgUrl(wxUserInfoVO.getHeadImgUrl());
+			externalVO.setPassword(wxUserInfoVO.getPassWord());
+			externalVO.setReferenceId(String.valueOf(wxUserInfoVO.getReferenceId()));
+			// 注册
+			externalService.registerMember(externalVO);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	/**
+	 * 创建临时带参数二维码
+	 * 
+	 * @param accessToken
+	 * @expireSeconds 该二维码有效时间，以秒为单位。 最大不超过2592000（即30天），此字段如果不填，则默认有效期为30秒。
+	 * @param sceneId
+	 *            场景Id
+	 * @return
+	 */
+	public WeChatQRCodeVO createTemporaryORCode(String accessToken, String expireSeconds ,Long sceneId) {
+		WeChatQRCodeVO weChatQRCode = null;
+		String requestUrl = "https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=TOKEN";
+		requestUrl = requestUrl.replace("TOKEN", accessToken);
+		// 需要提交的JSON数据
+		 String outputStr = "{\"expire_seconds\": %s,\"action_name\":\"QR_SCENE\", \"action_info\": {\"scene\": {\"scene_id\"：%d}}}";
+		// 创建临时带参数二维码
+		JSONObject jsonObject = HttpRequestUtil.httpRequestJSONObject(requestUrl, POST, String.format(outputStr, expireSeconds,sceneId));
+		if (null != jsonObject) {
+			try {
+				weChatQRCode = new WeChatQRCodeVO();
+				weChatQRCode.setTicket(jsonObject.getString("ticket"));
+				weChatQRCode.setExpire_seconds(jsonObject.getInt("expire_seconds"));
+				logger.info("创建临时带参二维码成功,ticket=" + weChatQRCode.getTicket() + ",expire_seconds="
+						+ weChatQRCode.getExpire_seconds());
+			} catch (Exception e) {
+				weChatQRCode = null;
+				String errorMsg = jsonObject.getString("errmsg");
+				logger.info("创建临时带参二维码失败,错误码是=" + errorMsg);
+			}
+		}
+		return weChatQRCode;
+	}
+	/**
+	 * 上传图片素材
+	 * @param accessToken
+	 * @param imgurl
+	 * @param headUrl
+	 * @param openId
+	 * @return
+	 */
+	public void uploadImg(String accessToken, String imgurl,WXUserInfoVO wxUserInfo) {
+		WXUserInfoVO mUserInfo=new WXUserInfoVO();
+		//先得到保存过的还在有效期的mediaId
+		String mediaId= getValidMediaIdByUnionId(wxUserInfo.getUnionId());
+		if(null==mediaId||"".equals(mediaId)){
+			//如果mediaId已经过期则重新上传图片素材获取
+			//得到合成后的图片
+			File imgfile=getImage("",wxUserInfo);
+			//上传图片
+			String requestUrl = "https://api.weixin.qq.com/cgi-bin/media/upload?access_token=ACCESS_TOKEN&type=image";
+			requestUrl = requestUrl.replace("ACCESS_TOKEN", accessToken);
+			// 上传带参数二维码
+			JSONObject jsonObject = HttpRequestUtil.httpUploadJSONObject(requestUrl, POST, imgfile);
+			if (null != jsonObject) {
+				try {
+					mediaId=jsonObject.getString("media_id");
+					logger.info("上传图片成功,mediaId="+mediaId );
+					//发送消息
+					sendMsg(accessToken,mediaId,wxUserInfo.getOpenId());
+					//删除图片缓存
+					imgfile.delete();
+					//保存有效期的mediaId
+					mUserInfo.setUnionId(wxUserInfo.getUnionId());
+					mUserInfo.setMediaId(mediaId);
+					updateWXUserInfo(mUserInfo);
+				} catch (Exception e) {
+					String errorMsg = jsonObject.getString("errmsg");
+					logger.info("上传图片失败,错误码是=" + errorMsg);
+				}
+			}
+		}else{
+			//如果还未过期则直接发送消息
+			logger.info("有未过期分享码直接发送,mediaId="+mediaId );
+			sendMsg(accessToken,mediaId,wxUserInfo.getOpenId());
+		}
+	}
+	/**
+	 * 得到合成微信用户和二维码后的图片
+	 * @param imgUrl
+	 * @param headUrl
+	 * @param wxUserInfoVO
+	 * @throws WriterException 
+	 */
+	public  File getImage(String imgUrl,WXUserInfoVO wxUserInfo) {  
+		File  imgfile=null;
+	    try {
+	    		//整个图长宽
+				int width = 450;
+				int height = 600; 
+				//二维码长宽
+				int QRWidth = 900;
+				int QRHeight = 900;
+				//二维码黑色
+				int BLACK = 0xFF000000;
+				//二维码白色
+		        int WHITE = 0xFFFFFFFF;
+		        
+				String requestUrl="http://mobile.vwhsc.com/pages/con?referenceId="+wxUserInfo.getUserId();
+				
+				//我的微信头像
+				//BufferedImage imgQRcode=ImageIO.read(new URL(imgUrl)); 
+				BufferedImage userHead=ImageIO.read(new URL(wxUserInfo.getHeadImgUrl())); 
+				
+				//生成分享二维码
+		        //设置编码，防止中文乱码
+		        Hashtable<EncodeHintType, Object> ht = new Hashtable<EncodeHintType, Object> ();
+		        ht.put (EncodeHintType.CHARACTER_SET, "UTF-8");
+		        ht.put(EncodeHintType.MARGIN, 1);
+		        
+		        // 设置二维码参数(编码内容，编码类型，图片宽度，图片高度,格式)
+		        BitMatrix bitMatrix = new MultiFormatWriter ().encode (requestUrl, BarcodeFormat.QR_CODE, QRWidth, QRHeight, ht);
+		        
+		        int b_width = bitMatrix.getWidth ();
+		        int b_height = bitMatrix.getHeight ();
+		        // 建立图像缓冲器
+		        BufferedImage imgQRcode = new BufferedImage (b_width, b_height, BufferedImage.TYPE_INT_RGB);
+		        for ( int x = 0; x < b_width; x++ )
+		        {
+		            for ( int y = 0; y < b_height; y++ )
+		            {
+		            	 imgQRcode.setRGB (x, y, bitMatrix.get (x, y) ? BLACK : WHITE);
+		            }
+		        }
+		        
+		        //合成图片
+				//设置画板属性
+				Font font = new Font("楷体", Font.PLAIN, 30);     
+				BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);     
+				Graphics2D g2 = (Graphics2D)bi.getGraphics(); 
+				
+				//锐化图片提高清晰度
+				g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);  
+				g2.setRenderingHint(RenderingHints.KEY_TEXT_LCD_CONTRAST, 140);
+				g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);  
+				
+				g2.setBackground(new Color(255, 68, 1));     
+				g2.clearRect(0, 0, width, height);     
+				g2.setPaint(Color.WHITE);     
+				g2.setFont(font);
+				//开始画图
+				g2.drawImage(userHead,50, 50, 80 , 80, null);
+				g2.drawString("我是"+wxUserInfo.getNickName(), 135,100);  
+				g2.drawImage(imgQRcode,50, 170,350,350, null);
+				g2.setFont(new Font("楷体", Font.PLAIN, 25));
+				g2.drawString("长按二维码识别分享", 100,550);
+				//保存到项目根目录
+				imgfile=new File(WeixinConfig.myPic);
+				FileOutputStream fos = new FileOutputStream(imgfile); 
+				ImageIO.write(bi, "jpg", fos);   
+				//关闭流
+				fos.flush();  
+				fos.close();
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (WriterException e) {
+				e.printStackTrace();
+			}   
+	    return imgfile;
+	  }  
+	
+	/**
+	 * 发送图片消息
+	 * @return
+	 */
+	public void sendMsg(String accessToken,String mediaId,String openId) {
+		String requestUrl = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=ACCESS_TOKEN";
+		requestUrl = requestUrl.replace("ACCESS_TOKEN", accessToken);
+		// 需要提交的JSON数据
+		 StringBuffer outputStr = new StringBuffer();
+		 outputStr.append("{");
+		    outputStr.append("\"touser\":\""+openId+"\",");
+		    outputStr.append("\"msgtype\":\"image\",");
+		    outputStr.append("\"image\":");
+		    outputStr.append("{");
+		      outputStr.append("\"media_id\":\""+mediaId+"\"");
+		   outputStr.append("}");
+		outputStr.append("}");
+		// 发送带参数二维码
+		HttpRequestUtil.httpRequestJSONObject(requestUrl,"POST",outputStr.toString());
+		logger.info("发送图片成功,openId="+openId );
+	}
+	
+	// 用ticket获取二维码
+	public String chageQr(String ticket) {
+		String requestUrl = "https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=TICKET";
+		requestUrl = requestUrl.replace("TICKET", ticket);
+		LoginwxUtil.urlEncodeUTF8(requestUrl);
+		return requestUrl;
+	}
+	/**
+	 * 得到用户信息
+	 */
+	@Override
+	public UserVO getUserByUserId(Long userId) {
+
+		return userDao.getUserByUserId(userId);
+	}
+
+	/**
+	 * 绑定微信用户手机号
+	 */
+	@Override
+	public ResultMsg<Object> bindWXUser(WXUserInfoVO wxUserInfoVO,String isTrue) {
+		logger.info("进入绑定手机号wxUserInfoVO={}", wxUserInfoVO.toString());
+		ResultMsg<Object> msg = new ResultMsg<Object>();
+		// 先查询是否已经存在此手机号
+		UserVO userVO = userDao.getUserByMobilePhone(wxUserInfoVO.getMobilePhone());
+		if (null != userVO) {
+			logger.info("已经有手机号");
+			// 是微信登陆的
+			if ("loginwx".equals(wxUserInfoVO.getState())) {
+				logger.info("是微信登陆用户unionId={}", wxUserInfoVO.getUnionId());
+				if("Y".equals(isTrue)){//确认绑定
+					if(userVO.getPassword().equals(MD5Utils.encryptMD5(wxUserInfoVO.getPassWord()))){
+						// 先更新微信表中关联的userId改为已存在的用户ID
+						wxUserInfoVO.setUserId(userVO.getUserId());
+						wxUserInfoVO.setReferenceId(userVO.getReferenceId());
+						loginwxDao.updateWXUserInfo(wxUserInfoVO);
+						msg.setData(userVO);
+						msg.setReturnCode("1");
+						msg.setReturnMsg("绑定手机号成功");
+					}else{
+						//返回手机号用户信息
+						msg.setData(userVO);
+						msg.setReturnCode("903");
+						msg.setReturnMsg("输入密码错误，绑定失败");
+					}
+				}else{
+					//返回手机号用户信息
+					msg.setData(userVO);
+					msg.setReturnCode("0");
+					msg.setReturnMsg("手机号已存在");
+				}
+			} else {
+				// 如果不是微信登陆
+				logger.info("不是微信登陆用户unionId={}", wxUserInfoVO.getUnionId());
+				if("Y".equals(isTrue)){//确认绑定
+					if(userVO.getPassword().equals(MD5Utils.encryptMD5(wxUserInfoVO.getPassWord()))){
+						userVO = new UserVO();
+						userVO.setUserId(wxUserInfoVO.getUserId());
+						userVO.setMobilePhone(wxUserInfoVO.getMobilePhone());
+						userDao.updateUserInfoById(userVO);
+						DatabaseContextHolder.setDatabaseType(DatabaseType.mallDataSource);
+						userDao.updateTmemeberInfo(userVO);
+						DatabaseContextHolder.setDatabaseType(DatabaseType.walletdataSource);
+						msg.setReturnCode("1");
+						msg.setReturnMsg("绑定手机号成功");
+					}else{
+						//返回手机号用户信息
+						msg.setData(userVO);
+						msg.setReturnCode("903");
+						msg.setReturnMsg("输入密码错误，绑定失败");
+					}
+				}else{
+					//返回手机号用户信息
+					msg.setData(userVO);
+					msg.setReturnCode("0");
+					msg.setReturnMsg("手机号已存在");
+				}
+			}
+		} else {
+			logger.info("不存在手机号");
+			if(!StringUtils.isEmpty(wxUserInfoVO.getPassWord())){
+				//判断是否存在相同用户名
+				List list=userDao.getUserByCondition(wxUserInfoVO.getUserName());
+				//存在相同用户名，则设置用户名为空
+				if(list.size()>0) wxUserInfoVO.setUserName(null);
+				// 不存在手机号,则注册真实新用户
+				registerMember(wxUserInfoVO);
+				msg.setReturnCode("1");
+				msg.setReturnMsg("绑定手机号成功");
+			}else{
+				logger.info("继续填写密码");
+				msg.setReturnCode("404");
+				msg.setReturnMsg("手机号不存在");
+			}
+		}
+		return msg;
+	}
+
+	@Override
+	public ResultMsg<Object> validPhone(String phone) {
+		logger.info("验证手机号是否存在 phone={}", phone);
+		ResultMsg<Object> msg = new ResultMsg<Object>();
+		// 先查询是否已经存在此手机号，存在直接关联此用户
+		UserVO userVO = userDao.getUserByMobilePhone(phone);
+		if (null != userVO) {
+			msg.setData(userVO);
+			msg.setReturnCode("0");
+			msg.setReturnMsg("手机号已存在");
+		} else {
+			msg.setReturnCode("404");
+			msg.setReturnMsg("手机号不存在");
+		}
+
+		return msg;
+	}
+	/**
+	 * 得到有效的公共接口使用token凭证（两个小时有效期）
+	 */
+	@Override
+	public String getValidTokenByUnionId(String unionId) {
+		String validtoken=loginwxDao.getValidTokenByUnionId(unionId);
+		return validtoken;
+	}
+	/**
+	 * 得到用户有效的媒体id(媒体id有效3天)
+	 */
+	@Override
+	public String getValidMediaIdByUnionId(String unionId) {
+		String validMediaId=loginwxDao.getValidMediaIdByUnionId(unionId);
+		return validMediaId;
+	}
+	/**
+	 * 更新微信表中的用户信息
+	 * @param userId
+	 * @param unionId
+	 */
+	@Override
+	public void updateWXUserInfo(WXUserInfoVO wxUserInfoVO) {
+		loginwxDao.updateWXUserInfo(wxUserInfoVO);
+	}
+
+}

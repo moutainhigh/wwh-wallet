@@ -1,0 +1,250 @@
+package com.wwh.service.impl;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.wwh.dao.IFixedRebateDao;
+import com.wwh.dao.IPlatformProfitDao;
+import com.wwh.dao.IWalletAmountDao;
+import com.wwh.enums.FixedRebateEnum;
+import com.wwh.enums.FixedRebateTypeEnum;
+import com.wwh.service.IFixedRebateService;
+import com.wwh.vo.FixedRebateVO;
+import com.wwh.vo.PlatformProfitVO;
+import com.wwh.vo.WalletAmountVO;
+@Service
+public class FixedRebateService implements IFixedRebateService {
+	private static Logger logger = LogManager.getLogger(FixedRebateService.class);
+	@Autowired
+	IFixedRebateDao fixedRebateDao;
+	
+	@Autowired
+	IPlatformProfitDao platformProfitDao;
+	
+	@Autowired
+	IWalletAmountDao walletAmountDao;
+	
+	/**
+	 * 通过idcard查询定返统计记录
+	 */
+	@Override
+	public FixedRebateVO getRebateInfoByIdCard(String idCard){
+		logger.info("开始身份定返统计记录");
+		FixedRebateVO fixedRebateVO	=fixedRebateDao.getRebateInfoByIdCard(idCard);
+		return fixedRebateVO;
+	}
+	/**
+	 * 更新定返统计记录
+	 */
+	@Override
+	public void updateRebateInfo(FixedRebateVO fixedRebateVo){
+		logger.info("开始更新定返统计记录");
+		if(fixedRebateVo!=null){
+			fixedRebateDao.updateRebateInfo(fixedRebateVo);
+		}
+	}
+	/**
+	 * 新增定返统计信息
+	 */
+	@Override
+	public void insertRebateInfo(FixedRebateVO fixedRebateVo){
+		logger.info("开始新增定返统计记录");
+		if(fixedRebateVo!=null){
+			fixedRebateDao.insertRebateInfo(fixedRebateVo);
+		}
+	}
+	/**
+	 * 通过用户id查询统计记录
+	 */
+	@Override
+	public List<FixedRebateVO> getRebateInfoByUserId(Long userId){
+		logger.info("开始查询定返统计记录");
+		List<FixedRebateVO> refixedRebate =fixedRebateDao.getRebateInfoByUserId(userId);
+		return refixedRebate;
+	}
+	/**
+	 * 新增定返详情记录
+	 */
+	@Override
+	public void insertRebateDetailInfo(FixedRebateVO fixedRebateVo){
+		logger.info("开始新增定返详情记录");
+		if(fixedRebateVo!=null){
+			fixedRebateDao.insertRebateInfo(fixedRebateVo);
+		}
+	}
+	/**
+	 * 通过idcard查询定返详情记录
+	 */
+	@Override
+	public List<FixedRebateVO> getRebateDetailInfoByIdCard(String IdCard){
+		logger.info("开始查询定返详情记录");
+		List<FixedRebateVO> refixedRebate =fixedRebateDao.getRebateDetailInfoByIdCard(IdCard);
+		return refixedRebate;
+	}
+	/**
+	 * 通过用户id查询定返详情记录
+	 */
+	@Override
+	public List<FixedRebateVO> getRebateDetailInfoByUserId(Long userId){
+		logger.info("开始查询定返详情记录");
+		List<FixedRebateVO> refixedRebate =fixedRebateDao.getRebateInfoByUserId(userId);
+		return refixedRebate;
+	}
+	/**
+	 * 查询定返比例配置
+	 */
+	@Override
+	public BigDecimal getFixedRate(){
+		logger.info("开始查询定返比例配置");
+		BigDecimal refixedRate =fixedRebateDao.getFixedRate();
+		return refixedRate;
+	}
+	/**
+	 * 新增定返比例
+	 */
+	@Override
+	public void insertRebateRate(FixedRebateVO fixedrebatevo) {
+		logger.info("开始新增定返详情记录");
+		if(fixedrebatevo!=null){
+			//先将比例全部finished
+			FixedRebateVO finishedVO=new FixedRebateVO();
+			finishedVO.setExeStatus("FINISHED");
+			updateRebateRate(finishedVO);
+			//再插入有效的比例
+			fixedRebateDao.insertRebateRate(fixedrebatevo);
+		}
+	}
+	/**
+	 *更新定返比例状态
+	 * @Title: insertRebateRate 
+	 * @Description: TODO
+	 * @param fixedrebatevo
+	 * @return: void
+	 */
+	public void updateRebateRate(FixedRebateVO fixedrebatevo){
+		logger.info("开始新增定返详情记录");
+		if(fixedrebatevo!=null){
+			fixedRebateDao.updateRebateRate(fixedrebatevo);
+		}
+	}
+	/**
+	 * 得到定返功能开关配置
+	 */
+	@Override
+	public boolean getRebateConfig(String configName) {
+		String configList=fixedRebateDao.getRebateConfig(configName);
+		boolean configCode="Y".equals(configList)?true:false;
+		logger.info("得到定返开关["+configName+"]["+configCode+"]");
+		return configCode;
+	}
+	/**
+	 * 通过用户id查询定返详情记录
+	 */
+	@Override
+	public BigDecimal getCountDetailInfoByUserId(Long userId){
+		logger.info("开始查询昨日总收益");
+		BigDecimal refixedRebate =fixedRebateDao.getCountDetailInfoByUserId(userId);
+		return refixedRebate;
+	}
+	/**
+	 * 计算定返金额
+	 */
+	@Transactional(propagation=Propagation.REQUIRED)
+	@Override
+	public void doCalculateRebate(){
+		logger.info("开始定返计算流程");
+		//从定返比例配置表中查出目前running状态的比例，表中必定只有一条running
+		BigDecimal rate=fixedRebateDao.getFixedRate();
+		//防止数据量大，进行分页查询
+		Long count=fixedRebateDao.getRebateInfoCount()/3+1;//总数平分三页取整每页数量加1保证查询饱满
+		List<FixedRebateVO> rebateList=null;
+		for(int k=0;k<=2;k++){
+			logger.info("进行第"+(k+1)+"页定返身份计算");
+			//从定返统计表中查询出需要定返的记录
+			rebateList=new ArrayList<FixedRebateVO>();
+			rebateList.addAll(fixedRebateDao.getRebateInfo(count*k,count));
+			if(null!=rebateList&&rebateList.size()>0){
+				//计算每个身份定返金额
+				for(FixedRebateVO ofixedRebateVO:rebateList){
+					//本次定返的定返金额
+					BigDecimal profitFixedRebate=ofixedRebateVO.getTotalAmount().multiply(rate);
+					//定返总金额与已返总金额差额
+					BigDecimal finallyFixedRebate=ofixedRebateVO.getTotalAmount().subtract(ofixedRebateVO.getReturnedAmount());
+					//比较计算本次累计定返总额与总定返额是否超额，未超额则本次定返有效
+					if(ofixedRebateVO.getReturnedAmount().add(profitFixedRebate)
+							.compareTo(ofixedRebateVO.getTotalAmount())<0){
+						//平台的总收益增加
+						PlatformProfitVO platformProfitVO = new PlatformProfitVO();
+						platformProfitVO.setUserId(ofixedRebateVO.getUserId());
+						platformProfitVO.setPlatformTotalAmount(profitFixedRebate);
+						platformProfitVO.setPlatformWithdrawalsAmount(profitFixedRebate);
+						platformProfitVO.setPlatformRemainAmount(profitFixedRebate);
+						platformProfitVO.setMemberTotalAmount(profitFixedRebate);
+						platformProfitVO.setMemberWithdrawalsAmount(profitFixedRebate);
+						platformProfitVO.setMemberRemainAmount(profitFixedRebate);
+						platformProfitVO.setCreatedBy(ofixedRebateVO.getUserId());
+						platformProfitVO.setLastUpdatedBy(ofixedRebateVO.getUserId());
+						// 把平台总收益表插入
+						platformProfitDao.updatePlatformProfitByUserId(platformProfitVO);
+						//钱包表 增加平台总金额
+						WalletAmountVO walletAmountVO = new WalletAmountVO();
+						walletAmountVO.setUserId(ofixedRebateVO.getUserId());
+						walletAmountVO.setPlatformTotalAmount(profitFixedRebate);
+						walletAmountVO.setCreatedBy(ofixedRebateVO.getUserId());
+						walletAmountVO.setLastUpdatedBy(ofixedRebateVO.getUserId());
+						walletAmountDao.updateByUserIdSelective(walletAmountVO);
+						//新增本次定返的详情
+						ofixedRebateVO.setProfitAmount(profitFixedRebate);
+						ofixedRebateVO.setProfitType(FixedRebateTypeEnum.DF.name());
+						fixedRebateDao.insertRebateDetailInfo(ofixedRebateVO);
+						//更新定返统计表
+						ofixedRebateVO.setReturnedAmount(profitFixedRebate);
+						fixedRebateDao.updateRebateInfo(ofixedRebateVO);
+						
+					}else{//如果本次定返总金额>=总定返金额，那么本次定返总金额直接给该身份加满，完成此身份定返历程
+						//平台的总收益增加
+						PlatformProfitVO platformProfitVO = new PlatformProfitVO();
+						platformProfitVO.setUserId(ofixedRebateVO.getUserId());
+						platformProfitVO.setPlatformTotalAmount(finallyFixedRebate);
+						platformProfitVO.setPlatformWithdrawalsAmount(finallyFixedRebate);
+						platformProfitVO.setPlatformRemainAmount(finallyFixedRebate);
+						platformProfitVO.setMemberTotalAmount(finallyFixedRebate);
+						platformProfitVO.setMemberWithdrawalsAmount(finallyFixedRebate);
+						platformProfitVO.setMemberRemainAmount(finallyFixedRebate);
+						platformProfitVO.setCreatedBy(ofixedRebateVO.getUserId());
+						platformProfitVO.setLastUpdatedBy(ofixedRebateVO.getUserId());
+						// 把平台总收益表插入
+						platformProfitDao.updatePlatformProfitByUserId(platformProfitVO);
+						//钱包表 增加平台总金额
+						WalletAmountVO walletAmountVO = new WalletAmountVO();
+						walletAmountVO.setUserId(ofixedRebateVO.getUserId());
+						walletAmountVO.setPlatformTotalAmount(finallyFixedRebate);
+						walletAmountVO.setCreatedBy(ofixedRebateVO.getUserId());
+						walletAmountVO.setLastUpdatedBy(ofixedRebateVO.getUserId());
+						walletAmountDao.updateByUserIdSelective(walletAmountVO);
+						//新增本次定返的详情
+						ofixedRebateVO.setProfitAmount(finallyFixedRebate);
+						ofixedRebateVO.setProfitType(FixedRebateTypeEnum.DF.name());
+						fixedRebateDao.insertRebateDetailInfo(ofixedRebateVO);
+						//更新定返统计表
+						ofixedRebateVO.setReturnedAmount(finallyFixedRebate);
+						ofixedRebateVO.setRebateStauts(FixedRebateEnum.FINISHED.name());
+						fixedRebateDao.updateRebateInfo(ofixedRebateVO);
+					}
+				}
+			}
+		}
+	}
+	
+
+
+}

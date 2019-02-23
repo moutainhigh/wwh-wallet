@@ -1,0 +1,43 @@
+package com.wwh.dao;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.wwh.loginwx.vo.WXUserInfoVO;
+
+public interface ILoginwxDao {
+	/**
+	 * 插入微信用户信息
+	 * @param wxUserInfoVO
+	 * @return
+	 */
+	public Long insertWXUserInfo(WXUserInfoVO wxUserInfoVO) ;
+	/**
+	 * 通过userId查询微信用户
+	 * @param userId
+	 * @return
+	 */
+	public WXUserInfoVO getWXUserInfoByUserId(Long userId);
+	/**
+	 * 通过unionId查询微信用户
+	 * @param unionId
+	 * @return
+	 */
+	public WXUserInfoVO getWXUserInfoByUnionId(String unionId);
+	/**
+	 * 失效掉微信创建的用户
+	 * @param userId
+	 */
+	public void loseWXUser(Long userId);
+	/**
+	 * 失效掉微信创建的用户
+	 * @param userId
+	 */
+	public void loseWXUserm(Long memberId);
+	
+	/**
+	 * 更新微信表中的用户id
+	 * @param userId
+	 * @param unionId
+	 */
+	public void updateWXUserId(@Param("userId") Long userId,@Param("unionId") String unionId); 
+}

@@ -1,0 +1,144 @@
+package com.wwh.service;
+
+import java.math.BigDecimal;
+
+import com.wwh.common.PagedResult;
+import com.wwh.vo.AwardDetailVO;
+import com.wwh.vo.MConsumptionDividendVO;
+import com.wwh.vo.MGrapPointProfitVO;
+import com.wwh.vo.MPayRecordsVO;
+import com.wwh.vo.MmemberRoledVO;
+import com.wwh.vo.MpersonalCenterVO;
+import com.wwh.vo.MpersonalInfoVO;
+import com.wwh.vo.PersonalVO;
+import com.wwh.vo.PlatformProfitScoreVO;
+import com.wwh.vo.UserVO;
+
+public interface IMInterfaceService {
+
+	/**
+	 * 获取用户个人中心信息
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	MpersonalCenterVO getPersonalInfo(Long userId);
+
+	/**
+	 * 查询用户的会员之路信息
+	 * 
+	 * @param diskType
+	 * @param userId
+	 * @return
+	 */
+	MmemberRoledVO getMemberRoleInfo(String diskType, Long userId);
+
+	/**
+	 * 查询用户的个人信息
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	MpersonalInfoVO getPersonalInfomation(Long userId);
+
+	/**
+	 * 获取用户平台积分收益记录
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	PagedResult<PlatformProfitScoreVO> getPlatformProfitScore(Long userId, Integer currentPage, Integer pageSize);
+
+	/**
+	 * 获取用户支付记录
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	PagedResult<MPayRecordsVO> getPayRecordsInfo(Long userId, Integer currentPage, Integer pageSize);
+
+	/**
+	 * 查询消费分红信息
+	 * 
+	 * @param userId
+	 * @param currentPage
+	 * @param pageSize
+	 * @return
+	 */
+	MConsumptionDividendVO getMConsumptionDividend(Long userId, Integer currentPage, Integer pageSize);
+
+	/**
+	 * 用户的抢点记录收益详情
+	 * 
+	 * @param userId
+	 * @param currentPage
+	 * @param pageSize
+	 * @return
+	 */
+	PagedResult<MGrapPointProfitVO> garpProfitDetail(Long userId, Integer currentPage, Integer pageSize);
+
+	/**
+	 * 获取总的收益记录
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	BigDecimal getTotalGrapDetail(Long userId);
+
+	/**
+	 * 获取用户的信息
+	 * 
+	 * @param param
+	 * @return
+	 */
+	UserVO getUserInfo(String param);
+
+	/**
+	 * 更新用户的密码
+	 * 
+	 * @param password
+	 * @param userId
+	 */
+	boolean updateUserPassword(String password, Long userId);
+
+	/**
+	 * 查询用户个人中心信息
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	PersonalVO queryPersonalInfo(Long userId);
+
+	/**
+	 * 根据手机号查询用户手机号
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	String getPhoneByUserId(Long userId);
+
+	/**
+	 * 查询积分奖励 和推荐奖励
+	 * 
+	 * @param id
+	 * @return
+	 */
+	AwardDetailVO scoreDetial(Long id);
+
+	/**
+	 * 查询系统奖励
+	 * 
+	 * @return
+	 */
+	AwardDetailVO getSystemAward(Long id, Long userId);
+
+	/**
+	 * 查询职位奖励
+	 * 
+	 * @param id
+	 * @param userId
+	 * @return
+	 */
+	AwardDetailVO positionAward(Long id, Long userId, String diskType);
+
+}

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wwh.dao.IAddWeixinDao">
+
+	<!-- 查询用户已添加的微信号 -->
+	<select id="queryWeixinInfo" resultType="com.wwh.vo.AddWeixinVO">
+		SELECT
+			id,
+			user_id,
+			weixin_name,
+			weixin_num
+		FROM
+			wallet_weixin_t
+		WHERE
+			user_id = #{userId}
+	</select>
+	
+	<!-- 新增微信号 -->
+	<insert id="insertWeixinNum" parameterType="com.wwh.vo.AddWeixinVO">
+		INSERT into wallet_weixin_t 
+			(
+			    user_id,
+			    weixin_name,
+			    weixin_num,
+			    phone_number,
+			    active_flag,
+				delete_flag,
+				created_date,
+				created_by,
+				last_updated_date,
+				last_updated_by
+			)
+		VALUES(	
+				#{userId,jdbcType=BIGINT},
+				#{weixinName},
+				#{weixinNum},
+				#{phoneNumber},
+				'Y', 
+				'N', 
+				now(),
+				#{createdBy,jdbcType=BIGINT}, 
+				now(),
+				#{lastUpdatedBy,jdbcType=BIGINT}
+			)
+	   ON DUPLICATE KEY UPDATE
+	   	    weixin_name = #{weixinName},
+	   	    weixin_num  =  #{weixinNum},
+	   	    phone_number = #{phoneNumber},
+	   	    last_updated_by = #{lastUpdatedBy,jdbcType=VARCHAR}
+	</insert>
+	
+</mapper>

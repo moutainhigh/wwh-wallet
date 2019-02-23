@@ -1,0 +1,3426 @@
+﻿.pb-big-banner {
+	background: url(/wwh-wallet/images/privatebenifit/banner.jpg) #fcf3de
+		no-repeat;
+	background-size: 100% auto;
+}
+
+.banner-box {
+	width: 100%;
+	height: 400px;
+	padding-top: 70px;
+}
+
+.banner-boxaddbg {
+	background-image: url(/wwh-wallet/images/zs-bg2.png);
+	background-size: 100% auto;
+}
+
+.my-benefit-box {
+	min-width: 1200px;
+	height: 286px;
+	padding: 45px 45px 0px 100px;
+	background-color: #FFF;
+	margin: 0 auto;
+}
+
+.my-benefit-box.adds {
+	width: 1200px;
+	height: 240px;
+	padding: 45px 135px 0px 200px;
+	background-color: #FFF;
+	margin: 0 auto;
+}
+
+.mb-box-1 {
+	height: 60px;
+	float: left;
+	clear: both;
+}
+
+.mb-12-box {
+	float: left;
+	padding-right: 45px;
+	text-align: center;
+	min-width: 200px;
+}
+
+.mb-title01 {
+	font-size: 16px;
+	color: #666;
+	width: 100%;
+}
+
+.mb-title02 {
+	font-size: 16px;
+	color: #666;
+	width: 100%;
+}
+
+.mb-line {
+	width: 1px;
+	height: 60px;
+	background: url(/wwh-wallet/images/bn-dotted-line.png) repeat-y;
+	float: left;
+}
+
+.mb-34-box {
+	float: left;
+	min-width: 190px;
+	padding-left: 45px;
+}
+
+.mb-title03 {
+	font-size: 16px;
+	color: #333;
+	clear: both;
+}
+
+.mb-title03 label {
+	font-size: 16px;
+	color: #f23030;
+}
+
+.mb-title04 label {
+	font-size: 50px;
+	color: #f23030;
+}
+
+.mb-title02 label {
+	font-size: 50px;
+	color: #f23030;
+}
+
+.mb-title02 span {
+	font-size: 20px;
+	color: #f23030;
+}
+
+.mb-title04 span {
+	font-size: 20px;
+	color: #f23030;
+}
+
+.mb-box-2 {
+	float: left;
+	clear: both;
+}
+
+.mb-title05 {
+	float: left;
+	text-align: left;
+	color: #8c8c8c;
+	clear: both;
+	margin-top: 40px;
+}
+
+.mb-title06 {
+	float: left;
+	text-align: left;
+	color: #8c8c8c;
+	clear: both;
+	margin-top: 20px;
+}
+
+.mb-title05 a {
+	color: #e94949;
+}
+
+.mb-title06 a {
+	color: #666;
+	font-size: 12px;
+	margin-left: 256px;
+	line-height: 86px;
+}
+
+.mb-box-3 {
+	width: 180px;
+	height: 130px;
+	float: right;
+}
+
+.mb-paycard {
+	width: 36px;
+	height: 26px;
+	background: url(/wwh-wallet/images/paycard.png);
+	float: right;
+	cursor: pointer;
+}
+
+.mb-takecash {
+	width: 120px;
+	height: 50px;
+	background-color: #e94949;
+	border-radius: 4px;
+	color: #FFF;
+	font-size: 27px;
+	line-height: 50px;
+	text-align: center;
+	display: block;
+	margin-top: 50px;
+}
+
+.mb-takecash22 {
+	width: 228px;
+	height: 80px;
+	background: url(/wwh-wallet/images/mybouns/btn.png) no-repeat;
+	color: #ff7500;
+	font-size: 27px;
+	line-height: 60px;
+	text-align: center;
+	display: block;
+	margin-top: 50px;
+}
+
+.mb-infodetail {
+	font-size: 12px;
+	color: #666;
+	width: 120px;
+	height: 12px;
+	text-align: center;
+	margin-top: 14px;
+	display: block;
+}
+
+.mb-box12-wrap {
+	float: left
+}
+
+.bd-box {
+	width: 340px;
+	height: 420px;
+	margin-right: 165px;
+	float: left;
+	margin-top: 60px;
+}
+
+.bd-box.last {
+	margin-right: 0px;
+}
+
+.bd-box:last-child {
+	margin-right: 0px;
+}
+
+.bd-box-1 {
+	background: url(/wwh-wallet/images/01bg-red.png) no-repeat center center;
+	background-size: 97% 97%;
+	margin-left: 185px;
+}
+
+.bd-box-1.selected {
+	background: url(/wwh-wallet/images/01bg-reds.png) no-repeat center
+		center;
+	background-size: 100% 100%;
+}
+
+.bd-box-2 {
+	background: url(/wwh-wallet/images/02bg-blue.png);
+}
+
+.bd-box-3 {
+	background: url(/wwh-wallet/images/03bg-yellow.png) no-repeat center
+		center;
+	background-size: 97% 97%;
+}
+
+.bd-box-3.selected {
+	background: url(/wwh-wallet/images/03bg-yellows.png) no-repeat center
+		center;
+	background-size: 100% 100%;
+}
+
+.benefit-detaile-box .bd-box:hover {
+	opacity: 0.8;
+}
+
+.benefit-detaile-box .bd-box.selected:hover {
+	opacity: 1;
+}
+
+.zg-box-w {
+	display: none;
+}
+
+.zg-box-w.selected {
+	display: block;
+}
+
+.zg-box {
+	display: none;
+}
+
+.zg-box.selected {
+	display: block;
+}
+
+.bd-title-1 {
+	width: 340px;
+	height: 80px;
+	line-height: 97px;
+	color: #FFF;
+	font-size: 25px;
+	text-align: center;
+	display: block;
+}
+
+.bd-title-2 {
+	width: 340px;
+	height: 21px;
+	line-height: 21px;
+	color: #FFF;
+	font-size: 21px;
+	text-align: center;
+	display: block;
+	margin-top: 80px;
+}
+
+.bd-title-3 {
+	width: 340px;
+	height: 36px;
+	line-height: 36px;
+	color: #FFF;
+	font-size: 36px;
+	text-align: center;
+	display: block;
+	margin-top: 21px;
+}
+
+.bd-title-3 label {
+	line-height: 36px;
+	color: #FFF;
+	font-size: 36px;
+	font-weight: normal;
+}
+
+.bd-title-4 {
+	width: 280px;
+	height: 20px;
+	line-height: 82px;
+	color: #FFF;
+	font-size: 20px;
+	text-align: center;
+	display: block;
+	margin-top: 21px;
+	border-top: 1px solid #ccc;
+	margin-left: 30px;
+	margin-top: 87px;
+	display: block;
+}
+
+.bd-title-4 a {
+	color: #00ccff;
+}
+
+.deals-title {
+	width: 670px;
+	height: 50px;
+	line-height: 50px;
+	font-size: 18px;
+	float: left;
+}
+
+.deals-title2 {
+	width: 250px;
+	height: 50px;
+	line-height: 50px;
+	font-size: 18px;
+	float: left;
+}
+
+.deals-title-wrap {
+	height: 100px;
+	width: 100%;
+}
+
+.mall-btn-select {
+	float: right;
+}
+
+.deals-title21 {
+	font-size: 17px;
+	height: 20px;
+	line-height: 20px;
+	color: #333;
+}
+
+.deals-title21 span {
+	font-size: 18px;
+	line-height: 20px;
+	color: #e94949;
+}
+
+.deals-title22 {
+	color: #999;
+	line-height: 16px;
+	height: 16px;
+	margin-top: 15px;
+}
+
+.deals-details {
+	box-sizing: border-box;
+}
+
+.d-t-bg {
+	background: #FFF;
+	padding: 20px 18px;
+}
+
+.benefit-detaile-box {
+	padding-bottom: 50px;
+}
+
+.pb-table {
+	width: 100%;
+	margin-bottom: 20px;
+}
+
+.pb-table tr th {
+	height: 50px;
+	background: #e94949;
+	text-align: center;
+	font-weight: bold;
+	color: #FFF;
+}
+
+.pb-table tr td {
+	height: 54px;
+}
+
+.pb-table td.td01 {
+	width: 246px;
+	text-align: center
+}
+
+.pb-table td.td02 {
+	width: 166px;
+	text-align: left;
+	padding-left: 20px;
+}
+
+.pb-table td.td03 {
+	width: 186px;
+	text-align: left;
+	padding-left: 70px;
+}
+
+.pb-table td.td04 {
+	width: 176px;
+	text-align: left;
+	padding-left: 50px;
+}
+
+.pb-table td.td05 {
+	width: 196px;
+	text-align: left;
+	padding-left: 73px;
+}
+
+.pb-table td.td06 {
+	width: 194px;
+	text-align: center
+}
+
+.pb-table-wrap {
+	min-height: 320px;
+}
+
+.pb-table tr:hover td {
+	background: #f9f9f9;
+}
+
+.page-more {
+	
+}
+
+/*          我的积分.html      */
+.bonus-box {
+	width: 100%;
+	background-color: #fafafa;
+	background-image: url(/wwh-wallet/images/mybouns/bg.png);
+	padding-top: 40px;
+	background-size: 100% auto;
+}
+
+.bonus-wrap {
+	width: 780px;
+	height: 450px;
+	background: url(/wwh-wallet/images/mybouns/kuang.png) no-repeat;
+	float: left;
+	position: relative;
+}
+
+.honour-wrap {
+	width: 410px;
+	height: 450px;
+	background: url(/wwh-wallet/images/mybouns/kuang1.png) no-repeat;
+	float: right;
+	padding: 30px 62px 0 24px;
+}
+
+.bonus-box .font01 {
+	font-size: 30px;
+	height: 30px;
+	margin-bottom: 10px;
+	color: #FFF;
+}
+
+.bonus-box .font02 {
+	font-size: 50px;
+	height: 50px;
+	font-weight: bold;
+	color: #FFF;
+}
+
+.bonus-pos1 {
+	width: 200px;
+	height: 100px;
+	text-align: center;
+	position: absolute;
+	left: 6px;
+	top: 80px;
+	margin-left: 100px;
+}
+
+.bonus-pos2 {
+	width: 200px;
+	height: 100px;
+	text-align: center;
+	position: absolute;
+	left: 420px;
+	top: 80px;
+}
+
+.takecash-w {
+	width: 120px;
+	height: 50px;
+	position: absolute;
+	top: 249px;
+	left: 250px;
+}
+
+.takecash-line {
+	width: 406px;
+	height: 25px;
+	background: url(/wwh-wallet/images/mybouns/xian.png) no-repeat;
+	position: absolute;
+	top: 240px;
+	left: 157px;
+}
+
+.line-title-wrap {
+	position: relative;
+	width: 320px;
+	height: 22px;
+}
+
+.left-line {
+	width: 100px;
+	height: 1px;
+	background: #FFF;
+	float: left;
+	position: absolute;
+	top: 11px;
+	left: 0px;
+}
+
+.right-line {
+	width: 100px;
+	height: 1px;
+	background: #FFF;
+	float: right;
+	position: absolute;
+	top: 11px;
+	right: 0px;
+}
+
+.line-title-wrap .title {
+	color: #FFF;
+	font-size: 16px;
+	width: 118px;
+	text-align: center;
+	position: absolute;
+	top: 0px;
+	left: 100px;
+}
+
+.grade-honner {
+	
+}
+
+.grade-honner .g-h {
+	width: 50%;
+	height: 133px;
+	float: left;
+	padding-top: 130px;
+	padding-left: 33px;
+	margin-top: 20px;
+	margin-bottom: 15px;
+}
+
+.grade-honner .g-h.g-h-1 {
+	background: url(/wwh-wallet/images/grade1-grey.png) no-repeat;
+}
+
+.grade-honner .g-h.g-h-2 {
+	background: url(/wwh-wallet/images/grade-grey2.png) no-repeat right top;
+}
+
+.grade-honner .g-h.g-h-3 {
+	background: url(/wwh-wallet/images/grade-grey3.png) no-repeat;
+}
+
+.grade-honner .g-h.g-h-4 {
+	background: url(/wwh-wallet/images/grade4-grey.png) no-repeat right top;
+}
+
+.grade-honner .g-h.g-h-1.selected {
+	background: url(/wwh-wallet/images/grade1.png) no-repeat;
+}
+
+.grade-honner .g-h.g-h-2.selected {
+	background: url(/wwh-wallet/images/grade-2.png) no-repeat right top;
+}
+
+.grade-honner .g-h.g-h-3.selected {
+	background: url(/wwh-wallet/images/grade-3.png) no-repeat;
+}
+
+.grade-honner .g-h.g-h-4.selected {
+	background: url(/wwh-wallet/images/grade4.png) no-repeat right top;
+}
+
+.grade-honner .g-h .title {
+	color: #FFF;
+}
+
+.grade-honner .g-h.g-h-2 .title, .grade-honner .g-h.g-h-4 .title {
+	text-align: right;
+	padding-right: 28px;
+}
+
+.m-tools-box {
+	height: 60px;
+	background: #fafafa;
+}
+
+.dm-table-wrap {
+	min-height: 320px;
+}
+
+.dm-table {
+	width: 100%;
+	margin-bottom: 20px;
+}
+
+.dm-table tr th {
+	height: 50px;
+	background: #e94949;
+	text-align: center;
+	font-weight: bold;
+	color: #FFF;
+}
+
+.dm-table tr td {
+	height: 54px;
+}
+
+.dm-table td.td01 {
+	width: 282px;
+	text-align: center
+}
+
+.dm-table td.td02 {
+	width: 222px;
+	text-align: left;
+	padding-left: 75px;
+}
+
+.dm-table td.td03 {
+	width: 222px;
+	text-align: left;
+	padding-left: 70px;
+}
+
+.dm-table td.td04 {
+	width: 222px;
+	text-align: left;
+	padding-left: 50px;
+}
+
+.dm-table td.td05 {
+	width: 252px;
+	text-align: center
+}
+
+.dm-table tr.suspend td.td05 {
+	color: #0036ff;
+}
+
+.dm-table tr.cancle td {
+	color: #999;
+}
+
+.dm-table-wrap {
+	min-height: 320px;
+}
+
+.dm-table tr:hover td {
+	background: #f9f9f9;
+}
+
+/*招商分红*/
+.share-bouns-bg {
+	background-image: url(/wwh-wallet/images/zs-bg2.png);
+	width: 100%;
+	height: 560px;
+	padding-top: 40px;
+	background-size: 100% auto;
+}
+
+.share-bouns-bg .my-benefit-box {
+	height: 480px;
+}
+
+.zs-slider-box {
+	width: 800px;
+	height: 170px;
+	float: left;
+	margin-top: 70px;
+	position: relative;
+	border-bottom: 1px solid #e6e6e6;
+}
+
+.zs-slider-box.nodata {
+	background: url(/wwh-wallet/images/share/sjbanner.png) -139px 0px;
+}
+
+.zs-slider-wrap {
+	width: 800px;
+	height: 170px;
+	position: relative;
+}
+
+.zs-to-left {
+	background: url(/wwh-wallet/images/zs-left.png) no-repeat;
+	width: 44px;
+	height: 84px;
+	position: absolute;
+	top: 40px;
+	left: -75px;
+}
+
+.zs-to-right {
+	background: url(/wwh-wallet/images/zs-right.png) no-repeat;
+	width: 44px;
+	height: 84px;
+	position: absolute;
+	top: 40px;
+	right: -75px;
+}
+
+.zs-to-left:hover {
+	opacity: 0.8;
+}
+
+.zs-to-right:hover {
+	opacity: 0.8;
+}
+
+.zs-slider-wrap {
+	width: 800px;
+	height: 140px;
+}
+
+.zs-slider-wrap ul {
+	width: 560px;
+	height: 170px;
+	display: block;
+	float: left;
+	padding-left: 10px;
+}
+
+.zs-slider-wrap ul li {
+	float: left;
+	margin-left: 10px;
+}
+
+.zs-slider-wrap ul li a {
+	
+}
+
+.zs-item-shop {
+	width: 200px;
+	height: 140px;
+	float: left;
+	border-right: 1px solid #e6e6e6;
+}
+
+.zs-item-list .title {
+	padding-left: 20px;
+	font-size: 12px;
+	float: left;
+	line-height: 20px;
+}
+
+.zs-item-list img {
+	max-height: 120px;
+	max-width: 100px;
+}
+
+.zs-shop-log img {
+	height: 34px;
+}
+
+.zs-shop-corp {
+	height: 24px;
+	width: 180px;
+	border-bottom: 1px solid #e6e6e6;
+	font-size: 12px;
+	color: #666;
+	margin-top: 10px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.zs-shop-hot {
+	color: #999;
+	font-size: 12px;
+	line-height: 30px;
+}
+
+.zs-shop-b {
+	opacity: 0;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+}
+
+.zs-shop-01 {
+	opacity: 1;
+}
+
+.zs-item-list {
+	width: 598px;
+	float: left;
+}
+
+/*       charge      */
+.containner-middle {
+	padding: 46px 100px 60px 100px;
+}
+
+.charge-wrap {
+	background: #f5f5f5;
+	padding-bottom: 60px;
+}
+
+.charge-box {
+	background: url(/wwh-wallet/images/charge-bg.png) no-repeat top left
+		#FFF;
+	border: 1px solid #ccc;
+	border-top: none;
+	padding-top: 2px;
+}
+
+.charge-box .title-wrap {
+	background-color: #fafafa;
+	height: 65px;
+	padding-left: 50px;
+	padding-right: 40px;
+	border-bottom: 1px solid #ccc;
+}
+
+.charge-box .title-wrap .title {
+	font-size: 18px;
+	color: #333;
+	height: 65px;
+	float: left;
+	line-height: 65px;
+	font-weight: bold;
+}
+
+.charge-box .title-wrap .title-second {
+	height: 65px;
+	float: right;
+	line-height: 65px;
+}
+
+.charge-box .title-wrap .title-second a {
+	color: #666;
+	font-size: 12px;
+}
+
+.charge-box {
+	
+}
+
+.choose-bank-wrap {
+	width: 920px;
+	min-height: 300px;
+	border-bottom: 1px solid #CCC;
+	position: relative;
+}
+
+.c-b-box-1 {
+	width: 130px;
+	color: #666;
+	font-size: 16px;
+	height: 240px;
+	color: #666;
+	float: left;
+	margin-top: 20px;
+	line-height: 240px;
+}
+
+.height500 {
+	height: 500px;
+}
+
+.c-b-box-1 span {
+	color: #e94949;
+	font-size: 20px;
+	vertical-align: middle;
+	display: inline-block;
+	padding-right: 3px;
+}
+
+.c-b-box-2 {
+	width: 680px;
+	float: left;
+	margin-top: 40px;
+	margin-bottom: 30px;
+}
+
+.c-b-title-w {
+	width: 500px;
+	height: 50px;
+	float: left;
+}
+
+.c-b-title-w2 {
+	width: 178px;
+	height: 50px;
+	float: left;
+	line-height: 50px;
+}
+
+.c-b-t1 {
+	color: #333;
+	font-size: 16px;
+}
+
+.c-b-t2 {
+	color: #333;
+	font-size: 12px;
+	margin-top: 5px;
+}
+
+.c-b-t3 {
+	color: #333;
+	font-size: 16px;
+}
+
+.c-b-t3 span {
+	color: #e94949;
+	font-size: 18px;
+	font-weight: bold;
+	vertical-align: middle;
+}
+
+.c-b-box-3 {
+	width: 680px;
+	height: 300px;
+	float: left;
+	overflow: hidden;
+}
+
+.bank-logo {
+	width: 300px;
+	height: 50px;
+	border: 1px solid #ccc;
+	float: left;
+	margin-bottom: 50px;
+	margin-right: 80px;
+	position: relative;
+}
+
+.bank-logo b {
+	background: url(/wwh-wallet/images/bank-logo/unionplay.png) no-repeat;
+	position: absolute;
+	width: 44px;
+	height: 27px;
+	top: 11px;
+	left: 28px;
+}
+
+.bank-logo:hover {
+	opacity: 0.8;
+}
+
+.bank-logo.selected i {
+	width: 33px;
+	height: 33px;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	display: block;
+	background: url(/wwh-wallet/images/bank-logo/selected-bank.png)
+		no-repeat;
+}
+
+.bank-logo.selected {
+	border: 1px solid #1e37ef;
+}
+
+.bank-logo.selected:hover {
+	opacity: 1;
+}
+
+.bank-logo.norightm {
+	margin-right: 0px;
+}
+
+.c-b-box23w {
+	float: left;
+	width: 680px;
+}
+
+/*         ICBC ABC BOC CCB CMB           */
+.ICBC {
+	background: url(/wwh-wallet/images/bank-logo/bank/ICBC.png) no-repeat;
+}
+
+.ABC {
+	background: url(/wwh-wallet/images/bank-logo/bank/ABC.png) no-repeat;
+}
+
+.BOC {
+	background: url(/wwh-wallet/images/bank-logo/bank/BOC.png) no-repeat;
+}
+
+.CCB {
+	background: url(/wwh-wallet/images/bank-logo/bank/CCB.png) no-repeat;
+}
+
+.CMB {
+	background: url(/wwh-wallet/images/bank-logo/bank/CMB.png) no-repeat;
+}
+
+.c-b-box-4 {
+	width: 60px;
+	height: 30px;
+	background: url(/wwh-wallet/images/blue-arrow.png) no-repeat bottom
+		center;
+	position: absolute;
+	top: 240px;
+	right: 0px;
+	font-size: 12px;
+	color: #4babe5;
+	text-align: center;
+	cursor: pointer;
+}
+
+.c-b-box-4.fold {
+	background: url(/wwh-wallet/images/blue-arrow-un.png) no-repeat bottom
+		center;
+}
+
+.choose-bank-wrap-2 {
+	padding-top: 50px;
+}
+
+.choose-bank-wrap-2 .c-b-box-1 {
+	line-height: 24px;
+	margin-top: 0px;
+	line-height: 18px;
+}
+
+.code-box {
+	width: 283px;
+	height: 50px;
+	float: left;
+	text-align: center;
+	font-size: 12px;
+	color: #333;
+}
+
+.code-box p {
+	width: 140px;
+	height: 175px;
+	float: left;
+	text-align: center;
+	font-size: 12px;
+	color: #4babe5;
+}
+
+.code-box img {
+	margin-bottom: 22px;
+}
+
+.code-wx {
+	margin-right: 100px;
+}
+
+.code-zfb {
+	
+}
+
+.c-b-box-56 {
+	float: left;
+	width: 790px;
+}
+
+.c-b-box-5 {
+	float: left;
+	margin-bottom: 50px;
+	width: 790px;
+}
+
+.c-b-box-6 {
+	float: left;
+	margin-bottom: 50px;
+}
+
+.charge-btn {
+	width: 160px;
+	height: 50px;
+	background-color: #e94949;
+	border-radius: 4px;
+	color: #FFF;
+	font-size: 27px;
+	line-height: 50px;
+	text-align: center;
+	display: block;
+	cursor: pointer;
+}
+
+.charge-btn:hover {
+	opacity: 0.8;
+}
+
+.c-b-box-7 {
+	float: left;
+	width: 790px;
+	padding: 26px 20px;
+	font-size: 12px;
+	line-height: 20px;
+	border: 1px solid #e94949;
+}
+
+.chargecash2 {
+	width: 300px;
+	height: 50px;
+	border: 1px solid #ccc;
+	float: left;
+	margin-bottom: 50px;
+	margin-right: 80px;
+	position: relative;
+	cursor: pointer;
+}
+
+.chargecash {
+	width: 300px;
+	height: 50px;
+	border: 1px solid #ccc;
+	float: left;
+	margin-bottom: 50px;
+	margin-right: 80px;
+	position: relative;
+	cursor: pointer;
+}
+
+.chargecash:hover {
+	opacity: 0.8;
+}
+
+.chargecash.selected i {
+	width: 33px;
+	height: 33px;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	display: block;
+	background: url(/wwh-wallet/images/bank-logo/selected-bank.png)
+		no-repeat;
+}
+
+.chargecash.selected {
+	border: 1px solid #1e37ef;
+}
+
+.chargecash.selected:hover {
+	opacity: 1;
+}
+
+.chargecash2:hover {
+	opacity: 1;
+	cursor: default;
+}
+
+.chargecash2.selected i {
+	width: 33px;
+	height: 33px;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	display: block;
+	background: url(/wwh-wallet/images/bank-logo/selected-bank.png)
+		no-repeat;
+}
+
+.chargecash2.selected {
+	border: 1px solid #1e37ef;
+}
+
+.chargecash2.selected:hover {
+	opacity: 1;
+}
+
+.chargecash.norightm {
+	margin-right: 0px;
+}
+
+.chargecash2.norightm {
+	margin-right: 0px;
+}
+
+.chargecash label {
+	font-size: 20px;
+	font-weight: bold;
+	color: #e94949;
+	position: absolute;
+	left: 34px;
+	top: 10px;
+	cursor: pointer;
+}
+
+.chargecash span {
+	font-size: 12px;
+	color: #666;
+	position: absolute;
+	left: 130px;
+	top: 9px;
+	line-height: 17px;
+}
+
+.chargecash.selected span {
+	color: #0036ff;
+}
+
+.chargecash2 label {
+	font-size: 20px;
+	font-weight: bold;
+	color: #999;
+	position: absolute;
+	left: 34px;
+	top: 10px;
+	cursor: default;
+}
+
+.chargecash2 span {
+	font-size: 12px;
+	color: #666;
+	position: absolute;
+	left: 130px;
+	top: 9px;
+	line-height: 17px;
+	cursor: default;
+}
+
+.chargecash2.selected span {
+	color: #0036ff;
+}
+
+.md-c-wrap {
+	width: 435px;
+	height: 150px;
+	border-bottom: 1px solid #CCC;
+	margin-left: 35px;
+	margin-top: 20px;
+}
+
+.md-c-title1 {
+	font-size: 12px;
+	text-align: center;
+	margin-bottom: 50px;
+	color: #333;
+}
+
+.md-c-btn {
+	border: 1px solid #ccc;
+	width: 130px;
+	height: 40px;
+	display: block;
+	text-align: center;
+	line-height: 40px;
+	color: #333;
+}
+
+.md-c-title2-w {
+	
+}
+
+.md-c-title2 {
+	width: 50%;
+	float: left;
+}
+
+.md-c-title3 {
+	width: 50%;
+	float: left;
+}
+
+.md-c-title2 .md-c-btn {
+	float: right;
+	margin-right: 10px;
+}
+
+.md-c-title3 .md-c-btn {
+	float: left;
+	margin-left: 10px;
+}
+
+.md-c-box-1 {
+	width: 160px;
+	height: 94px;
+	background: url(/wwh-wallet/images/bn-dotted-line.png) repeat-y top
+		right;
+	float: left;
+	font-size: 12px;
+	line-height: 43px;
+}
+
+.md-c-box-5 .code-box {
+	width: 130px;
+	height: 90px;
+	text-align: center;
+	margin-right: 20px;
+}
+
+.md-c-box-5 .code-box img {
+	width: 70px;
+	height: 70px;
+	margin-bottom: 10px;
+}
+
+.md-c-box-5 .code-box p {
+	width: 130px;
+	font-size: 12px;
+	color: #4babe5;
+}
+
+.md-c-wrap2 {
+	margin-top: 16px;
+}
+
+/***      个人收益---提现         ***/
+.title-wrap .title-third {
+	float: left;
+	margin-left: 40px;
+	font-size: 12px;
+	height: 70px;
+	line-height: 70px;
+	color: #333;
+}
+
+.title-wrap .title-third span {
+	color: #e94949;
+	font-size: 18px;
+}
+
+.benifit-table-wrap {
+	width: 850px;
+	min-height: 650px;
+}
+
+.benifit-table td{
+	height: 70px;
+	color: #333;
+}
+.referenceName {
+	border:1px solid #ccc;
+	color:rgb(84,84,84);
+	margin-left:3px;
+	font-size:12px;
+	padding-left:3px;
+}
+.referenceTip,.referenceName {
+	height:30px;
+	line-height:30px;
+	display:inline-block;
+}
+.benifit-table .td01 {
+	width: 136px;
+	text-align: right;
+	padding-right: 30px;
+}
+
+.benifit-table .td01 span {
+	color: #e94949;
+}
+
+.benifit-table .td02 {
+	
+}
+
+.benifit-table .c-b-box-7 {
+	width: 720px;
+}
+
+.benifit-table .td02 .after-input-w {
+	height: 30px;
+	line-height: 30px;
+	margin-left: 10px;
+}
+
+.check-code {
+	border: 1px solid #ccc;
+	width: 100px;
+	height: 30px;
+	color: #333;
+	background-color: #CCC;
+	float: left;
+	margin-left: 10px;
+	font-size: 12px;
+	line-height: 30px;
+	text-align: center;
+	cursor: pointer;
+}
+
+.check-code .check-input {
+	border: none;
+	outline: none;
+	text-align: center;
+	width: 98px;
+	height: 28px;
+	display: block;
+	background: #CCC;
+	cursor: pointer;
+}
+
+.check-code .forbiddenbtn {
+	opacity: 0.8;
+	cursor: not-allowed;
+}
+
+.check-code:hover {
+	opacity: 0.8;
+}
+
+.choose-bank-b {
+	width: 500px;
+	overflow: hidden;
+}
+
+.choose-bank-b span {
+	position: absolute;
+	top: 14px;
+	left: 270px;
+}
+
+.choose-bank-b .bank-logo {
+	width: 500px;
+	background-position-x: -15px;
+	margin-bottom: 10px;
+}
+
+.takecash-table {
+	width: 1000px;
+}
+
+.takecash-table tr th {
+	text-align: center;
+	height: 70px;
+	background: #fafafa;
+}
+
+.takecash-table tr td {
+	height: 70px;
+	text-align: left;
+}
+
+.takecash-table tr td.td01 {
+	width: 270px;
+	padding-left: 50px;
+}
+
+.takecash-table tr td.td02 {
+	width: 160px;
+	padding-left: 55px;
+}
+
+.takecash-table tr td.td03 {
+	width: 190px;
+	padding-left: 65px;
+}
+
+.takecash-table tr td.td04 {
+	width: 200px;
+	padding-left: 75px;
+}
+
+.takecash-table tr td.td05 {
+	width: 180px;
+	text-align: center;
+}
+
+.b-card-box {
+	width: 280px;
+	height: 140px;
+	border: 1px solid #e6e6e6;
+	overflow: hidden;
+	float: left;
+	margin-right: 20px;
+	margin-bottom: 20px;
+}
+
+.bank-card-box {
+	min-height: 470px;
+}
+
+.s-card-box12 {
+	width: 280px;
+	height: 60px;
+	background: #fafafa;
+	padding: 20px;
+}
+
+.s-card-box1 {
+	width: 120px;
+	height: 20px;
+	float: left;
+}
+
+.s-card-box2 {
+	width: 120px;
+	height: 20px;
+	float: right;
+}
+
+.s-card-box1 img {
+	max-height: 20px;
+	max-width: 120px;
+}
+
+.s-card-cati {
+	width: 130px;
+	height: 20px;
+	padding-left: 15px;
+}
+
+.sd-cati01 {
+	float: left;
+	font-size: 12px;
+	line-height: 20px;
+}
+
+.sd-cati02 {
+	float: left;
+	font-size: 12px;
+	line-height: 20px;
+	background: #4babe5;
+	color: #FFF;
+	padding: 0px 3px;
+	position: relative;
+	margin-left: 10px;
+}
+
+.sd-cati02 i {
+	width: 3px;
+	height: 4px;
+	position: absolute;
+	background: url(/wwh-wallet/images/bank-logo/arrow-blue.png);
+	top: 8px;
+	left: -3px;
+}
+
+.s-card-box34 {
+	padding-top: 20px;
+	padding-left: 20px;
+}
+
+.s-card-box3 {
+	font-size: 12px;
+	line-height: 20px;
+}
+
+.s-card-box4 {
+	font-size: 12px;
+	line-height: 20px;
+}
+
+.b-card-box.add-card {
+	background: url(/wwh-wallet/images/bank-logo/add-card.png) no-repeat
+		center 40px;
+	cursor: pointer;
+	text-align: center;
+	color: #4babe5;
+	padding-top: 80px;
+}
+
+.write-cash-wrap {
+	padding-left: 35px;
+}
+
+.write-cash-wrap input {
+	border: none;
+	outline: none;
+	display: block;
+	height: 48px;
+	width: 70px;
+	font-size: 20px;
+}
+
+.height200 {
+	min-height: 200px;
+	height: 200px;
+}
+
+.fontsize12 {
+	font-size: 12px;
+}
+
+.attention {
+	font-size: 12px;
+	position: relative;
+	padding-left: 10px;
+}
+
+.attention span {
+	color: #e94949;
+	position: absolute;
+	left: 0px;
+	top: 1px;
+}
+
+.input-wrap.longtext {
+	width: 350px;
+}
+
+.input-wrap.longtext input {
+	width: 348px;
+}
+
+.btn-yes-wrap .btn-yes {
+	border: none;
+	outline: none;
+}
+
+#signupForm label.error {
+	position: absolute;
+	top: 0px;
+	right: -100px;
+	font-size: 12px;
+	font-weight: normal;
+	color: #e94949;
+}
+
+#signupForm .truename-after label.error {
+	right: -80px;
+}
+
+#signupForm .input-wrap {
+	position: relative;
+}
+
+.other-bank-modal .modal-dialog {
+	width: 1200px;
+}
+
+.other-bank-modal .close {
+	color: #000;
+}
+
+.bank-modal-w {
+	padding-left: 40px;
+	padding-top: 30px;
+}
+
+.charge-btn-w {
+	padding-left: 40px;
+	background: url(/wwh-wallet/images/bank-logo/dotted-line-x.png) repeat-x;
+	padding-top: 20px;
+}
+
+.width1164 {
+	width: 1164px;
+}
+
+.s-sub {
+	position: relative;
+}
+
+.s-sub-sle {
+	position: absolute;
+	width: 415px;
+	right: 0px;
+	top: -55px;
+}
+
+.s-sub-sle.selected {
+	
+}
+
+.s-sub-sle .deals-title21 {
+	line-height: 35px;
+}
+
+.dm-table td.td01 {
+	width: 282px;
+	text-align: center;
+}
+
+.dm-table.dm-table1 td.td01 {
+	width: 210px;
+	text-align: center;
+	padding-left: 0px;
+}
+
+.dm-table.dm-table1 td.td02 {
+	width: 200px;
+	text-align: center;
+	padding-left: 0px;
+}
+
+.dm-table.dm-table1 td.td03 {
+	width: 200px;
+	text-align: center;
+	padding-left: 0px;
+}
+
+.dm-table.dm-table1 td.td04 {
+	width: 200px;
+	text-align: center;
+	padding-left: 0px;
+}
+
+.dm-table.dm-table1 td.td05 {
+	width: 180px;
+	text-align: center;
+	padding-left: 0px;
+}
+
+.dm-table.dm-table1 td.td06 {
+	width: 170px;
+	text-align: center;
+	padding-left: 0px;
+}
+
+.dm-table.dm-table1 td.td07 {
+	width: 130px;
+	text-align: center;
+	padding-left: 0px;
+}
+
+.dm-table.dm-table1 td.td08 {
+	width: 75px;
+	text-align: center;
+	padding-left: 0px;
+}
+
+.dm-table.dm-table1 td.td08 a {
+	color: #333;
+}
+
+.dm-table.sy-table02 td.td01 {
+	width: 260px;
+	text-align: center;
+	padding-left: 0px;
+}
+
+.dm-table.sy-table02 td.td02 {
+	width: 180px;
+	text-align: center;
+	padding-left: 0px;
+}
+
+.dm-table.sy-table02 td.td03 {
+	width: 260px;
+	text-align: center;
+	padding-left: 0px;
+}
+
+.dm-table.sy-table02 td.td04 {
+	width: 200px;
+	text-align: center;
+	padding-left: 0px;
+}
+
+.dm-table.sy-table02 td.td05 {
+	width: 260px;
+	text-align: center;
+	padding-left: 0px;
+}
+
+.dm-table.sy-table03 td.td01 {
+	width: 260px;
+	text-align: center;
+	padding-left: 0px;
+}
+
+.dm-table.sy-table03 td.td02 {
+	width: 370px;
+	text-align: center;
+	padding-left: 0px;
+}
+
+.dm-table.sy-table03 td.td03 {
+	width: 240px;
+	text-align: center;
+	padding-left: 0px;
+}
+
+.dm-table.sy-table03 td.td04 {
+	width: 290px;
+	text-align: center;
+	padding-left: 0px;
+}
+
+.dm-table.sy-table04 td.td01 {
+	width: 260px;
+	text-align: center;
+	padding-left: 0px;
+}
+
+.dm-table.sy-table04 td.td02 {
+	width: 200px;
+	text-align: center;
+	padding-left: 0px;
+}
+
+.dm-table.sy-table04 td.td03 {
+	width: 250px;
+	text-align: center;
+	padding-left: 0px;
+}
+
+.dm-table.sy-table04 td.td04 {
+	width: 200px;
+	text-align: center;
+	padding-left: 0px;
+}
+
+.dm-table.sy-table04 td.td05 {
+	width: 250px;
+	text-align: center;
+	padding-left: 0px;
+}
+
+/*           20161031            mb-myposition.html           */
+.m-p .mb-title05 a {
+	color: #8c8c8c;
+}
+
+.m-p .mb-title06.m-p a {
+	color: #8c8c8c;
+}
+
+.m-p .mb-title05 {
+	line-height: 30px;
+	float: left;
+	clear: none;
+}
+
+.m-p .mb-title06 {
+	line-height: 30px;
+	float: left;
+	clear: none;
+	margin-top: 40px;
+	margin-left: 50px;
+}
+
+.normal-pos .nor-mber {
+	width: 90px;
+	height: 90px;
+	float: left;
+}
+
+.gp-pos01 .gp-box {
+	width: 140px;
+	height: 140px;
+	margin: 0 auto;
+	background: url(/wwh-wallet/images/boundp/pd-t-01supervisor.png)
+		no-repeat center center;
+	text-align: center;
+    padding-top: 133px;
+    margin-bottom:15px;
+}
+
+.gp-pos02 .gp-box {
+	width: 140px;
+	height: 140px;
+	margin: 0 auto;
+	background: url(/wwh-wallet/images/boundp/pd-t-02manager.png) no-repeat
+		center center;
+	text-align: center;
+    padding-top: 133px;
+    margin-bottom:15px;
+}
+
+.gp-pos03 .gp-box {
+	width: 124px;
+	height: 124px;
+	float: left;
+	margin-right: 0px;
+	margin-left: 0px;
+	background: url(/wwh-wallet/images/boundp/pd-t-03financial.png)
+		no-repeat center center;
+	text-align: center;
+    padding-top: 133px;
+    margin-bottom:30px;
+}
+
+.gp-pos04 .gp-box {
+	width: 106px;
+	height: 106px;
+	border-radius: 10px;
+	float: left;
+	margin-right: 8px;
+	margin-left: 8px;
+	background: url(/wwh-wallet/images/boundp/pd-t-04normber.png) no-repeat
+		center center;
+	padding-top: 110px;
+	text-align: center;
+	margin-bottom: 46px;
+}
+
+.gp-pos03 .gp-box.last {
+	margin-right: 0px;
+}
+
+.gp-pos04 .gp-box.last {
+	margin-right: 0px;
+}
+
+.gp-pos01 .selecteds {
+	background: url(/wwh-wallet/images/boundp/pd-t-01supervisor-sel.png)
+		center center;
+}
+
+.gp-pos02 .selecteds {
+	background: url(/wwh-wallet/images/boundp/pd-t-02manager-sel.png) center
+		center;
+}
+
+.gp-pos03 .selecteds {
+	background: url(/wwh-wallet/images/boundp/pd-t-03financial-sel.png) no-repeat
+		center center;
+}
+
+.gp-pos04 .selecteds {
+	background: url(/wwh-wallet/images/boundp/pd-t-04normber-sel.png) center
+		center;
+	transition: background 2s;
+}
+
+.gp-pos04 .recomend {
+	background: url(/wwh-wallet/images/boundp/pd-t-04normber-sel-red.png);
+}
+
+.gp-pos02 .gp-pos-wrap {
+	width: 33.3%;
+	float: left;
+	padding: 1%;
+}
+
+.gp-pos03 .gp-pos-wrap {
+	width: 33.3%;
+	float: left;
+	padding: 1%;
+	padding-top: 0px;
+	border-right: 1px solid #ccc;
+}
+
+.gp-pos04 .gp-pos-wrap {
+	width: 33.3%;
+	float: left;
+	padding: 1%;
+	border-right: 1px solid #ccc;
+}
+
+.gp-pos02 .gp-pos-wrap.last {
+	
+}
+
+.gp-pos03 .gp-pos-wrap.last {
+	border-right: none;
+}
+
+.gp-pos04 .gp-pos-wrap.last {
+	border-right: none;
+}
+
+.gp-pos04 .normal-pos01 {
+	background: #ffdddd;
+}
+
+.gp-pos04 .normal-pos02 {
+	background: #ddf3ff;
+}
+
+.gp-pos04 .normal-pos03 {
+	background: #fff0dd;
+}
+
+.padding1020 {
+	padding: 20px 18px;
+}
+
+.deals-title4 {
+	float: right;
+	height: 50px;
+	margin-right: 40px;
+	color: #333;
+	font-size: 17px;
+	padding-top: 20px;
+	font-size: 18px;
+}
+
+.deals-title4 .second-title {
+	display: none;
+}
+
+.deals-title4 .second-title.selected {
+	display: block;
+}
+
+.deals-title4 span {
+	color: #e94949;
+	font-size: 18px;
+}
+
+.so-box {
+	width: 140px;
+	height: 140px;
+	margin: 0 auto;
+}
+
+.so-box {
+	width: 140px;
+	height: 140px;
+	margin: 0 auto;
+}
+
+.so-title01 {
+	background: url(/wwh-wallet/images/boundp/pd-t-01supervisor-sel.png)
+		no-repeat center center;
+}
+
+.so-title02 {
+	background: url(/wwh-wallet/images/boundp/pd-t-02manager-sel.png)
+		no-repeat center center;
+}
+
+.so-title03 {
+	background: url(/wwh-wallet/images/boundp/pd-t-03financial-sel.png)
+		no-repeat center center;
+}
+
+.myseconduser td.td01 {
+	width: 200px;
+	text-align: center;
+	padding-left: 0px;
+}
+
+.myseconduser td.td02 {
+	width: 200px;
+	text-align: center;
+	padding-left: 0px;
+}
+
+.myseconduser td.td03 {
+	width: 200px;
+	text-align: center;
+	padding-left: 0px;
+}
+
+.myseconduser td.td04 {
+	width: 200px;
+	text-align: center;
+	padding-left: 0px;
+}
+
+.myseconduser td.td05 {
+	width: 200px;
+	text-align: center;
+	padding-left: 0px;
+}
+
+.myseconduser td.td06 {
+	width: 200px;
+	text-align: center;
+	padding-left: 0px;
+}
+
+.sec-page01 {
+	float: left;
+	width: 50%;
+}
+
+.sec-page02 {
+	float: left;
+	width: 50%;
+	position: relative;
+	background: url(/wwh-wallet/images/boundp/secondpagebglinegrey.png)
+		repeat-y top left;
+	padding-left: 1px;
+}
+
+.sec-page02 i {
+	position: absolute;
+	height: 71px;
+	width: 1px;
+	top: 0px;
+	left: 0px;
+	background: url(/wwh-wallet/images/boundp/secondpagebgline.png)
+		no-repeat;
+}
+
+.sec-page02tablewrap {
+	
+}
+
+.sec-page02tablewrap div {
+	width: 33.3%;
+	background: #e94949;
+	height: 50px;
+	line-height: 50px;
+	text-align: center;
+	float: left;
+	color: #FFF;
+	font-weight: bold;
+}
+
+.myseconduser.selected {
+	background: #f9f9f9;
+}
+
+.sec-page03 {
+	max-height: 265px;
+	overflow-y: scroll;
+	float: left;
+}
+
+.single-ob-box1 {
+	width: 274px;
+	height: 340px;
+	padding: 30px;
+	padding-top: 60px;
+}
+
+.single-ob-box {
+	width: 274px;
+	height: 340px;
+	padding: 30px;
+	padding-top: 60px;
+}
+
+.single-ob-boxbg {
+	background: url(/wwh-wallet/images/boundp/pd-bg2.png) no-repeat;
+	z-index: 9999;
+}
+
+.single-ob-boxbg.recbg {
+	background: url(/wwh-wallet/images/boundp/pd-bg5.png) no-repeat;
+}
+
+.single-ob-box .title-ob01 {
+	font-size: 24px;
+	text-align: center;
+	font-weight: bold;
+}
+
+.single-ob-box .title-ob02 {
+	text-align: center;
+	margin: 5px 0px;
+}
+
+.single-ob-box .imgwrap .title-ob02 {
+	
+}
+
+.single-ob-box .title-ob02 img {
+	width: 60px;
+	height: 60px;
+}
+
+.single-ob-box .title-ob03 {
+	text-align: center;
+	font-size: 18px;
+}
+
+.single-ob-box .title-ob04 {
+	padding-left: 86px;
+	margin: 8px 0px;
+}
+
+.single-ob-box .title-ob04.grade-honner01 {
+	background: url(/wwh-wallet/images/boundp/pd-k-01.png) no-repeat 56px
+		3px;
+}
+
+.single-ob-box .title-ob04.grade-honner02 {
+	background: url(/wwh-wallet/images/boundp/pd-k-02.png) no-repeat 56px
+		3px;
+}
+
+.single-ob-box .title-ob04.grade-honner03 {
+	background: url(/wwh-wallet/images/boundp/pd-k-03.png) no-repeat 56px
+		3px;
+}
+
+.single-ob-box .title-ob04.grade-honner04 {
+	background: url(/wwh-wallet/images/boundp/pd-k-04.png) no-repeat 56px
+		3px;
+}
+
+.single-ob-box .sub-ob5 {
+	width: 50%;
+	float: left;
+	text-align: center;
+}
+
+.sub-ob5 .fsty1 {
+	font-size: 14px;
+	color: #999;
+}
+
+.sub-ob5 .fsty2 {
+	color: #333;
+}
+
+.title-ob06 {
+	text-align: center;
+	margin-top: 30px;
+}
+
+.title-ob06 a {
+	color: #e94949;
+}
+
+.title-ob07 {
+	text-align: center;
+	margin-top: 30px;
+}
+
+.title-ob07 a {
+	color: #e94949;
+}
+
+.title-ob08 {
+	text-align: center;
+	margin-top: 10px;
+}
+
+.title-ob08 a {
+	color: #e94949;
+}
+
+.sub-ob52 {
+	border-left: 1px solid #d7d5d2;
+}
+
+.sim-box01 {
+	float: left;
+}
+
+.sim-box02 {
+	float: left;
+	width: 270px;
+}
+
+.sim-box12bg {
+	background: url(/wwh-wallet/images/boundp/pd-bg3.png) no-repeat;
+}
+
+/*reserve.html 储备金*/
+.rev-body {
+	background: url(/wwh-wallet/images/reserve/body-bg.png)
+}
+
+.reserve-box {
+	background: url(/wwh-wallet/images/reserve/r-bg.png) no-repeat;
+	min-height: 1000px;
+	background-size: 100% auto;
+	min-width: 1200px;
+	padding-top: 50px;
+}
+
+.rev-navbar {
+	height: 100px;
+	width: 100%;
+	background: #e94949;
+}
+
+.rev-navbar ul {
+	width: 800px;
+	margin: 0 auto;
+}
+
+.rev-navbar ul li {
+	float: left;
+	width: 25%;
+	position: relative;
+}
+
+.rev-navbar ul li i {
+	width: 17px;
+	height: 30px;
+	background: url(/wwh-wallet/images/reserve/arrow.png) no-repeat;
+	position: absolute;
+	top: 35px;
+	right: 50px;
+}
+
+.rev-navbar ul a {
+	color: #FFF;
+	font-size: 22px;
+	line-height: 100px;
+}
+
+.rev-title {
+	width: 429px;
+	height: 93px;
+	background: url(/wwh-wallet/images/reserve/rev-title-bg.png) no-repeat;
+	margin: 0px auto;
+	margin-bottom: 50px;
+	color: #FFF;
+	font-size: 30px;
+	line-height: 93px;
+	text-align: center;
+}
+
+.rev-sub-box {
+	width: 1197px;
+	height: 1273px;
+	margin: 0 auto;
+	margin-bottom: 50px;
+}
+
+.rev-sub-box {
+	position: relative;
+	background: url(/wwh-wallet/images/reserve/rev-grade.png) no-repeat;
+}
+
+.rev-pos-box {
+	width: 315px;
+	height: 160px;
+	position: absolute;
+	display: none;
+}
+
+.rev-pos-box.selected {
+	display: block;
+}
+
+.rev-pos-box01 {
+	left: 260px;
+	top: 160px;
+}
+
+.rev-pos-box02 {
+	left: 900px;
+	top: 335px;
+}
+
+.rev-pos-box03 {
+	left: 340px;
+	top: 530px;
+}
+
+.rev-pos-box04 {
+	left: 670px;
+	top: 930px;
+}
+
+.rev-stle {
+	color: #FFF;
+	font-size: 22px;
+	height: 40px;
+	line-height: 40px;
+}
+
+.rev-stle label {
+	color: #FFF;
+	font-size: 24px;
+}
+
+.rev-btn {
+	display: none;
+	width: 160px;
+	height: 60px;
+	border-radius: 8px;
+	background: #FFF;
+	line-height: 60px;
+	color: #e94949;
+	font-size: 22px;
+	text-align: center;
+	position: absolute;
+	cursor: pointer;
+	display: none;
+}
+
+.rev-btn.selected {
+	display: block;
+}
+
+.rev-btn:hover {
+	opacity: 0.9;
+}
+
+.rev-btn01 {
+	left: 300px;
+	top: 200px;
+}
+
+.rev-btn02 {
+	left: 890px;
+	top: 358px;
+}
+
+.rev-btn03 {
+	left: 328px;
+	top: 581px;
+}
+
+.rev-btn04 {
+	left: 676px;
+	top: 951px;
+}
+
+.rev-sub-box21 {
+	width: 160px;
+	height: 60px;
+}
+
+.rev-cy-box {
+	width: 1200px;
+	height: 620px;
+	margin: 0 auto;
+	margin-bottom: 50px;
+}
+
+.rev-cysub-box01 {
+	width: 1000px;
+	height: 140px;
+	background: url(/wwh-wallet/images/reserve/line-bg.png) repeat-x left
+		bottom;
+	margin: 0 auto;
+}
+
+.cys-box01 {
+	width: 500px;
+	height: 140px;
+	float: left;
+	padding-left: 130px;
+	margin-top: 20px;
+	background: url(/wwh-wallet/images/reserve/line3-bg.png) no-repeat right
+		top;
+}
+
+.cys-box02 {
+	width: 500px;
+	height: 140px;
+	float: left;
+	margin-top: 20px;
+	padding-left: 40px;
+}
+
+.cys-t {
+	font-size: 20px;
+	color: #FFF;
+	margin-bottom: 0px;
+	padding-top: 10px;
+}
+
+.cys-t2 {
+	font-size: 30px;
+	color: #FFF;
+	padding-top: 10px;
+}
+
+.cys-t2 label {
+	font-size: 30px;
+	color: #FFF;
+}
+
+.cys-t2 span {
+	font-size: 16px;
+	color: #FFF;
+	margin-left: 10px;
+}
+
+.cys-01 {
+	float: left;
+	margin-right: 15px;
+}
+
+.cys-02 {
+	float: left;
+	padding-top: 26px;
+}
+
+.cyo01 {
+	width: 120px;
+	height: 40px;
+	background: #e94949;
+	border-radius: 6px;
+	font-size: 18px;
+	color: #FFF;
+	text-align: center;
+	line-height: 40px;
+	cursor: pointer;
+	float: left;
+	display: block;
+}
+
+.cyo01:hover {
+	opacity: 0.9;
+}
+
+.cyo02 {
+	float: left;
+	font-size: 16px;
+	line-height: 23px;
+	padding-left: 10px;
+	color: #FFF;
+}
+
+.cyo02 span {
+	color: #e94949;
+	font-size: 16px;
+}
+
+.cyf {
+	float: left;
+	color: #FFF;
+	font-size: 16px;
+	line-height: 34px;
+}
+
+.rev-table-wrap {
+	
+}
+
+.rev-table-box {
+	width: 1200px;
+	height: 380px;
+	background: url(/wwh-wallet/images/reserve/line2-bg.png) repeat-x bottom
+		left;
+}
+
+.rev-contain {
+	width: 1070px;
+	height: 380px;
+	padding: 50px;
+	margin: 0 auto;
+	padding-top: 35px;
+}
+
+.title-eo {
+	font-size: 20px;
+	color: #FFF;
+	font-weight: bold;
+	margin-bottom: 20px;
+}
+
+.rev-contain table {
+	width: 100%;
+}
+
+.rev-contain table tr th {
+	color: #FFF;
+	font-size: 18px;
+	height: 45px;
+}
+
+.rev-contain table tr td {
+	color: #FFF;
+	font-size: 18px;
+	height: 42px;
+	font-weight: normal;
+}
+
+.rev-title02 {
+	
+}
+
+.rev-cy-box01 {
+	background: url(/wwh-wallet/images/reserve/cay-bg01.png) no-repeat;
+}
+
+.rev-cy-box02 {
+	background: url(/wwh-wallet/images/reserve/cay-bg02.png) no-repeat;
+	font-size: 34px;
+	color: #FFF;
+	text-align: center;
+	line-height: 600px;
+	position: relative;
+}
+
+.rev-cy-box03 {
+	background: url(/wwh-wallet/images/reserve/cay-bg03.png) no-repeat;
+	font-size: 34px;
+	color: #FFF;
+	text-align: center;
+	line-height: 160px;
+}
+
+.imc-btn {
+	width: 120px;
+	height: 50px;
+	background: #e94949;
+	border-radius: 6px;
+	font-size: 18px;
+	color: #FFF;
+	text-align: center;
+	line-height: 50px;
+	cursor: pointer;
+	position: absolute;
+	left: 542px;
+	top: 375px;
+}
+
+.imc-btn:hover {
+	opacity: 0.9;
+}
+/*           20161031            mb-myposition.html           */
+
+/*charge-step*/
+.wx-charge {
+	
+}
+
+.otherz-box {
+	width: 300px;
+	text-align: center;
+	height: 50px;
+	border: 1px solid #ccc;
+	float: left;
+	margin-bottom: 50px;
+	margin-right: 80px;
+	position: relative;
+	line-height: 50px;
+	cursor: pointer;
+}
+
+.otherz-box:hover {
+	opacity: 0.9;
+}
+
+.otherz-box.selected i {
+	width: 33px;
+	height: 33px;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	display: block;
+	background: url(/wwh-wallet/images/bank-logo/selected-bank.png)
+		no-repeat;
+}
+
+.otherz-box.selected {
+	border: 1px solid #1e37ef;
+}
+
+.full-charge-wrap {
+	width: 1200px;
+	margin: 0 auto;
+	min-height: 700px;
+	padding-top: 200px;
+	text-align: center;
+}
+
+.full-charge-box {
+	width: 580px;
+	height: 380px;
+	margin: 0 auto;
+	border: 10px solid #7f7f7f;
+}
+
+.fc-title {
+	width: 560px;
+	height: 50px;
+	text-align: left;
+	color: #FFF;
+	font-size: 22px;
+	padding-left: 30px;
+	background: #e94949;
+	line-height: 50px;
+	box-sizing: border-box;
+}
+
+.full-charge-wrap.wxzf {
+	background: url(/wwh-wallet/images/reserve/wxbg.png) 900px 190px
+		no-repeat;
+}
+
+.fc-fs {
+	text-align: center;
+}
+
+.fc-fs p {
+	text-align: center;
+	font-size: 26px;
+	margin-top: 50px;
+}
+
+.fc-fs img {
+	
+}
+
+.gp-pos04 .noperson {
+	opacity: 0.5;
+	-webkit-filter: grayscale(100%);
+	-moz-filter: grayscale(100%);
+	-ms-filter: grayscale(100%);
+	filter: grayscale(100%);
+	filter: gray;
+}
+
+.myseconduser02 {
+	display: none;
+}
+
+.myseconduser02.selected {
+	display: block;
+}
+
+.cyo01.forbden {
+	background: #ccc;
+	color: #FFF;
+}
+
+.cyo01.forbden:hover {
+	opacity: 1;
+	cursor: not-allowed;
+}
+
+.rev-btn.rev-btn04:hover {
+	opacity: 1;
+	cursor: not-allowed;
+}
+
+.errow {
+	color: #e94949;
+	display: none;
+}
+
+.page-total {
+	display: none
+}
+
+.cyo02 {
+	display: none;
+}
+
+.cyo02.selected {
+	display: block;
+}
+
+.rev-cy-box01.sehidden {
+	display: none;
+}
+
+.rev-cy-box02.sehidden {
+	display: none;
+}
+
+.tabwrap {
+	width: 90px;
+	margin: 0 auto;
+}
+
+.tabwrap ul li {
+	float: left;
+	width: 30px;
+	text-align: center;
+	color: #808080;
+}
+
+.tabwrap ul li a {
+	float: left;
+	width: 30px;
+	text-align: center;
+	color: #808080;
+}
+
+.tabwrap ul li.active a {
+	color: #e94949;
+}
+
+.qiangdianpage {
+	height: 300px;
+}
+
+.qiangdian1ren {
+	display: none;
+}
+
+.qiangdian2ren {
+	display: none;
+}
+
+.qiangdian3ren {
+	display: none;
+}
+
+.qiangdian1ren.selected {
+	display: block;
+}
+
+.qiangdian2ren.selected {
+	display: block;
+}
+
+.qiangdian3ren.selected {
+	display: block;
+}
+
+.singlebox01 {
+	display: none;
+}
+
+.svh-abst {
+	display: none;
+}
+
+.singlebox02 {
+	display: none;
+}
+
+.svh-abst2 {
+	display: none;
+}
+
+.tableCtrl21css .wrap-dd-select {
+	width: 120px;
+}
+.confirm{
+	margin-right:10px;
+}
+.redmi {
+	color: #e94949;
+}
+
+.errorinfo {
+	font-size: 12px;
+	color: #e94949;
+	display: none;
+	width:500px;
+}
+.hidden{
+	display:none;
+}
+.addcardico {
+	background: url(/wwh-wallet/images/addcardico.png) no-repeat;
+	padding-left: 20px;
+	font-size: 14px;
+	color: #4babe5;
+	height: 20px;
+	line-height: 20px;
+}
+
+.charge-staus {
+	padding-left: 100px;
+	font-size: 14px;
+	color: #4babe5;
+	height: 70px;
+	line-height: 70px;
+	margin: 0 auto;
+}
+
+.success-staus {
+	background: url(/wwh-wallet/images/charge-success.png) no-repeat;
+}
+
+.failure-staus {
+	background: url(/wwh-wallet/images/charge-failure.png) no-repeat;
+}
+
+.charge-staus-wrap {
+	min-height: 700px;
+	text-align: center;
+	padding-top: 200px;
+}
+
+.sys-tro-box {
+	min-height: 700px;
+}
+
+.systy {
+	background: #2ec47c;
+}
+
+.titlesys {
+	
+}
+
+.containsys {
+	
+}
+
+.sys-main-box {
+	width: 1200px;
+	margin: 0 auto;
+	padding-top: 150px;
+}
+
+.ty-box-1 {
+	width: 450px;
+	float: left;
+}
+
+.ty-box-2 {
+	width: 750px;
+	float: left;
+}
+
+.titlesys {
+	font-size: 30px;
+	color: #FFF;
+	margin-bottom: 40px;
+}
+
+.containsys {
+	color: #FFF;
+}
+
+.tydetail .containsys label {
+	color: #006f3a;
+	font-weight: bold;
+	display: inline;
+}
+
+.containsys font {
+	font-weight: bold;
+}
+
+.tyfont {
+	line-height: 35px;
+	margin-bottom: 15px;
+}
+
+.syshm {
+	background: #308bd1;
+}
+
+.hmdetail .containsys label {
+	color: #004e8b;
+	font-weight: bold;
+	line-height: 35px;
+	display: inline;
+}
+
+.sysfm {
+	background: #00b5b6;
+}
+
+.fmdetail .containsys label {
+	color: #006667;
+	font-weight: bold;
+	line-height: 35px;
+	display: inline;
+}
+
+.sysxm {
+	background: #ff8927;
+}
+
+.intro2sys-box {
+	background: #01babc;
+	padding: 80px 0px 135px 0px;
+}
+
+.intro2sys {
+	background: url(/wwh-wallet/images/regulation/intro2sys.png) 0px 140px
+		no-repeat;
+	min-height: 1040px;
+	position: relative;
+	padding-top: 0px;
+}
+
+.systile {
+	position: absolute;
+	width: 160px;
+	height: 55px;
+	line-height: 55px;
+	color: #008687;
+	font-size: 24px;
+	text-align: center;
+}
+
+.systile.st01 {
+	left: 0px;
+	top: 140px;
+}
+
+.systile.st02 {
+	left: 1040px;
+	top: 422px;
+}
+
+.systile.st03 {
+	left: 0px;
+	top: 705px;
+}
+
+.systile.st04 {
+	left: 1040px;
+	top: 986px;
+}
+
+.sysctain {
+	width: 950px;
+	height: 200px;
+	position: absolute;
+	color: #FFF;
+}
+
+.sysctain.sc01 {
+	left: 200px;
+	top: 87px;
+}
+
+.sysctain.sc02 {
+	left: 60px;
+	top: 399px;
+}
+
+.sysctain.sc03 {
+	left: 200px;
+	top: 680px;
+}
+
+.sysctain.sc04 {
+	left: 766px;
+	top: 995px;
+	font-size: 24px;
+	font-weight: bold;
+	width: 230px;
+	height: 50px;
+}
+
+.bt-sys2intro {
+	font-size: 30px;
+	font-weight: bold;
+	text-align: center;
+	color: #FFF;
+}
+
+.syszsfh {
+	background: #ff6566;
+}
+
+.sysshare {
+	background: #f77d27;
+}
+
+.sysshare .sys-main-box {
+	padding-top: 80px;
+}
+
+.marginb70 {
+	margin-bottom: 70px;
+}
+
+.marginb60 {
+	margin-bottom: 60px;
+}
+
+.marginb40 {
+	margin-bottom: 40px;
+}
+
+.marginb30 {
+	margin-bottom: 30px;
+}
+
+.sharedetail {
+	color: #FFF;
+}
+
+.fontstyle24 {
+	text-align: center;
+	font-weight: bold;
+	font-size: 24px;
+}
+
+.tablenodataselected {
+	background: url(/wwh-wallet/images/tablenodata.png) center center
+		no-repeat;
+}
+
+.page-position {
+	min-height: 42px;
+}
+
+.paystatue .selected {
+	color: #0036ff;
+}
+
+.errowrap02 .errow {
+	float: left;
+	clear: both;
+}
+
+.errorinfovcode {
+	display: none;
+	font-size: 12px;
+	color: #e94949;
+}
+
+.reservepage header {
+	background: #FFF;
+}
+
+.wx-c b {
+	background: url(/wwh-wallet/images/bank-logo/wx-ico.png) no-repeat;
+	position: absolute;
+	width: 36px;
+	height: 36px;
+	top: 8px;
+	left: 65px;
+}
+
+.zfb-c b {
+	background: url(/wwh-wallet/images/bank-logo/zfb-ico.png) no-repeat;
+	position: absolute;
+	width: 36px;
+	height: 36px;
+	top: 7px;
+	left: 65px;
+}
+
+.reservepage .modal {
+	
+}
+
+.reservepage .modal-dialog {
+	border: none;
+	background: none;
+	width: 1200px;
+	left: 600px;
+}
+
+.reservepage .modal-content {
+	border: none;
+	background: none;
+}
+
+.smrz-pos {
+	width: 300px;
+	height: 50px;
+	position: absolute;
+	top: 370px;
+	left: 54px;
+}
+
+.smrz-pos a {
+	color: #FFF;
+	text-decoration: underline;
+}
+
+.smrz-pos a {
+	color: #FFF;
+	text-decoration: underline;
+}
+
+#mySelect1 .dropdown-label {
+	height: 14px;
+	display: inline-block;
+}
+
+#mySelect2 .dropdown-label {
+	height: 14px;
+	display: inline-block;
+}
+
+#mySelect3 .dropdown-label {
+	height: 14px;
+	display: inline-block;
+}
+
+#mySelect4 .dropdown-label {
+	height: 14px;
+	display: inline-block;
+}
+
+.linecu {
+	width: 100%;
+	height: 1px;
+	background: #e6e6e6;
+}
+
+.wrapcu {
+	width: 1200px;
+	height: 120px;
+	margin: 0 auto;
+	margin-bottom: 80px;
+}
+
+.wrapcu2 {
+	width: 1200px;
+	margin: 0 auto;
+	height: 867px;
+}
+
+.boxfcu {
+	width: 600px;
+	height: 60px;
+	float: left;
+	position: relative;
+}
+
+.boxfcuw {
+	width: 1200px;
+	height: 120px;
+	float: left;
+	padding-top: 30px;
+	border-bottom: 1px solid #e6e6e6;
+}
+
+.boxfcu1 {
+	border-right: 1px solid #e6e6e6;
+}
+
+.contactico {
+	width: 65px;
+	height: 65px;
+	margin-left: 65px;
+}
+
+.contactico1 {
+	background: url(/wwh-wallet/images/contactus/01.png) center center
+		no-repeat;
+}
+
+.contactico2 {
+	background: url(/wwh-wallet/images/contactus/02.png) center center
+		no-repeat;
+}
+
+.mappositionvwh {
+	width: 380px;
+	height: 285px;
+	float: left;
+}
+
+.poscontact1 {
+	position: absolute;
+	left: 138px;
+	top: 0px;
+}
+
+.poscontact1 label {
+	font-size: 22px;
+	color: #333;
+}
+
+.poscontact1 font {
+	font-size: 16px;
+	color: #666;
+}
+
+.poscontact2 {
+	position: absolute;
+	left: 383px;
+	top: 7px;
+	line-height: 40px;
+	color: #e94949;
+}
+
+.poscontact2 span {
+	font-size: 28px;
+}
+
+.poscontact2 a {
+	width: 120px;
+	height: 40px;
+	border: 1px solid #CCC;
+	display: block;
+	text-align: center;
+	line-height: 40px;
+	color: #666;
+}
+
+.cboxu01 {
+	float: left;
+	margin-right: 20px;
+}
+
+.cboxu02 {
+	float: left;
+	margin-right: 20px;
+	width: 600px;
+}
+
+.cboxu21 {
+	font-size: 20px;
+	line-height: 35px;
+}
+
+.cboxu21 .custy01 {
+	font-size: 20px;
+	color: #333;
+}
+
+.cboxu21 .custy02 {
+	font-size: 20px;
+	color: #666;
+}
+
+.cboxu22 {
+	line-height: 35px;
+	font-size: 20px;
+	color: #666;
+	margin-top: 20px;
+}
+
+.cboxu23 {
+	line-height: 35px;
+	font-size: 20px;
+	color: #666;
+	margin-top: 20px;
+}
+
+.my-benefit-box {
+	position: relative;
+}
+
+.my-benefit-box .mb-box-4 {
+	position: absolute;
+	left: 103px;
+	top: 203px;
+}
+
+.my-benefit-box .mb-box-4 input {
+	width:120px;
+	height:36px;
+	line-height:36px;
+	text-align:center;
+	display:block;
+	margin-right: 20px;
+	color: #FFF;
+	background: url(/wwh-wallet/images/btn-jrsys.png) no-repeat;
+	border:none;
+	outline:none;
+	cursor:pointer;
+}
+.my-benefit-box .mb-box-4 input.hasntgoto {
+	background: url(/wwh-wallet/images/btn-jrsysgrey.png) no-repeat; cursor:not-allowed;
+}
+.my-benefit-box .mb-box-4 input.hasgoto {
+	
+}
+
+.my-benefit-box .mb-box-4 .jinru {
+	margin-right: 20px;
+	color: #f23030;
+	float: left;
+	margin-left: 20px;
+	cursor: pointer;
+}
+
+.my-benefit-box .mb-box-4 .jinru:hover {
+	margin-right: 20px;
+	color: #f23030;
+	opacity: 0.8;
+}
+
+.my-benefit-box .mb-box-4 a.jinru.hasgoto:hover {
+	opacity:1;
+}
+.sysbtnre01 {
+	position: absolute;
+	left: 262px;
+	top: 26px;
+	width: 146px;
+	height: 42px;
+	font-size: 27px;
+	color: #FFF;
+	background: #e94949;
+	line-height: 42px;
+	text-align: center;
+	display: block;
+	border-radius: 6px;
+}
+
+.sysbtnre02 {
+	position: absolute;
+	left: 724px;
+	top: 234px;
+	width: 146px;
+	height: 42px;
+	font-size: 27px;
+	color: #FFF;
+	background: #e94949;
+	line-height: 42px;
+	text-align: center;
+	display: block;
+	border-radius: 6px;
+}
+
+.sysbtnre03 {
+	position: absolute;
+	left: 342px;
+	top: 403px;
+	width: 146px;
+	height: 42px;
+	font-size: 27px;
+	color: #FFF;
+	background: #e94949;
+	line-height: 42px;
+	text-align: center;
+	display: block;
+	border-radius: 6px;
+}
+
+.sysbtnre04 {
+	position: absolute;
+	left: 661px;
+	top: 793px;
+	width: 146px;
+	height: 42px;
+	font-size: 27px;
+	color: #FFF;
+	background: #e94949;
+	line-height: 42px;
+	text-align: center;
+	display: block;
+	border-radius: 6px;
+}
+.shansystype {
+	width: 273px;
+	height: 53px;	
+	background: url(/wwh-wallet/images/sysdoing.gif) no-repeat;
+	color:#FFF;
+	font-size:20px;
+	font-weight:bold;
+	padding-left: 50px;
+    padding-top: 10px;
+}
+.s-tab-w.nobackground {
+	background:none;
+}
+.allsyslabel{display:none;}
+.allsyslabel.tydisplay{display:block;}
+.allsyslabel.hmdisplay{display:block;}
+.allsyslabel.fmdisplay{display:block;}
+.allsyslabel.xmdisplay{display:block;}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

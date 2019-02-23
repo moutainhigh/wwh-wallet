@@ -1,0 +1,753 @@
+﻿<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>个人收益</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="金融、钱包、理财、高收益">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="renderer" content="webkit" />
+    <link rel="stylesheet" href="/wwh-wallet/css/bootstrap.css">
+    <link rel="stylesheet" href="/wwh-wallet/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/wwh-wallet/css/plugin.css">
+    <link rel="stylesheet" href="/wwh-wallet/css/landing.css">
+    <link rel="stylesheet" href="/wwh-wallet/css/common.css">
+    <link href="/wwh-wallet/css/mall/private-benefit.css" rel="stylesheet" />
+    <link href="/wwh-wallet/css/style.css" rel="stylesheet" />
+    <link href="/wwh-wallet/css/angular-dropdowns.css" rel="stylesheet" />
+    <script type="text/javascript" src="/wwh-wallet/js/jquery.min.js"></script>
+    <script src="/wwh-wallet/js/bootstrap.js"></script>
+    <script src="/wwh-wallet/js/app.js"></script>
+    <script src="/wwh-wallet/js/app.plugin.js"></script>
+    <script src="/wwh-wallet/js/app.data.js"></script>
+    <script src="/wwh-wallet/js/fuelux/fuelux.js"></script>
+    <script src="/wwh-wallet/js/datepicker/bootstrap-datepicker.js"></script>
+    <script src="/wwh-wallet/js/slider/bootstrap-slider.js"></script>
+    <script src="/wwh-wallet/js/file-input/bootstrap.file-input.js"></script>
+    <script src="/wwh-wallet/js/combodate/moment.min.js"></script>
+    <script src="/wwh-wallet/js/parsley/parsley.min.js"></script>
+    <script src="/wwh-wallet/js/angular.js"></script>
+    <script src="/wwh-wallet/js/tm.pagination.js"></script>
+</head>
+<body ng-controller="cashDetailCtrl">
+    <div ng-include src="'/wwh-wallet/pages/wallet/common/header.html'"></div>
+    <input id="selectedpage" type="hidden" value="benifit" />
+    <div class="fixed pb-big-banner">
+        <div class="banner-box">
+            <div class="m-box">
+                <div class="my-benefit-box">
+                    <div class="fixed mb-box12-wrap">
+                        <div class="mb-box-1 fixed">
+                            <div class="mb-12-box fixed">
+                                <div class="mb-title01">剩余金币（个）</div>
+                                <div class="mb-title02"><span>金币</span><label ng-bind="info.platformRemainAmount  == null ? '00.00' : info.platformRemainAmount | currency :'' "></label></div>
+                            </div>
+                            <div class="mb-line"></div>
+                            <div class="mb-34-box fixed">
+                                <div class="mb-title03" style="width:180px;">已提现（个）</div>
+                                <div class="mb-title04"><span>金币</span><label ng-bind="info.platformUsedAmount  == null ? '00.00' : info.platformUsedAmount | currency :'' "></label></div>
+                            </div>
+                        </div>
+                        <div class="mb-box-2 fixed">
+                            <!--   <div class="mb-title05">
+                                  进入下一系统：<a href="#">富民系统</a>
+                              </div> -->
+                            <div class="mb-title06">
+                                <!--加入资金：5000.00-->
+                                <a href="/wwh-wallet/pages/wallet/regulation/regulation2introsys.html">查看规则</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-box-3 fixed">
+                        <a href="/wwh-wallet/bankcard" class="mb-paycard"></a>
+                        <a href="/wwh-wallet/applywithdrawl" class="mb-takecash">提现</a>
+                        <a href="/wwh-wallet/chargedetail" class="mb-infodetail">查看提现明细</a>
+                    </div>
+                    <div class="mb-box-4 fixed">
+                        <div class="jinru">
+                       <form id="go_to_Postion1" action="/wwh-wallet/postion" method="post">
+							 <input id="diskType1" type="hidden" name="diskType" value="TIYAN" />
+							 <input ng-click="gotoPostion('tiyan')" ng-class="tiyanbtngo" value="进入惠民系统">
+							 <span class="allsyslabel" ng-class="tylabel" style="font-size:12px;padding-left:38px;">暂未进入</span>
+             			</form></div>
+             			<div class="jinru">
+             			<form id="go_to_Postion2" action="/wwh-wallet/postion" method="post">
+							 <input id="diskType2" type="hidden" name="diskType" value="HUIMIN" />
+							 <input ng-click="gotoPostion('huimin')" ng-class="huiminbtngo" value="进入富民系统">
+							 <span class="allsyslabel" ng-class="hmlabel" style="font-size:12px;padding-left:38px;">暂未进入</span>
+             			</form></div>
+             			<div class="jinru">
+             			<form id="go_to_Postion3" action="/wwh-wallet/postion" method="post">
+							 <input id="diskType3" type="hidden" name="diskType" value="FUMIN" />
+							 <input ng-click="gotoPostion('fumin')" ng-class="fuminbtngo" value="进入兴民系统">
+							 <span class="allsyslabel" ng-class="fmlabel" style="font-size:12px;padding-left:38px;">暂未进入</span>
+             			</form>
+             			</div>
+             			<div class="jinru">
+             			<form id="go_to_Postion4" action="/wwh-wallet/postion" method="post">
+							 <input id="diskType4" type="hidden" name="diskType" value="XINGMIN" />
+							 <input ng-click="gotoPostion('xingmin')" ng-class="xingminbtngo" value="进入富人俱乐部">
+							 <span class="allsyslabel" ng-class="xmlabel" style="font-size:12px;padding-left:38px;">暂未进入</span>
+             			</form>
+             			</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="benefit-detaile-box">
+            <div class="m-box fixed">
+                <div id="bd-box-1" class="bd-box bd-box-1 selected">
+                    <div class="bd-title-1">招商分红收益</div>
+                    <div class="bd-title-2">可提现(个)</div>
+                    <div class="bd-title-3"><span>金币</span><label ng-bind="info.businessWithdrawalsAmount  == null ? '00.00' : info.businessWithdrawalsAmount | currency :'' "></label></div>
+                    <div class="bd-title-4">
+                        <a href="/wwh-wallet/pages/wallet/regulation/how2earnmoney.html">怎样赚取招商分红</a>
+                    </div>
+                </div>
+                <!--<div class="bd-box bd-box-2" style="display:none;">
+                    <div class="bd-title-1">会员充值收益</div>
+                    <div class="bd-title-2">可提现</div>
+                    <div class="bd-title-3">400.00个</div>
+                    <div class="bd-title-4"><a href="#">怎样赚取会员分红</a></div>
+                </div>-->
+                <div id="bd-box-3" class="bd-box bd-box-3 last">
+                    <div class="bd-title-1">会员分享收益</div>
+                    <div class="bd-title-2">可提现(个)</div>
+                    <div class="bd-title-3"><span>金币</span><label ng-bind="info.memberWithdrawalsAmount  == null ? '00.00' : info.memberWithdrawalsAmount | currency :'' "></label></div>
+                    <div class="bd-title-4">
+                        <a href="/wwh-wallet/pages/wallet/regulation/earnsharedividend.html">怎样赚取分享分红</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="deals-details">
+        <div class="m-box fixed d-t-bg">
+            <div class="zg-box-w zg-w-box01 selected">
+                <div class="zg-box zg-box11 selected" ng-controller="table1Ctrl" ng-class="currentGradeCss">
+                    <div class="s-tab-w width1164">
+                        <div class="deals-title-wrap">
+                            <div class="deals-title selected s-tab s-tab-01 s-tab333" style="width:70px;">交易记录</div>
+                            <div class="mall-btn-select">
+                                <div class="btn-group">
+                                    <button data-toggle="dropdown"
+                                            class="btn btn-small btn-white dropdown-toggle">
+                                        <span class="dropdown-label">所有商家</span> <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-select">
+                                        <li class="active"><a href="#" ng-click='bussinessDropdownListClick("ALL")'><input type="radio" name="d-s-r" checked="">所有商家</a></li>
+                                        <li ng-repeat="x in bussinessDropdownList">
+                                            <a href="#" ng-click="bussinessDropdownListClick(x.businessUserId)">
+                                                <input type="radio" name="d-s-r" value="{{x.businessUserId}}">{{x.businessUserName}}
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pb-table-wrap">
+                        <div class="dm-table-wrap">
+                            <table class="pb-table">
+                                <tr>
+                                    <th>交易时间</th>
+                                    <th>订单编号</th>
+                                    <th>使用积分</th>
+                                    <th>订单金额</th>
+                                    <th>抽佣金额</th>
+                                    <th>状态</th>
+                                </tr>
+                                <tr ng-repeat="x in datasource1">
+                                    <td class="td01" ng-bind="x.createdDate"></td>
+                                    <td class="td02" ng-bind="x.orderNumber"></td>
+                                    <td class="td03" ng-bind="x.scoreUsage"></td>
+                                    <td class="td04" ng-bind="x.orderAmount"></td>
+                                    <td class="td05" ng-bind="x.myProfitAmount"></td>
+                                    <td class="td06" ng-bind="x.orderStatus == 'SUCCESSED' ? '成功' : '失败'"></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="page-position fixed">
+                        <div class="fixed float-R">
+                            <tm-pagination conf="paginationConf"></tm-pagination>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="zg-box-w zg-w-box03">
+                <div class="s-tab-wrap">
+                    <div class="s-tab-w width1164">
+                        <div class="deals-title">
+                            <div class="s-tab s-tab-01 selected">收益记录</div>
+                            <div class="s-tab s-tab-02">空点列表</div>
+                            <div class="s-tab s-tab-03">抢点列表</div>
+                            <div class="s-tab s-tab-04 last">我的分享</div>
+                        </div>
+                    </div>
+                    <div class="s-sub-w">
+                        <div class="s-sub s-sub-00 selected" ng-controller="tableCtrl21" ng-class="currentGradeCss">
+                            <div class="s-sub-sle s-sub-sle01 fixed">
+                                <div class="mall-btn-select">
+                                    <div class="btn-group">
+                                        <button data-toggle="dropdown"
+                                                class="btn btn-small btn-white dropdown-toggle">
+                                            <span class="dropdown-label">全部系统</span> <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-select">
+                                            <li class="active">
+                                                <a href="#" ng-click="bussinessDropdownListClick('ALL')">
+                                                    <input type="radio" name="d-s-r" checked="">全部系统
+                                                </a>
+                                            </li>
+                                            <li><a href="#" ng-click="bussinessDropdownListClick('TIYAN')"><input type="radio" name="d-s-r">惠民系统</a></li>
+                                            <li><a href="#" ng-click="bussinessDropdownListClick('HUIMIN')"><input type="radio" name="d-s-r">富民系统</a></li>
+                                            <li><a href="#" ng-click="bussinessDropdownListClick('FUMIN')"><input type="radio" name="d-s-r">兴民系统</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="dm-table-wrap">
+                                <table class="dm-table dm-table1">
+                                    <tr>
+                                        <th>时间</th>
+                                        <th>当前人数</th>
+                                        <th>系统编号</th>
+                                        <th>系统名称</th>
+                                        <th>收益金额</th>
+                                        <th>身份</th>
+                                    </tr>
+                                    <tr ng-repeat="x in datasource1">
+                                        <td class="td01" ng-bind="x.createdDate | date:'yyyy-MM-dd hh:mm:ss'">{{x.createdDate | date:'yyyy-MM-dd hh:mm:ss'}}</td>
+                                        <td class="td03" ng-bind="x.diskCounter">{{x.diskCounter}}</td>
+                                        <td class="td04" ng-bind="x.diskSeq">{{x.diskSeq}}</td>
+                                        <td class="td05" ng-bind="playDisk(x.diskType)">{{playDisk(x.diskType)}}</td>
+                                        <td class="td06" ng-bind="x.profitAmount">{{x.profitAmount}}金币</td>
+                                        <td class="td07" ng-bind="playRole(x.roleId)">{{playRole(x.roleId)}}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="page-position fixed">
+                                <div class="fixed float-R">
+                                    <tm-pagination conf="paginationConf"></tm-pagination>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="s-sub s-sub-01" ng-controller="tableCtrl22" ng-class="currentGradeCss">
+                            <div class="s-sub-sle s-sub-sle02 fixed">
+                                <div class="deals-title2">
+                                    <div class="deals-title21">
+                                        <!--会员等级收益：<span>4.00个</span>-->
+                                    </div>
+                                </div>
+                                <div class="mall-btn-select">
+                                    <div class="btn-group">
+                                        <button data-toggle="dropdown"
+                                                class="btn btn-small btn-white dropdown-toggle">
+                                            <span class="dropdown-label">全部系统</span> <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-select">
+                                            <li class="active">
+                                                <a href="#" ng-click="bussinessDropdownListClick('ALL')">
+                                                    <input type="radio" name="d-s-r" checked="" value="ALL">全部系统
+                                                </a>
+                                            </li>
+                                            <li><a href="#" ng-click="bussinessDropdownListClick('TIYAN')"><input type="radio" name="d-s-r" value="TIYAN">惠民系统</a></li>
+                                            <li><a href="#" ng-click="bussinessDropdownListClick('HUIMIN')"><input type="radio" name="d-s-r" value="HUIMIN">富民系统</a></li>
+                                            <li><a href="#" ng-click="bussinessDropdownListClick('FUMIN')"><input type="radio" name="d-s-r" value="FUMIN">兴民系统</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="dm-table-wrap">
+                                <table class="dm-table">
+                                    <tr>
+                                        <th>时间</th>
+                                        <th>用户名</th>
+                                        <th>空点数量</th>
+                                        <th>系统编号</th>
+                                        <th>系统名称</th>
+                                        <th>身份</th>
+                                    </tr>
+                                    <tr ng-repeat="x in datasource1">
+                                        <td class="td01" ng-bind="x.lastUpdatedDate">{{x.lastUpdatedDate}}</td>
+                                        <td class="td02" ng-bind="x.nickName">{{x.nickName}}</td>
+                                        <td class="td03" ng-bind="x.emptyPoint">{{x.emptyPoint}}</td>
+                                        <td class="td04" ng-bind="x.diskSeq">{{x.diskSeq}}</td>
+                                        <td class="td05" ng-bind="playDisk(x.diskType)">{{playDisk(x.diskType)}}</td>
+                                        <td class="td05">经理</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="page-position fixed">
+                                <div class="fixed float-R">
+                                    <tm-pagination conf="paginationConf"></tm-pagination>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 抢点列表 -->
+                        <div class="s-sub s-sub-02" ng-controller="tableCtrl23" ng-class="currentGradeCss">
+                            <div class="s-sub-sle s-sub-sle03 fixed">
+                                <!--
+                                <div class="deals-title2">
+                                    <div class="deals-title21">
+                                        4会员等级收益：<span>4.00个</span>
+                                    </div>
+                                </div>
+                                -->
+                                <div class="mall-btn-select">
+                                    <div class="btn-group">
+                                        <button data-toggle="dropdown"
+                                                class="btn btn-small btn-white dropdown-toggle">
+                                            <span class="dropdown-label">全部系统</span> <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-select">
+                                            <li class="active">
+                                                <a href="#" ng-click="bussinessDropdownListClick('ALL')">
+                                                    <input type="radio" name="d-s-r" checked="">全部系统
+                                                </a>
+                                            </li>
+                                            <li><a href="#" ng-click="bussinessDropdownListClick('TIYAN')"><input type="radio" name="d-s-r">惠民系统</a></li>
+                                            <li><a href="#" ng-click="bussinessDropdownListClick('HUIMIN')"><input type="radio" name="d-s-r">富民系统</a></li>
+                                            <li><a href="#" ng-click="bussinessDropdownListClick('FUMIN')"><input type="radio" name="d-s-r">兴民系统</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="dm-table-wrap">
+                                <table class="dm-table">
+                                    <tr>
+                                        <th>时间</th>
+                                        <th>用户名</th>
+                                        <th>所得数量</th>
+                                        <th>系统编号</th>
+                                        <th>系统名称</th>
+                                        <th>身份</th>
+                                    </tr>
+                                    <tr ng-repeat="x in datasource1">
+                                        <td class="td01" ng-bind="x.createdDate">{{x.createDate}}</td>
+                                        <td class="td02" ng-bind="x.nickName">{{x.nickName}}</td>
+                                        <td class="td03" ng-bind="x.profitPoints">{{x.profitPoints}}</td>
+                                        <td class="td04" ng-bind="x.diskSeq">{{x.diskSeq}}</td>
+                                        <td class="td05" ng-bind="playDisk(x.diskType)">{{playDisk(x.diskType)}}</td>
+                                        <td class="td05" ng-bind="playRole(x.roleId)">{{playRole(x.roleId)}}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="page-position fixed">
+                                <div class="fixed float-R">
+                                    <tm-pagination conf="paginationConf"></tm-pagination>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="s-sub s-sub-03" ng-controller="tableCtrl24" ng-class="currentGradeCss">
+                            <!--
+                               <div class="s-sub-sle s-sub-sle04 fixed">
+
+                                   <div class="deals-title2">
+                                       <div class="deals-title21">
+                                                                                                                  会员等级收益：<span>4.00个</span>
+                                       </div>
+                                   </div>
+
+                                   <div class="mall-btn-select">
+                                       <div class="btn-group">
+                                           <button data-toggle="dropdown"
+                                                   class="btn btn-small btn-white dropdown-toggle">
+                                               <span class="dropdown-label">全部系统</span> <span class="caret"></span>
+                                           </button>
+                                           <ul class="dropdown-menu dropdown-select">
+                                               <li class="active">
+                                                   <a href="#">
+                                                       <input type="radio"
+                                                              name="d-s-r" checked="">全部系统
+                                                   </a>
+                                               </li>
+                                               <li><a href="#"><input type="radio" name="d-s-r">惠民系统</a></li>
+                                               <li><a href="#"><input type="radio" name="d-s-r">富民系统</a></li>
+                                               <li><a href="#"><input type="radio" name="d-s-r">兴民系统</a></li>
+                                               <li><a href="#"><input type="radio" name="d-s-r">其他数据</a></li>
+                                           </ul>
+                                       </div>
+                                   </div>
+                               </div>
+                                -->
+                            <div class="dm-table-wrap">
+                                <div class="pb-table-wrap">
+                                    <div class="sec-page sec-page01">
+                                        <table class="pb-table myseconduser myseconduser01">
+                                            <tr>
+                                                <th>一级用户</th>
+                                                <th>加入时间</th>
+                                            </tr>
+                                            <tr id="hostna0{{$index+1}}" class="hnam" ng-repeat="x in datasource1" ng-click="viewSubNode(x.receiveUserId)">
+                                                <td class="td01" ng-bind="x.nickName">{{x.nickName}}</td>
+                                                <td class="td03" ng-bind="x.createdDate">{{x.createdDate}}</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div class="sec-page sec-page02">
+                                        <i></i>
+                                        <div class="sec-page02tablewrap">
+                                            <div class="td04">二级用户</div>
+                                            <div class="td06">加入时间</div>
+                                            <div class="td05"></div>
+                                        </div>
+                                        <div class="sec-page03">
+                                            <table id="hna01" class="pb-table myseconduser myseconduser02 selected">
+                                                <tr ng-repeat="x in datasource2">
+                                                    <td class="td04">{{x.nickName}}</td>
+                                                    <td class="td06" ng-bind="x.createdDate">{{x.createdDate}}</td>
+                                                    <td class="td05"></td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="page-position fixed">
+                                    <div class="fixed float-R">
+                                        <tm-pagination conf="paginationConf"></tm-pagination>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <script type="text/javascript">
+                    var tabsNodes = $('.s-tab-w'), tabsLists = tabsNodes.find('.s-tab')
+                    index = 0, subNodes = $('.s-sub');
+                    tabsLists.click(function () {
+                        index = $(this).index();
+                        $(this).addClass('selected').siblings().removeClass(
+								'selected');
+                        $('.s-sub-0' + index).addClass('selected').siblings()
+								.removeClass('selected');
+                    });
+                </script>
+                <script type="text/javascript">
+                    var tabsNodes = $('.s-tab-w'),
+                        tabsLists = tabsNodes.find('.s-tab')
+                    index = 0,
+                    subNodes = $('.s-sub');
+                    tabsLists.click(function () {
+                        index = $(this).index();
+                        $(this).addClass('selected').siblings().removeClass('selected');
+                    });
+                </script>
+            </div>
+        </div>
+        <script type="text/javascript">
+            $(function () { //   alert(selectedNum);  zg-box;
+                var selectedNumB;
+                $('.benefit-detaile-box .bd-box').click(
+						function () {
+						    selectedNumB = $(this).attr('id').substring(7);
+						    $(this).addClass('selected').siblings()
+									.removeClass('selected');
+						    $('.zg-w-box0' + selectedNumB).addClass('selected')
+									.siblings().removeClass('selected');
+						    $('.s-sub-sle0' + selectedNumB)
+									.addClass('selected').siblings()
+									.removeClass('selected');
+						});
+
+                // hostna01
+            })
+        </script>
+
+        <script type="text/javascript">
+            var app = angular.module('myApp', ['tm.pagination']);
+            app.controller('cashDetailCtrl', function ($scope, $http) {
+                $scope.playRole = function (roleID) {
+                    if (roleID == 1) {
+                        return "总监";
+                    }
+                    if (roleID == 2) {
+                        return '经理';
+                    }
+                    if (roleID == 3) {
+                        return "理财师";
+                    }
+                    if (roleID == 4) {
+                        return "会员";
+                    }
+                }
+                $scope.playDisk = function (diskID) {
+                    if (diskID == 'TIYAN') {  //
+                        return "惠民系统";
+                    }
+                    if (diskID == 'HUIMIN') {
+                        return '富民系统';
+                    }
+                    if (diskID == 'FUMIN') {
+                        return "兴民系统";
+                    }
+                    if (diskID == 'XINGMIN') {
+                        return "富人俱乐部";
+                    }
+                }
+                $http.get("/wwh-wallet/earnings/platformprofit").success(function (response) {
+                    if (response.data != null) {
+                        $scope.info = response.data;
+                        $scope.ddsuccesscash = $scope.info.businessAmount * 100;
+                        $scope.ktx = ($scope.info.levelWithdrawalsAmount - $scope.info.saveAmount);
+                        console.log($scope.info);
+                    	$scope.tyYlabel = 'N';
+                    	$scope.hmYlabel = 'N';
+                    	$scope.fmYlabel = 'N';
+                    	$scope.xmYlabel = 'N';
+                        if(response.data.tiyan == "Y"){
+                        	$scope.tiyanbtngo = 'hasgoto';
+                        	$scope.tyYlabel = 'Y';
+                        }else{
+                        	$scope.tiyanbtngo = 'hasntgoto';
+                        	$scope.tylabel = 'tydisplay';                        	
+                        }
+                        if(response.data.huimin == "Y"){
+                        	$scope.huiminbtngo = 'hasgoto';
+                        	$scope.hmYlabel = 'Y';
+                        }else{
+                        	$scope.huiminbtngo = 'hasntgoto';
+                        	$scope.hmlabel = 'hmdisplay';    
+                        }
+                        if(response.data.fumin == "Y"){
+                        	$scope.fuminbtngo = 'hasgoto';
+                        	$scope.fmYlabel = 'Y';
+                        }else{
+                        	$scope.fuminbtngo = 'hasntgoto';
+                        	$scope.fmlabel = 'fmdisplay';    
+                        }
+                        if(response.data.xingmin == "Y"){
+                        	$scope.xingminbtngo = 'hasgoto';
+                        	$scope.xmYlabel = 'Y';
+                        }else{
+                        	$scope.xingminbtngo = 'hasntgoto';
+                        	$scope.xmlabel = 'xmdisplay';    
+                        }
+                    } else {
+                        $scope.info = null;
+                        $scope.ddsuccesscash = '00.00';
+                        $scope.ktx = '00.00';
+                        console.log($scope.info);
+                    }
+                });
+                
+
+
+                
+            	//用于页面跳转
+	            $scope.gotoPostion = function(amount){
+                	var formObj = "";
+                	if(amount == "tiyan" && $scope.tyYlabel == "Y"){
+                		formObj = $("#go_to_Postion1");
+                		formObj.attr("method", "post");
+    	                formObj.submit();
+                	}else if(amount == "huimin" && $scope.hmYlabel == "Y"){
+                		formObj = $("#go_to_Postion2");
+                		formObj.attr("method", "post");
+    	                formObj.submit();
+                	}else if(amount == "fumin" && $scope.fmYlabel == "Y"){
+                    	formObj = $("#go_to_Postion3");
+                    	formObj.attr("method", "post");
+    	                formObj.submit();
+                	}else if(amount == "xingmin" && $scope.xmYlabel == "Y"){
+                        formObj = $("#go_to_Postion4");
+                        formObj.attr("method", "post");
+    	                formObj.submit();
+                	}
+	            } 
+                
+                
+                
+                
+                
+            });
+            app.controller('table1Ctrl', function ($scope, $http) {    //交易记录
+                $scope.playRole = function (roleID) { if (roleID == 1) { return "总监"; } if (roleID == 2) { return '经理'; } if (roleID == 3) { return "理财师"; } if (roleID == 4) { return "会员"; } }
+                $scope.paginationConf = {   //交易记录
+                    dropdownListValue: 'ALL', // dropdownListValue
+                    currentPage: 1, //当前页
+                    itemsPerPage: 5, //一页有多少数据显示
+                    pagesLength: 3,
+                    perPageOptions: [1],
+                    onChange: function () {
+                        $http.get("/wwh-wallet/earnings/merchantssales/" + $scope.paginationConf.dropdownListValue + "/" + $scope.paginationConf.currentPage + "/5")
+                            .success(function (response) {
+                                $scope.paginationConf.totalItems = response.total;
+                                $scope.datasource1 = response.dataList;
+                                console.log($scope.datasource1);
+                                function getCssNum() {
+                                    if (response.dataList.length == 0) {
+                                        return 'tablenodataselected';
+                                    }
+                                }
+                                $scope.currentGradeCss = getCssNum();
+                            });
+                    }
+                };
+                //所有商家
+                $http.get("/wwh-wallet/earnings/businessdetail").success(function (response) {
+                    $scope.bussinessDropdownList = response.dataList;
+                });
+                $scope.bussinessDropdownListClick = function (bussinessID) {
+                    $scope.paginationConf.dropdownListValue = bussinessID;
+                    $scope.paginationConf.currentPage = 1;
+                    $scope.paginationConf.onChange();
+                }
+            });
+
+            app.controller('tableCtrl21', function ($scope, $http) { // 收益记录
+                $scope.paginationConf = {
+                    dropdownListValue: 'ALL',
+                    currentPage: 1,
+                    itemsPerPage: 5,
+                    pagesLength: 100,
+                    perPageOptions: [1],
+                    onChange: function () {
+
+                        $http.get("/wwh-wallet/earnings/diskprofitdetail/" + $scope.paginationConf.dropdownListValue + "/" + $scope.paginationConf.currentPage + "/5")
+                        .success(function (response) {
+                            $scope.paginationConf.totalItems = response.total;
+                            $scope.datasource1 = response.dataList;
+                            function getCssNum() {
+                                if (response.dataList.length == 0) {
+                                    return 'tablenodataselected';
+                                }
+                            }
+                            $scope.currentGradeCss = getCssNum();
+                        });
+                        // FINISHED(历史) , RUNNING（进行中） ，GRAP(我抢的)
+                        /*      $http.get("/wwh-wallet/earnings/diskprofitdetail/GRAP/" + $scope.paginationConf.currentPage + "/5")
+                              .success(function (response) {
+                                  $scope.paginationConf.totalItems = response.total;
+                                   $scope.datasource1 = response.dataList;
+                                   console.log(response.dataList);
+                                  console.log('222222222222211111111111111111111111111111111111111111111111');
+                               }); */
+                    }
+                };
+                $scope.bussinessDropdownListClick = function (bussinessID) {
+                    $scope.paginationConf.dropdownListValue = bussinessID;
+                    $scope.paginationConf.currentPage = 1;
+                    $scope.paginationConf.onChange();
+                }
+                
+            });
+            app.controller('tableCtrl22', function ($scope, $http) { // 空点列表
+                $scope.playRole = function (roleID) {
+                    if (roleID == 1) {
+                        return "总监";
+                    }
+                    if (roleID == 2) {
+                        return '经理';
+                    }
+                    if (roleID == 3) {
+                        return "理财师";
+                    }
+                    if (roleID == 4) {
+                        return "会员";
+                    }
+                }
+
+                $scope.paginationConf = {
+                    dropdownListValue: 'ALL',
+                    currentPage: 1,
+                    itemsPerPage: 3,
+                    pagesLength: 0,
+                    perPageOptions: [1],
+                    onChange: function () {
+                        //  TIYAN, HUIMIN, FUMIN, XINGMIN,ALL
+                        $http.get("/wwh-wallet/earnings/undertheplatenullpointdata/" + $scope.paginationConf.dropdownListValue + "/" + $scope.paginationConf.currentPage + "/5")
+                              .success(function (response) {
+                                  $scope.paginationConf.totalItems = response.total;
+                                  $scope.paginationConf.itemsPerPage = 5;
+                                  $scope.datasource1 = response.dataList;
+                                  function getCssNum() {
+                                      if (response.dataList.length == 0) {
+                                          return 'tablenodataselected';
+                                      }
+                                  }
+                                  $scope.currentGradeCss = getCssNum();
+                                  //console.log('3333333333333333333333311111111111111111111111111111111111111111111111');
+                              });
+                    }
+                };
+                $scope.bussinessDropdownListClick = function (bussinessID) {
+                    $scope.paginationConf.dropdownListValue = bussinessID;
+                    $scope.paginationConf.currentPage = 1;
+                    $scope.paginationConf.onChange();
+                }
+
+            });
+            app.controller('tableCtrl23', function ($scope, $http) { // 抢点列表
+                $scope.bussinessDropdownListClick = function (bussinessID) {
+                    $scope.paginationConf.dropdownListValue = bussinessID;
+                    $scope.paginationConf.currentPage = 1;
+                    $scope.paginationConf.onChange();
+                }
+                $scope.paginationConf = {
+                    dropdownListValue: 'ALL',
+                    currentPage: 1,
+                    itemsPerPage: 3,
+                    pagesLength: 0,
+                    perPageOptions: [1],
+                    onChange: function () {  // /undertheplategrappointdata/TIYAN/1/5
+                        $http.get("/wwh-wallet/earnings/undertheplategrappointdata/" + $scope.paginationConf.dropdownListValue + "/" + $scope.paginationConf.currentPage + "/5")
+                             .success(function (response) {
+                                 $scope.paginationConf.totalItems = response.total;
+                                 $scope.paginationConf.itemsPerPage = 5;
+                                 $scope.datasource1 = response.dataList;
+                                 function getCssNum() {
+                                     if (response.dataList.length == 0) {
+                                         return 'tablenodataselected';
+                                     }
+                                 }
+                                 $scope.currentGradeCss = getCssNum();
+                                 //console.log('444444444444444444444411111111111111111111111111111111111111111111111');
+                                 //console.log($scope.datasource1);
+                             });
+                    }
+                };
+            });
+            app.controller('tableCtrl24', function ($scope, $http) { // 我的分享
+                $scope.viewSubNode = function (level1UserId) {
+                    //地址有错误/invitedetail/level1/{level1UserId}
+                    $http.get("/wwh-wallet/earnings/invitedetail/level1/" + level1UserId)
+                        .success(function (response) {
+                            $scope.datasource2 = response.data;
+                            console.log($scope.datasource2);
+                        });
+                }
+                $scope.paginationConf = {
+                    currentPage: 1,
+                    totalItems: 3,
+                    itemsPerPage: 3,
+                    pagesLength: 0,
+                    perPageOptions: [1],
+                    onChange: function () {  // /undertheplategrappointdata/TIYAN/1/5
+                        $http.get("/wwh-wallet/earnings/invitedetail/level1/" + $scope.paginationConf.currentPage + "/5")
+                            .success(function (response) {
+                                function getCssNum() {
+                                    if (response.dataList.length == 0) {
+                                        return 'tablenodataselected';
+                                    }
+                                }
+                                $scope.currentGradeCss = getCssNum();
+                                $scope.paginationConf.totalItems = response.total;
+                                $scope.paginationConf.itemsPerPage = 5;
+                                $scope.datasource1 = response.dataList;
+                                if ($scope.datasource1.length > 1) {
+                                    $http.get("/wwh-wallet/earnings/invitedetail/level1/" + $scope.datasource1[0].receiveUserId)
+                                    .success(function (response) {
+                                        $scope.datasource2 = response.dataList;
+                                    });
+                                }
+                            });
+                    }
+                };
+            });
+        </script>
+    </div>
+    <div ng-include src="'/wwh-wallet/pages/wallet/common/footer.html'"></div>
+</body>
+</html>

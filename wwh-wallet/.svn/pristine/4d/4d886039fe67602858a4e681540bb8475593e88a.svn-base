@@ -1,0 +1,40 @@
+﻿<div class="foot-box">
+    <div class="foot-info fixed">
+        <div class="m-box">
+            <ul class="foot-s-info1" style="margin-left:-55px;padding-left:33px;">
+                <li><a href="/wwh-wallet/pages/wallet/regulation/contactus.html">联系我们</a></li>
+                <!--<li><a href="/wwh-wallet/pages/wallet/regulation/bussinessadmin.html">商家管理中心<i></i></a></li>-->
+                <!--<li><a href="/wwh-wallet-admin/index">后台管理中心</a></li>-->
+            </ul>
+            <ul class="foot-s-info2">
+                <li><img src="/wwh-wallet/images/footer1.png" /></li>
+                <li><img src="/wwh-wallet/images/footer2.png" /></li>
+                <li><img src="/wwh-wallet/images/footer3.png" /></li>
+            </ul>
+        </div>
+        <div class="line-c3"></div>
+        <p>2016 唯沃惠.中国 粤 ICP 备 16056251 号 -1</p>
+    </div>
+</div>
+<p id="back-to-top" style="display: block;">
+    <a href="#top"><span></span></a>
+</p>
+<script type="text/javascript">
+        $(document).ready(function () {
+            $(function () {
+                $(window).scroll(function () {
+                    if ($(window).scrollTop() > 100) {
+                        $("#back-to-top").fadeIn(500);
+                    } else {
+                        $("#back-to-top").fadeOut(500);
+                    }
+                });
+                $("#back-to-top").click(function () {
+                    $('body,html').animate({
+                        scrollTop: 0
+                    }, 100);
+                    return false;
+                });
+            });
+        });
+</script>

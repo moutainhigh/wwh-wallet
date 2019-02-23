@@ -1,0 +1,24 @@
+package com.wwh.loginwx.service;
+
+import com.wwh.loginwx.vo.WXUserInfoVO;
+
+public interface ILoginwxService {
+	/**
+	 * 新增微信用户信息
+	 * @param wxUserInfoVO
+	 * @return
+	 */
+	public Long insertWXUserInfo(WXUserInfoVO wxUserInfoVO);
+	/**
+	 * 通过userId查询微信用户信息
+	 * @param wxUserInfoVO
+	 * @return
+	 */
+	public WXUserInfoVO getWXUserInfoByUserId(Long userId);
+	/**
+	 * 通过微信唯一标示查询微信用户信息
+	 * @param wxUserInfoVO
+	 * @return
+	 */
+	public WXUserInfoVO getWXUserInfoByUnionId(String unionId);
+}

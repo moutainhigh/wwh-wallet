@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wwh.dao.IFixedRebateDao" >
+	<!-- 查询定返比例 -->
+	  <select id="getFixedRate" resultType="java.math.BigDecimal" >
+		   SELECT
+				fixed_rate
+			FROM
+				wallet_platform_fixedrebate_set_t
+			WHERE
+				exe_status = 'RUNNING'
+		  	
+	  </select>
+	  <!-- 通过idCard查询定返统计表信息 -->
+	  <select id="getRebateInfoByIdCard" resultType="com.wwh.vo.FixedRebateVO" parameterType="java.lang.String" >
+		  SELECT
+			id as id, 
+		    user_id as userId,
+			id_card as idCard,
+			pay_amount as payAmount,
+			total_amount as totalAmount,
+			returned_amount as returnedAmount,
+			sys_type as sysType,
+			rebate_status as rebateStatus,
+			active_flag as activeFlag,
+			delete_flag as deleteFlag,
+			created_date as createdDate,
+			created_by as createdBy,
+			last_updated_date as lastUpdatedDate,
+			last_updated_by as lastUpdatedBy
+			FROM
+				wallet_platform_fixedrebate_t
+			WHERE
+				id_card =#{idCard,jdbcType=VARCHAR}
+	  </select>
+  
+
+	<!--  更新定返统计表 -->
+	 <update id="updateRebateInfo"  parameterType="com.wwh.vo.FixedRebateVO" >
+	    update wallet_platform_fixedrebate_t set
+	      <if test="returnedAmount != null" >
+	        returned_amount =returned_amount+ #{returnedAmount,jdbcType=DECIMAL},
+	      </if>
+	      <if test="rebateStatus != null" >
+	        rebate_status = #{rebateStatus,jdbcType=VARCHAR},
+	      </if>
+	       <if test="activeFlag != null" >
+	        active_flag = #{activeFlag,jdbcType=CHAR},
+	      </if>
+	      <if test="lastUpdatedBy != null " >
+	        last_updated_by = #{lastUpdatedBy,jdbcType=BIGINT} ,
+	      </if>
+	       last_updated_date = now()
+	      where 
+	       user_id=#{userId,jdbcType=BIGINT}
+	       and id_card=#{idCard,jdbcType=VARCHAR}
+	  </update>
+	  
+	  <!-- 新增定返统计信息 -->
+  <insert id="insertRebateInfo" parameterType="com.wwh.vo.FixedRebateVO" >
+    insert into wallet_platform_fixedrebate_t 
+    (
+      	user_id,
+		id_card,
+		pay_amount,
+		total_amount,
+		returned_amount,
+		sys_type,
+		rebate_status,
+		active_flag,
+		delete_flag,
+		created_date,
+		created_by,
+		last_updated_date,
+		last_updated_by
+
+      )
+    values (
+	    #{userId,jdbcType=BIGINT}, 
+     	#{idCard,jdbcType=VARCHAR}, 
+	    #{payAmount,jdbcType=DECIMAL},
+ 	 	#{totalAmount,jdbcType=DECIMAL},
+      	#{returnedAmount,jdbcType=DECIMAL},
+      	#{sysType,jdbcType=VARCHAR}, 
+      	#{rebateStatus,jdbcType=VARCHAR}, 
+      	'Y',
+      	'N',
+      	now(), 
+      	#{createdBy,jdbcType=BIGINT}, 
+      	now(), 
+      	#{lastUpdatedBy,jdbcType=BIGINT}
+      )
+  </insert>
+
+  <!-- 通过用户id查询定返统计信息-->
+   <select id="getRebateInfoByUserId" resultType="com.wwh.vo.FixedRebateVO" parameterType="java.lang.Long" >
+    select 
+    	id as id, 
+		user_id as userId,
+	 	id_card as idCard,
+		pay_amount as payAmount,
+		total_amount as totalAmount,
+		returned_amount as returnedAmount,
+		sys_type as sysType,
+		rebate_status as rebateStatus,
+		active_flag as activeFlag,
+		delete_flag as deleteFlag,
+		created_date as createdDate,
+		created_by as createdBy,
+		last_updated_date as lastUpdatedDate,
+		last_updated_by as lastUpdatedBy
+    from 
+   	 	wallet_platform_fixedrebate_t
+    where  
+    	user_id = #{userId,jdbcType=BIGINT} 
+  </select>
+  
+  <!-- 新增定返详情记录 -->
+  <insert id="insertRebateDetailInfo" parameterType="com.wwh.vo.FixedRebateVO" >
+    insert into 
+    wallet_platform_fixedrebate_detail_t 
+    (
+      	user_id,
+		id_card,
+		profit_amount,
+		profit_type,
+		sys_type,
+		active_flag,
+		delete_flag,
+		created_date,
+		created_by,
+		last_updated_date,
+		last_updated_by
+      )
+    values (
+	    #{userId,jdbcType=BIGINT}, 
+     	#{idCard,jdbcType=VARCHAR}, 
+	    #{profitAmount,jdbcType=DECIMAL},
+ 	 	#{profitType,jdbcType=VARCHAR},
+      	#{sysType,jdbcType=VARCHAR},
+      	'Y',
+      	'N',
+      	now(), 
+      	#{createdBy,jdbcType=BIGINT}, 
+      	now(), 
+      	#{lastUpdatedBy,jdbcType=BIGINT}
+      )
+  </insert>
+  
+  <!-- 通过idcard查询定返统计详细信息 -->
+  <select id="getRebateDetailInfoByIdCard" resultType="com.wwh.vo.FixedRebateVO" parameterType="java.lang.String" >
+	  select 
+	  		id as id,
+	    	user_id as userId,
+			id_card as idCard,
+			profit_amount as profitAmount,
+			profit_type as profitType,
+			sys_type as sysType,
+			active_flag as activeFlag,
+			delete_flag as deleteFlag,
+			created_date as createdDate,
+			created_by as createdBy,
+			last_updated_date as lastUpdatedDate,
+			last_updated_by as lastUpdatedBy
+		from
+		 	wallet_platform_fixedrebate_detail_t
+		where 
+		 	id_card=#{idCard,jdbcType=VARCHAR}
+  </select>
+   <!-- 查询昨日总收益 -->
+  <select id="getCountDetailInfoByUserId" resultType="java.math.BigDecimal" parameterType="java.lang.Long">
+  		SELECT 
+			sum(profit_amount) totoalprofit
+		FROM 
+			wallet_platform_fixedrebate_detail_t
+		WHERE
+		user_id=#{userId,jdbcType=DECIMAL}
+		and profit_type='DF'
+		and 
+		created_date >= CONCAT(DATE(DATE_SUB(NOW(),interval 2 day)),' 23:30:00') 
+		AND active_flag = 'Y'
+		AND delete_flag = 'N'
+	</select>
+  <!-- 通过用户id查询定返统计详细信息 -->
+  <select id="getRebateDetailInfoByUserId" resultType="com.wwh.vo.FixedRebateVO" >
+     select 
+	  		id as id,
+	    	user_id as userId,
+			id_card as idCard,
+			profit_amount as profitAmount,
+			profit_type as profitType,
+			sys_type as sysType,
+			active_flag as activeFlag,
+			delete_flag as deleteFlag,
+			created_date as createdDate,
+			created_by as createdBy,
+			last_updated_date as lastUpdatedDate,
+			last_updated_by as lastUpdatedBy
+		from
+		 	wallet_platform_fixedrebate_detail_t
+		where 
+		 	user_id=#{userId,jdbcType=BIGINT}
+		<if test="type != null">
+		and profit_type=#{type,jdbcType=CHAR}
+		</if> 	
+  </select>
+  
+  <!-- 分页查询得到定返统计信息 -->
+  <select id="getRebateInfo" resultType="com.wwh.vo.FixedRebateVO" parameterType="java.lang.Long" >
+    select 
+    	id as id, 
+		user_id as userId,
+	 	id_card as idCard,
+		pay_amount as payAmount,
+		total_amount as totalAmount,
+		returned_amount as returnedAmount,
+		sys_type as sysType,
+		rebate_status as rebateStatus,
+		active_flag as activeFlag,
+		delete_flag as deleteFlag,
+		created_date as createdDate,
+		created_by as createdBy,
+		last_updated_date as lastUpdatedDate,
+		last_updated_by as lastUpdatedBy
+    from 
+   	 	wallet_platform_fixedrebate_t
+   	where rebate_status='RUNNING' 
+   	<![CDATA[
+	and created_date <= CONCAT(DATE(NOW()),' 23:30:00') 
+	]]>
+    limit
+    	#{pageFrom,jdbcType=BIGINT},#{pageEnd,jdbcType=BIGINT}	
+  </select>
+  <!-- 得到可定返的统计总数 -->
+  <select id="getRebateInfoCount" resultType="java.lang.Long">
+		SELECT 
+			count(1) as counts
+		FROM 
+			wallet_platform_fixedrebate_t
+		WHERE
+		rebate_status='RUNNING'
+		AND active_flag = 'Y'
+		AND delete_flag = 'N'
+	</select>
+	<!-- 更新定返比例状态 -->
+	<update id="updateRebateRate" parameterType="com.wwh.vo.FixedRebateVO">
+  	update
+  		wallet_platform_fixedrebate_set_t
+    set
+		exe_status=#{exeStatus,jdbcType=VARCHAR},
+		last_updated_date=NOW(),
+		last_updated_by=#{lastUpdatedBy}
+	where
+		1=1
+		 <if test="fixedRate != null " >
+	    	fixed_rate=#{fixedRate,jdbcType=DECIMAL}
+	      </if>
+  </update>
+  <!-- 新增定返比例-->
+  <insert id="insertRebateRate" parameterType="com.wwh.vo.FixedRebateVO">
+  	insert into 
+  		wallet_platform_fixedrebate_set_t
+    (
+		fixed_rate,
+		exe_status,
+		active_flag,
+		delete_flag,
+		created_date,
+		created_by,
+		last_updated_date,
+		last_updated_by
+      )
+    values (
+	    #{fixedRate,jdbcType=DECIMAL}, 
+	    #{exeStatus,jdbcType=VARCHAR},
+      	'Y',
+      	'N',
+      	now(), 
+      	#{createdBy,jdbcType=BIGINT}, 
+      	now(), 
+      	#{lastUpdatedBy,jdbcType=BIGINT}
+      )
+      ON DUPLICATE KEY UPDATE 
+		fixed_rate=#{fixedRate,jdbcType=DECIMAL},
+		exe_status=#{exeStatus,jdbcType=VARCHAR},
+		last_updated_date = NOW(),
+		last_updated_by = #{lastUpdatedBy}
+  </insert>
+   <!-- 得到定返开关配置 -->
+  <select id="getRebateConfig" resultType="java.lang.String">
+		SELECT 
+			item_value itemValue
+		FROM 
+			wallet_platform_item_list_t
+		WHERE
+		item_name=#{configName,jdbcType=DECIMAL}
+		AND active_flag = 'Y'
+		AND delete_flag = 'N'
+	</select>
+</mapper>

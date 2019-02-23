@@ -1,0 +1,934 @@
+﻿<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>个人收益</title>
+    <meta charset="utf-8" />
+    <base href="/">
+    <meta name="description" content="金融、钱包、理财、高收益">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="/wwh-wallet/css/bootstrap.css">
+    <link rel="stylesheet" href="/wwh-wallet/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/wwh-wallet/css/plugin.css">
+    <link rel="stylesheet" href="/wwh-wallet/css/landing.css">
+    <link rel="stylesheet" href="/wwh-wallet/css/common.css">
+    <link href="/wwh-wallet/css/mall/private-benefit.css" rel="stylesheet" />
+    <link href="/wwh-wallet/css/style.css" rel="stylesheet" />
+    <script type="text/javascript" src="/wwh-wallet/js/jquery.min.js"></script>
+    <script src="/wwh-wallet/js/bootstrap.js"></script>
+    <script src="/wwh-wallet/js/app.js"></script>
+    <script src="/wwh-wallet/js/app.plugin.js"></script>
+    <script src="/wwh-wallet/js/app.data.js"></script>
+    <script src="/wwh-wallet/js/fuelux/fuelux.js"></script>
+    <script src="/wwh-wallet/js/datepicker/bootstrap-datepicker.js"></script>
+    <script src="/wwh-wallet/js/slider/bootstrap-slider.js"></script>
+    <script src="/wwh-wallet/js/file-input/bootstrap.file-input.js"></script>
+    <script src="/wwh-wallet/js/combodate/moment.min.js"></script>
+    <script src="/wwh-wallet/js/parsley/parsley.min.js"></script>
+    <script src="/wwh-wallet/js/jquery.min.js"></script>
+    <script src="/wwh-wallet/js/angular.js"></script>
+</head>
+<body ng-controller="siteCtrl">
+    <div ng-include src="'/wwh-wallet/pages/wallet/common/header.html'"></div>
+    <div class="banner-box banner-boxaddbg">
+        <div class="m-box">
+            <div class="my-benefit-box">
+                <div class="fixed mb-box12-wrap">
+                    <div class="mb-box-1 fixed">
+                        <div class="mb-12-box fixed">
+                            <div class="mb-title01">今日新增人数</div>
+                            <div class="mb-title02">1人</div>
+                        </div>
+                        <div class="mb-line"></div>
+                        <div class="mb-34-box fixed">
+                            <div class="mb-title03">我的收益（个）</div>
+                            <div class="mb-title04">200.00</div>
+                        </div>
+                    </div>
+                    <div class="mb-box-2 fixed m-p">
+                        <div class="mb-title05">
+                            总人数：<a class="grey" href="#">12</a>人<br />
+                        </div>
+                        <div class="mb-title06">
+                            我投入的金额：5000.00个<br />
+                            总金额：5000.00个
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="m-tools-box">
+        <div class="m-box bgfafaf"></div>
+    </div>
+    <div class="deals-details bgfafaf">
+        <div class="m-box fixed d-t-bg no-padder">
+            <div class="s-tab-wrap">
+                <div class="deals-title-wrap padding1020">
+                    <div class="deals-title">
+                        <div class="s-tab-w">
+                            <div class="s-tab s-tab-01 last">进行中</div>
+                        </div>
+                    </div>
+                    <div class="deals-title4">
+                        <div class="second-title second-title01 selected">
+                            当前正在参与：<span>2</span>人
+                        </div>
+                        <div class="second-title second-title02">
+                            当前一级用户总计：<span>22</span>人<br />
+                            当前二级用户总计：<span>222</span>人
+                        </div>
+                    </div>
+                </div>
+                <div class="s-sub-w">
+                    <div class="s-sub s-sub-00 selected">
+                        <div class="grade-position-box">
+                            <div>
+                                <div class="open">
+                                    <div class="gp-pos gp-pos01 fixed svh-retiv have-sr">
+                                        <div ng-click="viewclick(data1.userId)" class="gp-box supervisor-header all-list-header" ng-class="{selected: x.userId == myID}"></div>
+                                    </div>
+                                    <div class="gp-pos gp-pos02 fixed">
+                                        <div id="npt0{{$index+1}}" ng-click="viewclick(x.userId)" ng-repeat="x in data2  track by $index" id="{{x.userId}}" class="gp-pos-wrap gp-pos01-wrap">
+                                            <div class="gp-box manager-header" ng-class="{selected: x.userId == myID}"></div>
+                                        </div>
+                                    </div>
+                                    <div class="gp-pos gp-pos03 fixed">
+                                        <div id="npt01" class="gp-pos-wrap gp-pos01-wrap">
+                                            <div ng-click="viewclick(x.userId)" ng-repeat="x in data31  track by $index" id="{{x.userId}}" class="gp-box nor-mb01" ng-class="{selected: x.userId == myID}"></div>
+                                        </div>
+                                        <div id="npt02" class="gp-pos-wrap gp-pos02-wrap">
+                                            <div ng-click="viewclick(x.userId)" ng-repeat="x in data32  track by $index" id="{{x.userId}}" class="gp-box nor-mb01" ng-class="{selected: x.userId == myID}"></div>
+                                        </div>
+                                        <div id="npt03" class="gp-pos-wrap gp-pos03-wrap last">
+                                            <div ng-click="viewclick(x.userId)" ng-repeat="x in data33  track by $index" id="{{x.userId}}" class="gp-box nor-mb01" ng-class="{selected: x.userId == myID}"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="single-one">
+                                    <div class="so-box-wrap">
+                                        <div ng-click="viewclick(data5.userId)" class="so-box spw-position all-list-header2 so-title0{{data5.roleId}}">
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="gp-pos gp-pos04 fixed">
+                                    <div id="nps01" class="gp-pos-wrap normal-pos01 fixed">
+                                        <div ng-click="viewclick(x.userId)" ng-repeat="x in dataed41  track by $index" id="{{x.userId}}" class="gp-box nor-mb01" ng-class="{selected: x.userId == myID,noperson: x.userId == 'noperson'}"> {{3*$index+1}}</div>
+                                    </div>
+                                    <div id="nps02" class="gp-pos-wrap normal-pos02 fixed">
+                                        <div ng-click="viewclick(x.userId)" ng-repeat="x in dataed42  track by $index" id="{{x.userId}}" class="gp-box nor-mb01" ng-class="{selected: x.userId == myID,noperson: x.userId == 'noperson'}"> {{3*$index+2}}</div>
+                                    </div>
+                                    <div id="nps03" class="gp-pos-wrap normal-pos03 last fixed ">
+                                        <div ng-click="viewclick(x.userId)" ng-repeat="x in dataed43  track by $index" id="{{x.userId}}" class="gp-box nor-mb01" ng-class="{selected: x.userId == myID,noperson: x.userId == 'noperson'}"> {{3*$index+3}}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="single-ob-box single-ob-boxbg singlebox01">
+        <div class="title-ob01" ng-bind="currentTitle"></div>
+        <div class="title-ob02">
+            <div class="imgwrap">
+                <img src="../../../images/avtar.png" />
+            </div>
+        </div>
+        <div class="title-ob03">李世林</div>
+        <div class="title-ob04" ng-class="currentGradeCss" ng-bind="data7[0]">
+        </div>
+        <div class="title-ob05 fixed">
+            <div class="sub-ob5 sub-ob51">
+                <div class="fsty1">投入资金</div>
+                <div class="fsty2">{{data7[1]}}个</div>
+            </div>
+            <div class="sub-ob5 sub-ob52">
+                <div class="fsty1">当前收益</div>
+                <div class="fsty2">{{data5.currentProfit}}个</div>
+            </div>
+        </div>
+        <!--<div class="title-ob06">分享人数：<a>1</a>人</div>-->
+    </div>
+
+    <div class="single-ob-box single-ob-boxbg singlebox02">
+        <div class="title-ob01" ng-bind="currentTitle"></div>
+        <div class="title-ob02">
+            <div class="imgwrap">
+                <img src="../../../images/avtar.png" />
+            </div>
+        </div>
+        <div class="title-ob03">李世林</div>
+        <div class="title-ob04" ng-class="currentGradeCss" ng-bind="data7[0]">
+        </div>
+        <div class="title-ob05 fixed">
+            <div class="sub-ob5 sub-ob51">
+                <div class="fsty1">投入资金</div>
+                <div class="fsty2">{{data7[1]}}个</div>
+            </div>
+            <div class="sub-ob5 sub-ob52">
+                <div class="fsty1">当前收益</div>
+                <div class="fsty2">{{data5.currentProfit}}个</div>
+            </div>
+        </div>
+        <!--<div class="title-ob06">分享人数：<a>1</a>人</div>-->
+    </div>
+
+    <div class="sim-box fixed sim-box12bg  svh-abst">
+        <div class="sim-box01">
+            <div class="single-ob-box" style="padding-top:30px;">
+                <div class="title-ob01" ng-bind="currentTitle"></div>
+                <div class="title-ob02">
+                    <div class="imgwrap">
+                        <img src="../../../images/avtar.png" />
+                    </div>
+                </div>
+                <div class="title-ob03" ng-bind="data5.nickName"></div>
+                <div class="title-ob04" ng-class="currentGradeCss" ng-bind="data7[0]">
+                </div>
+                <div class="title-ob05 fixed">
+                    <div class="sub-ob5 sub-ob51">
+                        <div class="fsty1">投入资金</div>
+                        <div class="fsty2">{{data7[1]}}个</div>
+                    </div>
+                    <div class="sub-ob5 sub-ob52">
+                        <div class="fsty1">当前收益</div>
+                        <div class="fsty2">{{data5.currentProfit}}个</div>
+                    </div>
+                </div>
+                <div class="title-ob07">被抢收益：<a>600</a>人</div>
+                <div class="title-ob08">相差人数：<a>5</a>人</div>
+                <!--<div class="title-ob06">分享人数：<a>1</a>人</div>-->
+            </div>
+        </div>
+        <div class="sim-box02 fixed qiangdian3ren">
+            <div class="sim-box01">
+                <section class="panel fixed" style="margin:0px; padding:0px; border:none; background:none;">
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="home">
+                            <div class="sim-box01">
+                                <div class="single-ob-box qiangdianpage" style="padding-top:20px;">
+                                    <div class="title-ob01" ng-bind="IDgrade3[0]"></div>
+                                    <div class="title-ob02">
+                                        <div class="imgwrap">
+                                            <img src="../../../images/avtar.png" />
+                                        </div>
+                                    </div>
+                                    <div class="title-ob03" ng-bind="dataq3[0].nickName"></div>
+                                    <div class="title-ob04" ng-class="currentGradeCss" ng-bind="data7[0]">
+                                    </div>
+                                    <div class="title-ob05 fixed">
+                                        <div class="sub-ob5 sub-ob51">
+                                            <div class="fsty1">投入资金</div>
+                                            <div class="fsty2">{{data7[1]}}个</div>
+                                        </div>
+                                        <div class="sub-ob5 sub-ob52">
+                                            <div class="fsty1">当前收益</div>
+                                            <div class="fsty2">{{dataq3[0].currentProfit}}个</div>
+                                        </div>
+                                    </div>
+                                    <div class="title-ob07">已抢收益：<a>600</a>个</div>
+                                    <!--<div class="title-ob06">分享人数：<a>1</a>人</div>-->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane" id="profile">
+                            <div class="sim-box01">
+                                <div class="single-ob-box qiangdianpage" style="padding-top:20px;">
+                                    <div class="title-ob01" ng-bind="IDgrade3[1]"></div>
+                                    <div class="title-ob02">
+                                        <div class="imgwrap">
+                                            <img src="../../../images/avtar.png" />
+                                        </div>
+                                    </div>
+                                    <div class="title-ob03" ng-bind="dataq3[1].nickName"></div>
+                                    <div class="title-ob04 grade-honner0{{data7[2]}}" ng-bind="data7[0]">
+                                    </div>
+                                    <div class="title-ob05 fixed">
+                                        <div class="sub-ob5 sub-ob51">
+                                            <div class="fsty1">投入资金</div>
+                                            <div class="fsty2">{{data7[1]}}个</div>
+                                        </div>
+                                        <div class="sub-ob5 sub-ob52">
+                                            <div class="fsty1">当前收益</div>
+                                            <div class="fsty2">{{dataq3[1].currentProfit}}个</div>
+                                        </div>
+                                    </div>
+                                    <div class="title-ob07">已抢收益：<a>600</a>个</div>
+                                    <!--<div class="title-ob06">分享人数：<a>1</a>人</div>-->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane" id="messages">
+                            <div class="sim-box01">
+                                <div class="single-ob-box qiangdianpage" style="padding-top:20px;">
+                                    <div class="title-ob01" ng-bind="IDgrade3[2]"></div>
+                                    <div class="title-ob02">
+                                        <div class="imgwrap">
+                                            <img src="../../../images/avtar.png" />
+                                        </div>
+                                    </div>
+                                    <div class="title-ob03" ng-bind="dataq3[0].nickName"></div>
+                                    <div class="title-ob04 grade-honner0{{data7[2]}}" ng-bind="data7[0]">
+
+                                    </div>
+                                    <div class="title-ob05 fixed">
+                                        <div class="sub-ob5 sub-ob51">
+                                            <div class="fsty1">投入资金</div>
+                                            <div class="fsty2">{{data7[1]}}个</div>
+                                        </div>
+                                        <div class="sub-ob5 sub-ob52">
+                                            <div class="fsty1">当前收益</div>
+                                            <div class="fsty2">{{dataq3[2].currentProfit}}个</div>
+                                        </div>
+                                    </div>
+                                    <div class="title-ob07">已抢收益：<a>600</a>个</div>
+                                    <!--<div class="title-ob06">分享人数：<a>1</a>人</div>-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tabwrap">
+                        <ul class="tabs">
+                            <li class="active"><a href="#home" data-toggle="tab">1</a></li>
+                            <li><a href="#profile" data-toggle="tab">2</a></li>
+                            <li><a href="#messages" data-toggle="tab">3</a></li>
+                        </ul>
+                    </div>
+                </section>
+            </div>
+        </div>
+        <div class="sim-box02 fixed qiangdian2ren">
+            <div class="sim-box01">
+                <section class="panel fixed" style="margin:0px; padding:0px; border:none; background:none;">
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="home2">
+                            <div class="sim-box01">
+                                <div class="single-ob-box qiangdianpage" style="padding-top:20px;">
+                                    <div class="title-ob01" ng-bind="IDgrade2[0]"></div>
+                                    <div class="title-ob02">
+                                        <div class="imgwrap">
+                                            <img src="../../../images/avtar.png" />
+                                        </div>
+                                    </div>
+                                    <div class="title-ob03" ng-bind="dataq2[0].nickName"></div>
+                                    <div class="title-ob04" ng-class="currentGradeCss" ng-bind="data7[0]">
+                                    </div>
+                                    <div class="title-ob05 fixed">
+                                        <div class="sub-ob5 sub-ob51">
+                                            <div class="fsty1">投入资金</div>
+                                            <div class="fsty2">{{data7[1]}}个</div>
+                                        </div>
+                                        <div class="sub-ob5 sub-ob52">
+                                            <div class="fsty1">当前收益</div>
+                                            <div class="fsty2">{{dataq2[0].currentProfit}}个</div>
+                                        </div>
+                                    </div>
+                                    <div class="title-ob07">已抢收益：<a>600</a>个</div>
+                                    <!--<div class="title-ob06">分享人数：<a>1</a>人</div>-->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane" id="profile2">
+                            <div class="sim-box01">
+                                <div class="single-ob-box qiangdianpage" style="padding-top:20px;">
+                                    <div class="title-ob01" ng-bind="IDgrade2[1]"></div>
+                                    <div class="title-ob02">
+                                        <div class="imgwrap">
+                                            <img src="../../../images/avtar.png" />
+                                        </div>
+                                    </div>
+                                    <div class="title-ob03" ng-bind="dataq2[1].nickName"></div>
+                                    <div class="title-ob04 grade-honner0{{data7[2]}}" ng-bind="data7[0]">
+                                    </div>
+                                    <div class="title-ob05 fixed">
+                                        <div class="sub-ob5 sub-ob51">
+                                            <div class="fsty1">投入资金</div>
+                                            <div class="fsty2">{{data7[1]}}个</div>
+                                        </div>
+                                        <div class="sub-ob5 sub-ob52">
+                                            <div class="fsty1">当前收益</div>
+                                            <div class="fsty2">{{dataq2[1].currentProfit}}个</div>
+                                        </div>
+                                    </div>
+                                    <div class="title-ob07">已抢收益：<a>600</a>个</div>
+                                    <!--<div class="title-ob06">分享人数：<a>1</a>人</div>-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tabwrap" style="width:60px;">
+                        <ul class="tabs">
+                            <li class="active"><a href="#home2" data-toggle="tab">1</a></li>
+                            <li><a href="#profile2" data-toggle="tab">2</a></li>
+                        </ul>
+                    </div>
+                </section>
+            </div>
+        </div>
+        <div class="sim-box02 fixed qiangdian1ren">
+            <div class="sim-box01">
+                <div class="single-ob-box qiangdianpage" style="padding-top:30px;">
+                    <div class="title-ob01" ng-bind="IDgrade1"></div>
+                    <div class="title-ob02">
+                        <div class="imgwrap">
+                            <img src="../../../images/avtar.png" />
+                        </div>
+                    </div>
+                    <div class="title-ob03" ng-bind="dataq1[0].nickName"></div>
+                    <div class="title-ob04" ng-class="currentGradeCss" ng-bind="data7[0]">
+                    </div>
+                    <div class="title-ob05 fixed">
+                        <div class="sub-ob5 sub-ob51">
+                            <div class="fsty1">投入资金</div>
+                            <div class="fsty2">{{data7[1]}}个</div>
+                        </div>
+                        <div class="sub-ob5 sub-ob52">
+                            <div class="fsty1">当前收益</div>
+                            <div class="fsty2">{{dataq1[0].currentProfit}}个</div>
+                        </div>
+                    </div>
+                    <div class="title-ob07">已抢收益：<a>600</a>个</div>
+                    <!--<div class="title-ob06">分享人数：<a>1</a>人</div>-->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="sim-box fixed sim-box12bg  svh-abst2">
+        <div class="sim-box01">
+            <div class="single-ob-box" style="padding-top:30px;">
+                <div class="title-ob01" ng-bind="currentTitle"></div>
+                <div class="title-ob02">
+                    <div class="imgwrap">
+                        <img src="../../../images/avtar.png" />
+                    </div>
+                </div>
+                <div class="title-ob03" ng-bind="data5.nickName"></div>
+                <div class="title-ob04" ng-class="currentGradeCss" ng-bind="data7[0]">
+                </div>
+                <div class="title-ob05 fixed">
+                    <div class="sub-ob5 sub-ob51">
+                        <div class="fsty1">投入资金</div>
+                        <div class="fsty2">{{data7[1]}}个</div>
+                    </div>
+                    <div class="sub-ob5 sub-ob52">
+                        <div class="fsty1">当前收益</div>
+                        <div class="fsty2">{{data5.currentProfit}}个</div>
+                    </div>
+                </div>
+                <div class="title-ob07">被抢收益：<a>600</a>人</div>
+                <div class="title-ob08">相差人数：<a>5</a>人</div>
+                <!--<div class="title-ob06">分享人数：<a>1</a>人</div>-->
+            </div>
+        </div>
+        <div class="sim-box02 fixed qiangdian3ren">
+            <div class="sim-box01">
+                <section class="panel fixed" style="margin:0px; padding:0px; border:none; background:none;">
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="homes3">
+                            <div class="sim-box01">
+                                <div class="single-ob-box qiangdianpage" style="padding-top:20px;">
+                                    <div class="title-ob01" ng-bind="IDgrade3[0]"></div>
+                                    <div class="title-ob02">
+                                        <div class="imgwrap">
+                                            <img src="../../../images/avtar.png" />
+                                        </div>
+                                    </div>
+                                    <div class="title-ob03" ng-bind="dataq3[0].nickName"></div>
+                                    <div class="title-ob04" ng-class="currentGradeCss" ng-bind="data7[0]">
+                                    </div>
+                                    <div class="title-ob05 fixed">
+                                        <div class="sub-ob5 sub-ob51">
+                                            <div class="fsty1">投入资金</div>
+                                            <div class="fsty2">{{data7[1]}}个</div>
+                                        </div>
+                                        <div class="sub-ob5 sub-ob52">
+                                            <div class="fsty1">当前收益</div>
+                                            <div class="fsty2">{{dataq3[0].currentProfit}}个</div>
+                                        </div>
+                                    </div>
+                                    <div class="title-ob07">已抢收益：<a>600</a>个</div>
+                                    <!--<div class="title-ob06">分享人数：<a>1</a>人</div>-->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane" id="profiles3">
+                            <div class="sim-box01">
+                                <div class="single-ob-box qiangdianpage" style="padding-top:20px;">
+                                    <div class="title-ob01" ng-bind="IDgrade3[1]"></div>
+                                    <div class="title-ob02">
+                                        <div class="imgwrap">
+                                            <img src="../../../images/avtar.png" />
+                                        </div>
+                                    </div>
+                                    <div class="title-ob03" ng-bind="dataq3[1].nickName"></div>
+                                    <div class="title-ob04 grade-honner0{{data7[2]}}" ng-bind="data7[0]">
+                                    </div>
+                                    <div class="title-ob05 fixed">
+                                        <div class="sub-ob5 sub-ob51">
+                                            <div class="fsty1">投入资金</div>
+                                            <div class="fsty2">{{data7[1]}}个</div>
+                                        </div>
+                                        <div class="sub-ob5 sub-ob52">
+                                            <div class="fsty1">当前收益</div>
+                                            <div class="fsty2">{{dataq3[1].currentProfit}}个</div>
+                                        </div>
+                                    </div>
+                                    <div class="title-ob07">已抢收益：<a>600</a>个</div>
+                                    <!--<div class="title-ob06">分享人数：<a>1</a>人</div>-->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane" id="messagess3">
+                            <div class="sim-box01">
+                                <div class="single-ob-box qiangdianpage" style="padding-top:20px;">
+                                    <div class="title-ob01" ng-bind="IDgrade3[2]"></div>
+                                    <div class="title-ob02">
+                                        <div class="imgwrap">
+                                            <img src="../../../images/avtar.png" />
+                                        </div>
+                                    </div>
+                                    <div class="title-ob03" ng-bind="dataq3[0].nickName"></div>
+                                    <div class="title-ob04 grade-honner0{{data7[2]}}" ng-bind="data7[0]">
+
+                                    </div>
+                                    <div class="title-ob05 fixed">
+                                        <div class="sub-ob5 sub-ob51">
+                                            <div class="fsty1">投入资金</div>
+                                            <div class="fsty2">{{data7[1]}}个</div>
+                                        </div>
+                                        <div class="sub-ob5 sub-ob52">
+                                            <div class="fsty1">当前收益</div>
+                                            <div class="fsty2">{{dataq3[2].currentProfit}}个</div>
+                                        </div>
+                                    </div>
+                                    <div class="title-ob07">已抢收益：<a>600</a>个</div>
+                                    <!--<div class="title-ob06">分享人数：<a>1</a>人</div>-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tabwrap">
+                        <ul class="tabs">
+                            <li class="active"><a href="#homes3" data-toggle="tab">1</a></li>
+                            <li><a href="#profiles3" data-toggle="tab">2</a></li>
+                            <li><a href="#messagess3" data-toggle="tab">3</a></li>
+                        </ul>
+                    </div>
+                </section>
+            </div>
+        </div>
+        <div class="sim-box02 fixed qiangdian2ren">
+            <div class="sim-box01">
+                <section class="panel fixed" style="margin:0px; padding:0px; border:none; background:none;">
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="home2s3">
+                            <div class="sim-box01">
+                                <div class="single-ob-box qiangdianpage" style="padding-top:20px;">
+                                    <div class="title-ob01" ng-bind="IDgrade2[0]"></div>
+                                    <div class="title-ob02">
+                                        <div class="imgwrap">
+                                            <img src="../../../images/avtar.png" />
+                                        </div>
+                                    </div>
+                                    <div class="title-ob03" ng-bind="dataq2[0].nickName"></div>
+                                    <div class="title-ob04" ng-class="currentGradeCss" ng-bind="data7[0]">
+                                    </div>
+                                    <div class="title-ob05 fixed">
+                                        <div class="sub-ob5 sub-ob51">
+                                            <div class="fsty1">投入资金</div>
+                                            <div class="fsty2">{{data7[1]}}个</div>
+                                        </div>
+                                        <div class="sub-ob5 sub-ob52">
+                                            <div class="fsty1">当前收益</div>
+                                            <div class="fsty2">{{dataq2[0].currentProfit}}个</div>
+                                        </div>
+                                    </div>
+                                    <div class="title-ob07">已抢收益：<a>600</a>个</div>
+                                    <!--<div class="title-ob06">分享人数：<a>1</a>人</div>-->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane" id="profile2s3">
+                            <div class="sim-box01">
+                                <div class="single-ob-box qiangdianpage" style="padding-top:20px;">
+                                    <div class="title-ob01" ng-bind="IDgrade2[1]"></div>
+                                    <div class="title-ob02">
+                                        <div class="imgwrap">
+                                            <img src="../../../images/avtar.png" />
+                                        </div>
+                                    </div>
+                                    <div class="title-ob03" ng-bind="dataq2[1].nickName"></div>
+                                    <div class="title-ob04 grade-honner0{{data7[2]}}" ng-bind="data7[0]">
+                                    </div>
+                                    <div class="title-ob05 fixed">
+                                        <div class="sub-ob5 sub-ob51">
+                                            <div class="fsty1">投入资金</div>
+                                            <div class="fsty2">{{data7[1]}}个</div>
+                                        </div>
+                                        <div class="sub-ob5 sub-ob52">
+                                            <div class="fsty1">当前收益</div>
+                                            <div class="fsty2">{{dataq2[1].currentProfit}}个</div>
+                                        </div>
+                                    </div>
+                                    <div class="title-ob07">已抢收益：<a>600</a>个</div>
+                                    <!--<div class="title-ob06">分享人数：<a>1</a>人</div>-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tabwrap" style="width:60px;">
+                        <ul class="tabs">
+                            <li class="active"><a href="#home2s3" data-toggle="tab">1</a></li>
+                            <li><a href="#profile2s3" data-toggle="tab">2</a></li>
+                        </ul>
+                    </div>
+                </section>
+            </div>
+        </div>
+        <div class="sim-box02 fixed qiangdian1ren">
+            <div class="sim-box01">
+                <div class="single-ob-box qiangdianpage" style="padding-top:30px;">
+                    <div class="title-ob01" ng-bind="IDgrade1"></div>
+                    <div class="title-ob02">
+                        <div class="imgwrap">
+                            <img src="../../../images/avtar.png" />
+                        </div>
+                    </div>
+                    <div class="title-ob03" ng-bind="dataq1[0].nickName"></div>
+                    <div class="title-ob04" ng-class="currentGradeCss" ng-bind="data7[0]">
+                    </div>
+                    <div class="title-ob05 fixed">
+                        <div class="sub-ob5 sub-ob51">
+                            <div class="fsty1">投入资金</div>
+                            <div class="fsty2">{{data7[1]}}个</div>
+                        </div>
+                        <div class="sub-ob5 sub-ob52">
+                            <div class="fsty1">当前收益</div>
+                            <div class="fsty2">{{dataq1[0].currentProfit}}个</div>
+                        </div>
+                    </div>
+                    <div class="title-ob07">已抢收益：<a>600</a>个</div>
+                    <!--<div class="title-ob06">分享人数：<a>1</a>人</div>-->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div ng-include src="'/wwh-wallet/pages/wallet/common/footer.html'"></div>
+
+    <input id="isState" type="hidden" value="0" />
+    <input id="qDian" type="hidden" value="0" />
+    <input id="isZJ" type="hidden" value="0" />
+
+    <script type="text/javascript">
+        var app = angular.module('myApp', []);
+        app.config(['$locationProvider', function ($locationProvider) {
+            $locationProvider.html5Mode(true);
+        }]);
+        app.controller('siteCtrl', ['$scope', '$location', '$http', function ($scope, $location, $http) {            
+            var diskSeq = $location.search()['name'];
+            console.log(diskSeq);
+            $scope.viewclick = function (code) {
+                $http.get("/wwh-wallet/earnings/diskprofitdetail/" + diskSeq)
+            .success(function (response) {
+                console.log("dddddddddddddddddddddddddddd");
+                console.log(response);
+                var isstatus = response.displayConfig;
+                if (isstatus == 'Y') {
+                    angular.element('#isState').val('Y');
+                } else {
+                    angular.element('#isState').val('N');
+                }                
+                var data5 = response.data[4][0];   // 当前人
+                var data6 = response.data[5];       // 抢点人
+                var data7 = response.data[6];       // 当前人与抢点人，投入资金与会员等级
+                $scope.data5 = data5;
+                $scope.data6 = data6;
+                $scope.data7 = data7;
+                function getTitleGrade(titlegradeNum) {
+                    if (titlegradeNum == 1) {
+                        return "总监";
+                    } else if (titlegradeNum == 2) {
+                        return "经理";
+                    } else if (titlegradeNum == 3) {
+                        return "理财师";
+                    } else if (titlegradeNum == 4) {
+                        return "普通会员";
+                    }
+                }
+                function getCssNum(titlegradeName) {
+                    if (titlegradeName == 1) {
+                        return "grade-honner01";   // 银卡会员
+                    } else if (titlegradeName == 2) {
+                        return "grade-honner02";   // 金卡会员
+                    } else if (titlegradeName == 3) {
+                        return "grade-honner03";   // 钻卡会员
+                    } else if (titlegradeName == 4) {
+                        return "grade-honner04";   // 至尊会员
+                    }
+                }
+
+                $scope.currentTitle = getTitleGrade(data5.roleId);
+                $scope.currentGradeCss = getCssNum(data7[2]);
+
+                if (data5.roleId == 1) {     // 总监                              // roleId     (1总监 , 2 经理 3 理财师 4普通会员)
+                    angular.element('#isZJ').val('Y');
+                    if (data6.length == 3) {  //3个抢点人 qDian
+                        angular.element('#qDian').val('3');
+                        angular.element('.qiangdian3ren').addClass('selected');
+                        $scope.dataq3 = data6;
+                        var titlegradeArray = [];
+                        for (var i = 0; i < 3; i++) {
+                            titlegradeArray[i] = getTitleGrade(data6[i].roleId);
+                        }
+                        $scope.IDgrade3 = titlegradeArray;
+                    } else if (data6.length == 2) {  //2个抢点人
+                        angular.element('#qDian').val('2');
+                        angular.element('.qiangdian2ren').addClass('selected');
+                        $scope.dataq2 = data6;
+                        var titlegradeArray = [];
+                        for (var i = 0; i < 2; i++) {
+                            titlegradeArray[i] = getTitleGrade(data6[i].roleId);
+                        }
+                        $scope.IDgrade2 = titlegradeArray;
+                    } else if (data6.length == 1) {   //1个抢点人
+                        angular.element('#qDian').val('1');
+                        angular.element('.qiangdian1ren').addClass('selected');
+                        $scope.dataq1 = data6;
+                        $scope.IDgrade1 = getTitleGrade(data6[0].roleId);;
+                    } else if (data6.length == 0) {
+                    }
+                } else if (data5.roleId == 2) { // 经理
+                    angular.element('.singlebox01').addClass('selected');
+                } else if (data5.roleId == 3) { // 理财师
+                    angular.element('.singlebox01').addClass('selected');
+                } else if (data5.roleId == 4) { // 普通会员
+                    angular.element('.singlebox01').addClass('selected');
+                }
+            });
+            };
+
+            // 加载
+            $http.get("/wwh-wallet/earnings/diskprofitdetail/" + diskSeq)
+            .success(function (response) {
+                if (response != null) {
+                    var isstatus = response.displayConfig;
+                    if (isstatus == 'Y') {
+                        angular.element('#isState').val('Y');
+                    } else {
+                        angular.element('#isState').val('N');
+                    }
+                    var datastorage = response.data;
+                    var data1 = datastorage[0];           // 总监
+                    var data2 = datastorage[1];           // 经理
+                    var data3 = datastorage[2];           // 理财师
+                    var data4 = datastorage[3];           // 普通会员
+                    var data5 = datastorage[4];           // 普通会员
+                    var data6 = response.data[5];       // 抢点人
+                    $scope.data1 = data1[0];
+                    $scope.data2 = data2;
+                    $scope.data31 = data3[0];
+                    $scope.data32 = data3[1];
+                    $scope.data33 = data3[2];
+                    $scope.data41 = data4[0];
+                    $scope.data42 = data4[1];
+                    $scope.data43 = data4[2];
+                    $scope.data5 = data5[0];
+                    $scope.myID = data5[0].userId;
+                    if (data5[0].roleId == 1) {     // 总监                              // roleId     (1总监 , 2 经理 3 理财师 4普通会员)
+                        angular.element('#isZJ').val('Y');
+                        if (data6.length == 3) {  //3个抢点人 qDian
+                            angular.element('#qDian').val('3');
+                        } else if (data6.length == 2) {  //2个抢点人
+                            angular.element('#qDian').val('2');
+                        } else if (data6.length == 1) {   //1个抢点人
+                            angular.element('#qDian').val('1');
+                        } else if (data6.length == 0) {
+                        }
+                    }
+                    var newJson = {
+                        "userId": 'noperson'
+                    };
+                    var alllenth1 = data4[0].length,
+                         alllenth2 = data4[1].length,
+                         alllenth3 = data4[2].length;
+                    if (alllenth1 < 9) {
+                        for (var i = 0; i < 9 - alllenth1; i++) {
+                            data4[0].push(newJson);
+                        }
+                    }
+                    if (alllenth2 < 9) {
+                        for (var i = 0; i < 9 - alllenth2; i++) {
+                            data4[1].push(newJson);
+                        }
+                    }
+                    if (alllenth3 < 9) {
+                        for (var i = 0; i < 9 - alllenth3; i++) {
+                            data4[2].push(newJson);
+                        }
+                    }
+                    $scope.dataed41 = data4[0];
+                    $scope.dataed42 = data4[1];
+                    $scope.dataed43 = data4[2];
+                    $scope.myID = data5[0].userId;   // single-one  open
+                    if (isstatus == 'Y') {
+                        angular.element('.single-one').css('display', 'none');
+                    } else {
+                        if (data5[0].localtion < 14) {
+                            angular.element('.single-one').css('display', 'block');
+                        } else {
+                            angular.element('.single-one').css('display', 'none');
+                        }
+                        angular.element('.open').html('');
+                    }
+                } else {
+                    console.log("ddddddddddddddddddddddddffffffffffffffffffffffffff2");
+                }
+            });
+        }]);
+
+    </script>
+
+    <script type="text/javascript">
+        $(function () {
+            $('.gp-pos02 .gp-box.selected').live('click', function () {
+                var LeftNew;
+                var nyThree = $(this).parent('.gp-pos-wrap').attr('id').substring(4, 5);
+                var TopNew = $(this).offset().top + 10;
+                if ($('.singlebox01').is(":hidden")) {
+                    if (nyThree < 3) {
+                        LeftNew = $(this).offset().left + 145;
+                        $('.singlebox01').removeClass('recbg').attr('style', 'top:' + TopNew + 'px; left:' + LeftNew + 'px; display:block;position:absolute');
+                    } else {
+                        LeftNew = $(this).offset().left - 280;
+                        $('.singlebox01').addClass('recbg').attr('style', 'top:' + TopNew + 'px; left:' + LeftNew + 'px; display:block;position:absolute');
+                    }
+                } else {
+                    $('.singlebox01').attr('style', 'display:none');
+                }
+            });
+            $('.gp-pos03 .gp-box.selected').live('click', function () {
+                var LeftNew;
+                var nyThree = $(this).parent('.gp-pos-wrap').attr('id').substring(4, 5);
+                var TopNew = $(this).offset().top + 10;
+                if ($('.singlebox01').is(":hidden")) {
+                    if (nyThree < 3) {
+                        LeftNew = $(this).offset().left + 125;
+                        $('.singlebox01').removeClass('recbg').attr('style', 'top:' + TopNew + 'px; left:' + LeftNew + 'px; display:block;position:absolute');
+                    } else {
+                        LeftNew = $(this).offset().left - 280;
+                        $('.singlebox01').addClass('recbg').attr('style', 'top:' + TopNew + 'px; left:' + LeftNew + 'px; display:block;position:absolute');
+                    }
+                } else {
+                    $('.singlebox01').attr('style', 'display:none');
+                }
+            });
+            $('.all-list-header.selected').live('click', function () {
+                var aLeftNew;
+                var aTopNew = $(this).offset().top + 10;
+                aLeftNew = $(this).offset().left + 135;
+                if (($('#isZJ').val() == 'Y') && ($('#qDian').val() == 3)) { // 开放状态， 是总监身份， 有3个抢点人 
+                    if ($('.svh-abst').is(":hidden")) {
+                        $('.svh-abst').attr('style', 'top:' + aTopNew + 'px; left:' + aLeftNew + 'px; display:block;position:absolute');
+                    } else {
+                        $('.svh-abst').attr('style', 'display:none');
+                    }
+                } else if (($('#isZJ').val() == 'Y') && ($('#qDian').val() == 2)) { // 开放状态， 是总监身份， 有2个抢点人
+                    if ($('.svh-abst').is(":hidden")) {
+                        $('.svh-abst').attr('style', 'top:' + aTopNew + 'px; left:' + aLeftNew + 'px; display:block;position:absolute');
+                    } else {
+                        $('.svh-abst').attr('style', 'display:none');
+                    }
+                } else if (($('#isZJ').val() == 'Y') && ($('#qDian').val() == 1)) { // 开放状态， 是总监身份， 有1个抢点人
+                    if ($('.singlebox01').is(":hidden")) {
+                        $('.singlebox01').attr('style', 'top:' + aTopNew + 'px; left:' + aLeftNew + 'px; display:block;position:absolute');
+                    } else {
+                        $('.singlebox01').attr('style', 'display:none');
+                    }
+                } else if (($('#isZJ').val() == 'Y') && ($('#qDian').val() == 0)) { // 开放状态， 是总监身份， 0抢点人
+                    if ($('.singlebox01').is(":hidden")) {
+                        $('.singlebox01').attr('style', 'top:' + aTopNew + 'px; left:' + aLeftNew + 'px; display:block;position:absolute');
+                    } else {
+                        $('.singlebox01').attr('style', 'display:none');
+                    }
+                } else {
+                    if ($('.singlebox01').is(":hidden")) {
+                        $('.singlebox01').attr('style', 'top:' + aTopNew + 'px; left:' + aLeftNew + 'px; display:block;position:absolute');
+                    } else {
+                        $('.singlebox01').attr('style', 'display:none');
+                    }
+                }
+
+
+            });
+
+            $('.all-list-header2').live('click', function () {
+                var aLeftNew;
+                var aTopNew = $(this).offset().top + 10;
+                aLeftNew = $(this).offset().left + 135;
+                if (($('#isZJ').val() == 'Y') && ($('#qDian').val() == 3)) { // 非开放状态， 是总监身份， 有3个抢点人
+                    if ($('.svh-abst2').is(":hidden")) {
+                        $('.svh-abst2').attr('style', 'top:' + aTopNew + 'px; left:' + aLeftNew + 'px; display:block;position:absolute');
+                    } else {
+                        $('.svh-abst2').attr('style', 'display:none');
+                    }
+                } else if (($('#isZJ').val() == 'Y') && ($('#qDian').val() == 2)) { // 非开放状态， 是总监身份， 有2个抢点人
+                    if ($('.svh-abst2').is(":hidden")) {
+                        $('.svh-abst2').attr('style', 'top:' + aTopNew + 'px; left:' + aLeftNew + 'px; display:block;position:absolute');
+                    } else {
+                        $('.svh-abst2').attr('style', 'display:none');
+                    }
+                } else if (($('#isZJ').val() == 'Y') && ($('#qDian').val() == 1)) { // 非开放状态， 是总监身份， 有1个抢点人
+                    if ($('.svh-abst2').is(":hidden")) {
+                        $('.svh-abst2').attr('style', 'top:' + aTopNew + 'px; left:' + aLeftNew + 'px; display:block;position:absolute');
+                    } else {
+                        $('.svh-abst2').attr('style', 'display:none');
+                    }
+                } else if (($('#isZJ').val() == 'Y') && ($('#qDian').val() == 0)) { // 非开放状态， 是总监身份， 0抢点人
+                    if ($('.singlebox02').is(":hidden")) {
+                        $('.singlebox02').attr('style', 'top:' + aTopNew + 'px; left:' + aLeftNew + 'px; display:block;position:absolute');
+                    } else {
+                        $('.singlebox02').attr('style', 'display:none');
+                    }
+                } else {
+                    if ($('.singlebox02').is(":hidden")) {
+                        $('.singlebox02').attr('style', 'top:' + aTopNew + 'px; left:' + aLeftNew + 'px; display:block;position:absolute');
+                    } else {
+                        $('.singlebox02').attr('style', 'display:none');
+                    }
+                }
+            });
+        })
+    </script>
+
+    <script type="text/javascript">
+        $(function () {
+            $('.gp-pos04 .gp-box.selected').live('click', function () {
+                var LeftNew;
+                var nyThree = $(this).parent('.gp-pos-wrap').attr('id').substring(4, 5);
+                var TopNew = $(this).offset().top + 10;
+                if ($('.singlebox01').is(":hidden")) {
+                    if (nyThree < 3) {
+                        LeftNew = $(this).offset().left + 100;
+                        $('.singlebox01').removeClass('recbg').attr('style', 'top:' + TopNew + 'px; left:' + LeftNew + 'px; display:block;position:absolute');
+                    } else {
+                        LeftNew = $(this).offset().left - 280;
+                        $('.singlebox01').addClass('recbg').attr('style', 'top:' + TopNew + 'px; left:' + LeftNew + 'px; display:block;position:absolute');
+                    }
+                } else {
+                    $('.singlebox01').attr('style', 'display:none');
+                }
+            });
+        })
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wwh.dao.IPlatformProfitDao">
+
+
+<sql id="Base_Column_List">
+    user_id userId, 
+    platform_total_amount platformTotalAmount, 
+    platform_withdrawals_amount platformWithdrawalsAmount, 
+    platform_used_amount platformUsedAmount, 
+    platform_remain_amount platformRemainAmount, 
+    platform_grap_total_amount platformGrapTotalAmount,
+    member_total_amount memberTotalAmount, 
+    member_withdrawals_amount memberWithdrawalsAmount, 
+    save_amount saveAmount, 
+    member_used_amount memberUsedAmount,
+    member_remain_amount memberRemainAmount, 
+    business_total_amount businessTotalAmount, 
+    business_used_amount businessUsedAmount, 
+    business_withdrawals_amount businessWithdrawalsAmount, 
+    xingmin_save_amount xingminSaveAmount, 
+    fumin_save_amount fuminSaveAmount, 
+    huimin_save_amount huiminSaveAmount, 
+    tiyan_save_amount tiyanSaveAmount,
+    xingmin_withdrawals_amount xingminWithdrawalsAmount,
+	fumin_withdrawals_amount fuminWithdrawalsAmount,
+	huimin_withdrawals_amount huiminWithdrawalsAmount,
+	tiyan_withdrawals_amount tiyanWithdrawalsAmount, 
+    xingmin_disk_profit_amount xingminDiskProfitAmount, 
+    fumin_disk_profit_amount fuminDiskProfitAmount,
+    huimin_disk_profit_amount huiminDiskProfitAmount, 
+    tiyan_disk_profit_amount tiyanDiskProfitAmount, 
+    xingmin_grap_amount xingminGrapAmount,
+    fumin_grap_amount fuminGrapAmount,
+    huimin_grap_amount huiminGrapAmount,
+    tiyan_grap_amount tiyanGrapAmount,
+    active_flag activeFlag,
+	delete_flag deleteFlag, 
+    created_date createdDate, 
+    created_by createdBy, 
+    last_updated_date lastUpdatedDate, 
+    last_updated_by lastUpdatedBy
+  </sql>
+  
+
+	<!-- 查询会员平台收益  -->
+	 <select id="selectByPlatformProfit" resultMap="BaseResultMap" parameterType="com.wwh.vo.PlatformProfitVO" >
+	     select 
+	    <include refid="Base_Column_List" />
+	    from wallet_platform_profit_t
+	    where user_id = #{userId,jdbcType=BIGINT}
+	    
+	  </select>
+  
+  <resultMap id="BaseResultMap" type="com.wwh.vo.PlatformProfitVO" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="profit_total_amount" property="profitTotalAmount" jdbcType="DECIMAL" />
+    <result column="withdrawals_amount" property="withdrawalsAmount" jdbcType="DECIMAL" />
+    <result column="remain_total_amount" property="remainTotalAmount" jdbcType="DECIMAL" />
+    <result column="level_all_amount" property="levelAllAmount" jdbcType="DECIMAL" />
+    <result column="level_withdrawals_amount" property="levelWithdrawalsAmount" jdbcType="DECIMAL" />
+    <result column="save_amount" property="saveAmount" jdbcType="DECIMAL" />
+    <result column="business_amount" property="businessAmount" jdbcType="DECIMAL" />
+    <result column="business_used_amount" property="businessUsedAmount" jdbcType="DECIMAL" />
+    <result column="withdrawed_total_amount" property="withdrawedTotalAmount" jdbcType="DECIMAL" />
+    <result column="xingmin_save_amount" property="xingminSaveAmount" jdbcType="DECIMAL" />
+    <result column="fumin_save_amount" property="fuminSaveAmount" jdbcType="DECIMAL" />
+    <result column="huimin_save_amount" property="huiminSaveAmount" jdbcType="DECIMAL" />
+    <result column="tiyan_save_amount" property="tiyanSaveAmount" jdbcType="DECIMAL" />
+    <result column="xingmin_withdrawals_amount" property="xingminWithdrawalsAmount" jdbcType="DECIMAL" />
+    <result column="fumin_withdrawals_amount" property="fuminWithdrawalsAmount" jdbcType="DECIMAL" />
+    <result column="huimin_withdrawals_amount" property="huiminWithdrawalsAmount" jdbcType="DECIMAL" />
+    <result column="tiyan_withdrawals_amount" property="tiyanWithdrawalsAmount" jdbcType="DECIMAL" />
+    <result column="xingmin_disk_profit_amount" property="xingminDiskProfitAmount" jdbcType="DECIMAL" />
+    <result column="fumin_disk_profit_amount" property="fuminDiskProfitAmount" jdbcType="DECIMAL" />
+    <result column="huimin_disk_profit_amount" property="huiminDiskProfitAmount" jdbcType="DECIMAL" />
+    <result column="tiyan_disk_profit_amount" property="tiyanDiskProfitAmount" jdbcType="DECIMAL" />
+    <result column="active_flag" property="activeFlag" jdbcType="CHAR" />
+    <result column="delete_flag" property="deleteFlag" jdbcType="CHAR" />
+    <result column="created_date" property="createdDate" jdbcType="TIMESTAMP" />
+    <result column="created_by" property="createdBy" jdbcType="BIGINT" />
+    <result column="last_updated_date" property="lastUpdatedDate" jdbcType="TIMESTAMP" />
+    <result column="last_updated_by" property="lastUpdatedBy" jdbcType="BIGINT" />
+  </resultMap>
+  
+  
+<!-- 累加平台总收益表  user_id 不能为空 -->
+  <update id="increasePlatformProfitByUserIdSelective" parameterType="com.wwh.vo.PlatformProfitVO" >
+    update wallet_platform_profit_t
+    <set >
+      <if test="platformTotalAmount != null" >
+        platform_total_amount=platform_total_amount+ IFNULL(#{platformTotalAmount},0),
+      </if>
+      <if test="platformWithdrawalsAmount != null" >
+       platform_withdrawals_amount=platform_withdrawals_amount + IFNULL(#{platformWithdrawalsAmount,jdbcType=DECIMAL},0),
+      </if>
+      <if test="platformRemainAmount != null" >
+        platform_remain_amount=platform_remain_amount + IFNULL(#{platformRemainAmount,jdbcType=DECIMAL},0),
+      </if>
+      <if test="memberTotalAmount != null" >
+        member_total_amount=member_total_amount + IFNULL(#{memberTotalAmount,jdbcType=DECIMAL},0),
+      </if>
+      <if test="saveAmount != null" >
+        save_amount =save_amount + IFNULL(#{saveAmount,jdbcType=DECIMAL},0),
+      </if>
+      <if test="memberRemainAmount != null" >
+        member_remain_amount=member_remain_amount + IFNULL(#{memberRemainAmount,jdbcType=DECIMAL},0),
+      </if>
+      <if test="businessTotalAmount != null" >
+        business_total_amount=business_total_amount + IFNULL(#{businessTotalAmount,jdbcType=DECIMAL},0),
+      </if>
+      <if test="xingminSaveAmount != null" >
+        xingmin_save_amount = xingmin_save_amount + IFNULL(#{xingminSaveAmount,jdbcType=DECIMAL},0),
+      </if>
+      <if test="fuminSaveAmount != null" >
+        fumin_save_amount = fumin_save_amount + IFNULL(#{fuminSaveAmount,jdbcType=DECIMAL},0),
+      </if>
+      <if test="huiminSaveAmount != null" >
+        huimin_save_amount =huimin_save_amount + IFNULL(#{huiminSaveAmount,jdbcType=DECIMAL},0),
+      </if>
+      <if test="tiyanSaveAmount != null" >
+        tiyan_save_amount =tiyan_save_amount + IFNULL(#{tiyanSaveAmount,jdbcType=DECIMAL},0),
+      </if>
+      <if test="xingminWithdrawalsAmount != null">xingmin_withdrawals_amount = xingmin_withdrawals_amount + IFNULL(#{xingminWithdrawalsAmount,jdbcType=DECIMAL},0),</if>
+      <if test="fuminWithdrawalsAmount != null">fumin_withdrawals_amount = fumin_withdrawals_amount + IFNULL(#{fuminWithdrawalsAmount,jdbcType=DECIMAL},0),</if>
+      <if test="huiminWithdrawalsAmount != null">huimin_withdrawals_amount = huimin_withdrawals_amount + IFNULL(#{huiminWithdrawalsAmount,jdbcType=DECIMAL},0),</if>
+      <if test="tiyanWithdrawalsAmount != null">tiyan_withdrawals_amount = tiyan_withdrawals_amount + IFNULL(#{tiyanWithdrawalsAmount,jdbcType=DECIMAL},0),</if>
+      <if test="xingminDiskProfitAmount != null" >
+        xingmin_disk_profit_amount =xingmin_disk_profit_amount + IFNULL(#{xingminDiskProfitAmount,jdbcType=DECIMAL},0),
+      </if>
+      <if test="fuminDiskProfitAmount != null" >
+        fumin_disk_profit_amount =fumin_disk_profit_amount + IFNULL(#{fuminDiskProfitAmount,jdbcType=DECIMAL},0),
+      </if>
+      <if test="huiminDiskProfitAmount != null" >
+        huimin_disk_profit_amount =huimin_disk_profit_amount + IFNULL(#{huiminDiskProfitAmount,jdbcType=DECIMAL},0),
+      </if>
+      <if test="tiyanDiskProfitAmount != null" >
+        tiyan_disk_profit_amount =tiyan_disk_profit_amount + IFNULL(#{tiyanDiskProfitAmount,jdbcType=DECIMAL},0),
+      </if>
+      <if test="activeFlag != null" >
+        active_flag = #{activeFlag,jdbcType=CHAR},
+      </if>
+      <if test="deleteFlag != null" >
+        delete_flag = #{deleteFlag,jdbcType=CHAR},
+      </if>
+      <if test="userId != null and userId!='' " >
+        last_updated_date =now(),
+      </if>
+      <if test="userId != null and userId!='' " >
+        last_updated_by = #{lastUpdatedBy,jdbcType=BIGINT},
+      </if>
+    </set>
+    where    user_id = #{userId,jdbcType=BIGINT}
+  </update>
+  
+  
+  <!-- 新增平台总收益表   wallet_platform_profit_t  -->
+  <insert id="insertPlatformProfit" parameterType="com.wwh.vo.PlatformProfitVO" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into wallet_platform_profit_t (user_id, platform_total_amount, platform_withdrawals_amount, 
+      platform_used_amount, platform_remain_amount, 
+      member_total_amount, member_withdrawals_amount, 
+      save_amount, member_used_amount, member_remain_amount, 
+      business_total_amount, business_used_amount, 
+      business_withdrawals_amount, xingmin_save_amount, 
+      fumin_save_amount, huimin_save_amount,
+      tiyan_save_amount, 
+      xingmin_withdrawals_amount,fumin_withdrawals_amount,
+      huimin_withdrawals_amount,tiyan_withdrawals_amount,
+      xingmin_disk_profit_amount, 
+      fumin_disk_profit_amount, huimin_disk_profit_amount, 
+      tiyan_disk_profit_amount, active_flag, delete_flag, 
+      created_date, created_by, last_updated_date, 
+      last_updated_by)
+    values (
+		    #{userId,jdbcType=BIGINT}, 
+		    #{platformTotalAmount,jdbcType=DECIMAL}, 
+		    #{platformWithdrawalsAmount,jdbcType=DECIMAL}, 
+		    #{platformUsedAmount,jdbcType=DECIMAL}, 
+		    #{platformRemainAmount,jdbcType=DECIMAL}, 
+		    #{memberTotalAmount,jdbcType=DECIMAL}, 
+		    #{memberWithdrawalsAmount,jdbcType=DECIMAL}, 
+		    #{saveAmount,jdbcType=DECIMAL}, 
+		    #{memberUsedAmount,jdbcType=DECIMAL}, 
+		    #{memberRemainAmount,jdbcType=DECIMAL}, 
+		    #{businessTotalAmount,jdbcType=DECIMAL}, 
+		    #{businessUsedAmount,jdbcType=DECIMAL}, 
+		    #{businessWithdrawalsAmount,jdbcType=DECIMAL}, 
+		    #{xingminSaveAmount,jdbcType=DECIMAL}, 
+		    #{fuminSaveAmount,jdbcType=DECIMAL}, 
+		    #{huiminSaveAmount,jdbcType=DECIMAL}, 
+		    #{tiyanSaveAmount,jdbcType=DECIMAL}, 
+		    #{xingminWithdrawalsAmount,jdbcType=DECIMAL},
+		    #{fuminWithdrawalsAmount,jdbcType=DECIMAL},
+		    #{huiminWithdrawalsAmount,jdbcType=DECIMAL},
+		    #{tiyanWithdrawalsAmount,jdbcType=DECIMAL},
+		    #{xingminDiskProfitAmount,jdbcType=DECIMAL}, 
+		    #{fuminDiskProfitAmount,jdbcType=DECIMAL}, 
+		    #{huiminDiskProfitAmount,jdbcType=DECIMAL}, 
+		    #{tiyanDiskProfitAmount,jdbcType=DECIMAL}, 
+		    #{activeFlag,jdbcType=CHAR}, 
+		    #{deleteFlag,jdbcType=CHAR}, 
+		    now(), 
+		    #{createdBy,jdbcType=BIGINT}, 
+		    now(), 
+		    #{lastUpdatedBy,jdbcType=BIGINT}
+	    )
+  </insert>
+  
+  <insert id="updatePlatformProfitByUserId">
+	  INSERT INTO wallet_platform_profit_t (
+		user_id,
+		platform_total_amount,
+		platform_withdrawals_amount,
+		platform_used_amount,
+		platform_grap_total_amount,
+		platform_remain_amount,
+		member_total_amount,
+		member_withdrawals_amount,
+		save_amount,
+		member_used_amount,
+		member_remain_amount,
+		business_total_amount,
+		business_used_amount,
+		business_withdrawals_amount,
+		xingmin_save_amount,
+		fumin_save_amount,
+		huimin_save_amount,
+		tiyan_save_amount,
+      	xingmin_withdrawals_amount,
+      	fumin_withdrawals_amount,
+     	huimin_withdrawals_amount,
+     	tiyan_withdrawals_amount,
+		xingmin_disk_profit_amount,
+		fumin_disk_profit_amount,
+		huimin_disk_profit_amount,
+		tiyan_disk_profit_amount,
+		xingmin_grap_amount,
+		fumin_grap_amount,
+		huimin_grap_amount,
+		tiyan_grap_amount,
+		active_flag,
+		delete_flag,
+		created_date,
+		created_by,
+		last_updated_date,
+		last_updated_by
+	)
+	VALUES
+		(
+			#{userId},
+			#{platformTotalAmount},
+			#{platformWithdrawalsAmount},
+			#{platformUsedAmount},
+			#{platformGrapTotalAmount},
+			#{platformRemainAmount},
+			#{memberTotalAmount},
+			#{memberWithdrawalsAmount},
+			#{saveAmount},
+			#{memberUsedAmount},
+			#{memberRemainAmount},
+			#{businessTotalAmount},
+			#{businessUsedAmount},
+			#{businessWithdrawalsAmount},
+			#{xingminSaveAmount},
+			#{fuminSaveAmount},
+			#{huiminSaveAmount},
+			#{tiyanSaveAmount},
+			#{xingminWithdrawalsAmount,jdbcType=DECIMAL},
+		    #{fuminWithdrawalsAmount,jdbcType=DECIMAL},
+		    #{huiminWithdrawalsAmount,jdbcType=DECIMAL},
+		    #{tiyanWithdrawalsAmount,jdbcType=DECIMAL},
+			#{xingminDiskProfitAmount},
+			#{fuminDiskProfitAmount},
+			#{huiminDiskProfitAmount},
+			#{tiyanDiskProfitAmount},
+			#{xingminGrapAmount},
+			#{fuminGrapAmount},
+			#{huiminGrapAmount},
+			#{tiyanGrapAmount},
+			'Y',
+			'N',
+			NOW(),
+			#{createdBy},
+			NOW(),
+			#{lastUpdatedBy}
+		) ON DUPLICATE KEY UPDATE
+			platform_total_amount = platform_total_amount + IFNULL(#{platformTotalAmount},0),
+			platform_withdrawals_amount = platform_withdrawals_amount +  IFNULL(#{platformWithdrawalsAmount},0),
+			platform_used_amount = platform_used_amount + IFNULL(#{platformUsedAmount},0),
+			platform_grap_total_amount = platform_grap_total_amount +  IFNULL(#{platformGrapTotalAmount},0),
+			platform_remain_amount = platform_remain_amount + IFNULL(#{platformRemainAmount},0),
+			member_total_amount = member_total_amount +IFNULL( #{memberTotalAmount},0),
+			member_withdrawals_amount = member_withdrawals_amount + IFNULL(#{memberWithdrawalsAmount},0),
+			save_amount = save_amount + IFNULL(#{saveAmount},0),
+			member_used_amount = member_used_amount + IFNULL(#{memberUsedAmount},0),
+			member_remain_amount = member_remain_amount + IFNULL(#{memberRemainAmount},0),
+			business_total_amount = business_total_amount + IFNULL(#{businessTotalAmount},0),
+			business_used_amount = business_used_amount + IFNULL(#{businessUsedAmount},0),
+			business_withdrawals_amount = business_withdrawals_amount + IFNULL(#{businessWithdrawalsAmount},0),
+			xingmin_save_amount = xingmin_save_amount + IFNULL(#{xingminSaveAmount},0),
+			fumin_save_amount = fumin_save_amount + IFNULL(#{fuminSaveAmount},0),
+			huimin_save_amount = huimin_save_amount + IFNULL(#{huiminSaveAmount},0),
+			tiyan_save_amount = tiyan_save_amount + IFNULL(#{tiyanSaveAmount},0),
+			xingmin_withdrawals_amount = xingmin_withdrawals_amount + IFNULL(#{xingminWithdrawalsAmount},0),
+      		fumin_withdrawals_amount = fumin_withdrawals_amount + IFNULL(#{fuminWithdrawalsAmount},0),
+     		huimin_withdrawals_amount = huimin_withdrawals_amount + IFNULL(#{huiminWithdrawalsAmount},0),
+     		tiyan_withdrawals_amount = tiyan_withdrawals_amount + IFNULL(#{tiyanWithdrawalsAmount},0),
+			xingmin_disk_profit_amount = xingmin_disk_profit_amount + IFNULL(#{xingminDiskProfitAmount},0),
+			fumin_disk_profit_amount = fumin_disk_profit_amount + IFNULL(#{fuminDiskProfitAmount},0),
+			huimin_disk_profit_amount = huimin_disk_profit_amount + IFNULL(#{huiminDiskProfitAmount},0),
+			tiyan_disk_profit_amount = tiyan_disk_profit_amount + IFNULL(#{tiyanDiskProfitAmount},0),
+			xingmin_grap_amount = xingmin_grap_amount + IFNULL(#{xingminGrapAmount},0),
+			fumin_grap_amount = fumin_grap_amount + IFNULL(#{fuminGrapAmount},0),
+			huimin_grap_amount = huimin_grap_amount + IFNULL(#{huiminGrapAmount},0),
+			tiyan_grap_amount = tiyan_grap_amount + IFNULL(#{tiyanGrapAmount},0),
+			last_updated_date = NOW(),
+			last_updated_by = #{lastUpdatedBy}
+  </insert>
+
+</mapper>

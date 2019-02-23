@@ -1,0 +1,276 @@
+﻿<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>充值-唯沃惠</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="金融、钱包、理财、高收益">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="renderer" content="webkit" />
+    <base href="/">
+    <link rel="stylesheet" href="/wwh-wallet/css/bootstrap.css">
+    <link rel="stylesheet" href="/wwh-wallet/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/wwh-wallet/css/plugin.css">
+    <link rel="stylesheet" href="/wwh-wallet/css/landing.css">
+    <link rel="stylesheet" href="/wwh-wallet/css/common.css">
+    <link href="/wwh-wallet/css/mall/private-benefit.css" rel="stylesheet" />
+    <script type="text/javascript" src="/wwh-wallet/js/jquery.min.js"></script>
+    <script src="/wwh-wallet/js/bootstrap.js"></script>
+    <script src="/wwh-wallet/js/app.js"></script>
+    <script src="/wwh-wallet/js/app.plugin.js"></script>
+    <script src="/wwh-wallet/js/app.data.js"></script>
+    <script src="/wwh-wallet/js/fuelux/fuelux.js"></script>
+    <script src="/wwh-wallet/js/datepicker/bootstrap-datepicker.js"></script>
+    <script src="/wwh-wallet/js/slider/bootstrap-slider.js"></script>
+    <script src="/wwh-wallet/js/file-input/bootstrap.file-input.js"></script>
+    <script src="/wwh-wallet/js/combodate/moment.min.js"></script>
+    <script src="/wwh-wallet/js/parsley/parsley.min.js"></script>
+    <script src="/wwh-wallet/js/angular.js"></script>
+</head>
+<body ng-controller="siteCtrl">
+    <div ng-include src="'/wwh-wallet/pages/wallet/common/header.html'"></div>
+    <div class="charge-wrap fixed">
+        <div class="charge-box m-box fixed">
+            <div class="title-wrap">
+                <div class="title">充值</div>
+                <div class="title-second">                    
+                </div>
+            </div>
+            <div class="containner-middle fixed">
+                <div class="choose-bank-wrap-2 fixed">
+                    <div class="c-b-box-1 fixed height500">
+                        <span>*</span>选择充值金额：
+                    </div>
+                    <div class="c-b-box23w fixed">
+                        <div class="c-b-box-3 fixed" style="height:240px;">
+                            <div class="chargecash cash00">
+                                <i></i>
+                                <div class="write-cash-wrap">
+                                    <input class="moneybyu" id="moneybyu" type="text" placeholder="1-499元" />
+                                    <div class="errow" id="other">请输入1-499</div>
+                                </div>
+                                <span>
+                                    充值消费送双倍积分<br />
+                                    天天有五折
+                                </span>
+                            </div>
+                            <div class="chargecash chargecash500 norightm selected">
+                                <i></i>
+                                <label>500元<input id="money500" type="hidden" value="500" /></label>
+                                <span>
+                                    兑换1000购物积分<br />
+                                    进入体验系统赚收益
+                                </span>
+                            </div>
+                            <div class="chargecash chargecash5000">
+                                <i></i>
+                                <label>5000元<input id="money5000" type="hidden" value="5000" /></label>
+                                <span>
+                                    兑换10000购物积分<br />
+                                    进入惠民系统赚收益
+                                </span>
+                            </div>
+                            <div class="chargecash chargecash50000 norightm">
+                                <i></i>
+                                <label>50000元<input id="money50000" type="hidden" value="50000" /></label>
+                                <span>
+                                    兑换100000购物积分<br />
+                                    进入富民系统赚收益
+                                </span>
+                            </div>
+                            <!--<div class="chargecash2 norightm disabledchargecash">
+                                <i></i>
+                                <label>暂未开放</label>
+                                <span>
+                                    兑换XX购物积分<br />
+                                    进入兴民系统赚收益
+                                </span>
+                            </div>-->
+                        </div>
+                    </div>
+                    <script type="text/javascript">
+                        $(document).ready(function () {
+                            var bandSelected = $('.chargecash');
+                            bandSelected.click(function () {
+                                $(this).addClass('selected').siblings().removeClass('selected');
+                                if ($(this).hasClass('cash00')) {
+                                    $('.write-cash-wrap input').focus();
+                                } else {
+                                    $('.write-cash-wrap input').val('');
+                                    $('.errow').css('display', 'none');
+                                }
+                            });
+                            $('#moneybyu').bind('keyup', function () {
+                                isRightMoneyFormat();
+                            });
+                            
+                            function isRightMoneyFormat() {  // 验证是否为 1- 499
+                                var dkf = $('#moneybyu').val();
+                                var mFLength = dkf.length;
+                                var mFIndexof = dkf.indexOf('.');
+                                if (!isNaN(dkf)) {
+                                    if (dkf == "") { // 为空
+                                        $('.errow').css('display', 'block'); return false;
+                                    }
+                                    if (mFIndexof == -1) { // 没有小数点
+                                        if (mFLength >= 2 && $('#moneybyu').val().indexOf(0) == 0) {
+                                            $('.errow').css('display', 'block'); return false;
+                                        }
+                                        dkf = parseFloat(dkf).toFixed(2);
+                                    } else {
+                                        if ((parseInt(mFLength) - parseInt(mFIndexof)) == 1) { // 只有小数点
+                                            dkf = parseFloat(dkf + "00").toFixed(2);
+                                            console.log("小数点1位数");
+                                        }
+                                        if ((parseInt(mFLength) - parseInt(mFIndexof)) == 2) { // 只有小数点
+                                            dkf = parseFloat(dkf + "00").toFixed(2);
+                                            console.log("小数点2位数");
+                                        }
+                                    }
+                                    if (dkf <= 499 && dkf >= 1 && /^\d+(\.\d{2})?$/.test(dkf)) {
+                                        $('.errow').css('display', 'none'); return true;
+                                    } else {
+                                        $('.errow').css('display', 'block'); return false;
+                                    }
+                                } else {
+                                    $('.errow').css('display', 'block'); return false;
+                                };
+                            }
+                            // 提交按钮
+                            $('#chargeMoneyBtn').click(function () {
+                                if ($('.cash00').hasClass('selected')) {  // cash00
+                                    var result = isRightMoneyFormat();
+                                    if (!result) {
+                                        return;
+                                    }
+                                    console.log(isRightMoneyFormat());
+                                }
+                                //获取选中的支付金额
+                                var MoneyNum = $('.chargecash.selected input').val(); //
+                                var MoneyTyep = '';
+                                //获取支付类型 （1-499，500 ，5000，50000）
+                                if ($('.chargecash.selected input').attr('class') == 'moneybyu') {
+                                    MoneyTyep = 'OTHER';
+                                } else {
+                                    var TypeID = $('.chargecash.selected input').attr('id')
+                                    if (TypeID == "money500") { MoneyTyep = 'TIYAN'; }
+                                    if (TypeID == "money5000") { MoneyTyep = 'HUIMIN'; }
+                                    if (TypeID == "money50000") { MoneyTyep = 'FUMIN'; }
+                                }
+                                
+                                
+                                $.ajax({     // 请求 ajax
+                                    url: "/wwh-wallet/cretification/queryisidvalid",
+                                    type: "get",
+                                    data: "",
+                                    success: function (data) {
+                                        if (data) {
+                                        	  $("#payOrderType").val("WWHCHONGZHI");
+                                              $("#amount").val(MoneyNum);
+                                              $("#payAmountType").val(MoneyTyep);
+                                              //提交表单请求
+                                              var formObj = $("#payform");
+                                              formObj.attr("method", "post");
+                                              formObj.submit(); 
+                                        }else{
+                                        	 $('#onloadtriggerClick1').trigger('click');
+                                        }
+                                    },
+                                });
+                            });
+                            
+                        });
+                    </script>
+                    <form action="/wwh-wallet/pay/pre" method="post" id="payform">
+                        <input type="hidden" name="payOrderType" id="payOrderType">
+                        <input type="hidden" name="amount" id="amount">
+                        <input type="hidden" name="payAmountType" id="payAmountType">
+                        <div class="c-b-box-56 fixed">
+                            <div class="c-b-box-6 fixed">
+                                <div id="chargeMoneyBtn" class="charge-btn float-L">下一步</div>
+                                <a class="float-L marginb20" style="line-height:50px; margin-left:10px; font-size:12px;" data-toggle="modal" href="#modal">查看充值规则</a>
+                                <input id="onloadtriggerClick1" class="onloadtrigger3" data-toggle="modal" href="#modal3" type="hidden" />
+                            </div>
+                            <div class="c-b-box-7 fixed">
+                                温馨提示：<br />
+                                1、充值成功后，余额可能存在延迟现象，一般1到5分钟内到账，如有问题，请咨询客服；<br />
+                                2、目前商城仅支持微信、支付宝两种充值方式；如遇到任何充值问题，请联系商城在线客服。<br />
+                                3、充值完成后，您可以进入【我的积分】页面查询积分余额，在【充值记录】查看充值记录。<br />
+                                4、客服电话0755-86671456 服务时间：周一至周日0:00-24:00.
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="modal" class="modal fade">
+        <form class="m-b-none">
+            <div class="modal-dialog pos-abt" style="margin-top:-235px; top:50%; width:800px; margin-left:-400px;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="icon-remove"></i></button>
+                        <h4 class="modal-title" id="myModalLabel">充值规则</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="checkbox">
+							温馨提示：<br> 
+                                1、充值成功后，余额可能存在延迟现象，一般1到5分钟内到账，如有问题，请咨询客服； <br> 
+                                2、目前商城仅支持微信、支付宝两种充值方式；如遇到任何充值问题，请联系商城在线客服。<br> 
+                                3、充值完成后，您可以进入【我的积分】页面查询积分余额，在【充值记录】查看充值记录。<br>
+                                4、客服电话0755-86671456 服务时间：周一至周日0:00-24:00。
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-small btn-primary" data-dismiss="modal">确认</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div>
+        </form>
+    </div>
+    
+        
+	      <div id="modal3" class="modal fade">
+	        <form class="m-b-none">
+	            <div class="modal-dialog pos-abt" style="margin-top:-235px; top:50%; width:800px; margin-left:-400px;">
+	                <div class="modal-content">
+	                    <div class="modal-header">
+	                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="icon-remove"></i></button>
+	                        <h4 class="modal-title" id="myModalLabel">确认提醒：</h4>
+	                    </div>
+	                    <div class="modal-body">
+	                        <div class="checkbox" style="text-align:center">
+	                          <a href="/wwh-wallet/score" target="_self"><label style="color:black">请先实名认证</label><label style="font-size : 12px;text-decoration: underline;">(点击这里进行实名认证)</label></a>	
+	                        </div>
+	                    </div>
+	                    <div class="modal-footer">
+	                        <button type="button" class="btn btn-small btn-primary" data-dismiss="modal">确认</button>
+	                    </div>
+	                </div><!-- /.modal-content -->
+	            </div>
+	        </form>
+	    </div>
+    
+ 
+    <div ng-include src="'/wwh-wallet/pages/wallet/common/footer.html'"></div>
+    <script type="text/javascript">
+        var app = angular.module('myApp', []);
+        app.config(['$locationProvider', function ($locationProvider) {
+            $locationProvider.html5Mode(true);
+        }]);
+        app.controller('siteCtrl', ['$scope', '$location', '$http', function ($scope, $location, $http) {
+          //  var diskSeq = $location.search()['name'];
+         //   console.log(diskSeq);
+            var diskSeq = ${amount};
+         
+            if (diskSeq == 5000) {
+                angular.element('.chargecash5000').addClass('selected').siblings().removeClass('selected');
+            }
+            if (diskSeq == 50000) {
+                angular.element('.chargecash50000').addClass('selected').siblings().removeClass('selected');
+            }
+        }]);
+        
+    </script>
+</body>
+</html>

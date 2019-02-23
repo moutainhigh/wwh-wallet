@@ -1,0 +1,287 @@
+﻿<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>招商分红</title>
+    <meta charset="utf-8" />
+    <meta name="renderer" content="webkit" />
+    <meta name="description" content="金融、钱包、理财、高收益">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="/wwh-wallet/css/bootstrap.css">
+    <link rel="stylesheet" href="/wwh-wallet/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/wwh-wallet/css/plugin.css">
+    <link rel="stylesheet" href="/wwh-wallet/css/landing.css">
+    <link rel="stylesheet" href="/wwh-wallet/css/common.css">
+    <link href="/wwh-wallet/css/mall/private-benefit.css" rel="stylesheet" />
+    <link href="/wwh-wallet/css/style.css" rel="stylesheet" />
+    <script type="text/javascript" src="/wwh-wallet/js/jquery.min.js"></script>
+    <script src="/wwh-wallet/js/bootstrap.js"></script>
+    <script src="/wwh-wallet/js/app.js"></script>
+    <script src="/wwh-wallet/js/app.plugin.js"></script>
+    <script src="/wwh-wallet/js/app.data.js"></script>
+    <script src="/wwh-wallet/js/fuelux/fuelux.js"></script>
+    <script src="/wwh-wallet/js/datepicker/bootstrap-datepicker.js"></script>
+    <script src="/wwh-wallet/js/slider/bootstrap-slider.js"></script>
+    <script src="/wwh-wallet/js/file-input/bootstrap.file-input.js"></script>
+    <script src="/wwh-wallet/js/combodate/moment.min.js"></script>
+    <script src="/wwh-wallet/js/parsley/parsley.min.js"></script>
+    <script src="/wwh-wallet/js/angular.js"></script>
+    <script src="/wwh-wallet/js/tm.pagination.js"></script>
+</head>
+<body ng-controller="siteCtrl1">
+    <div ng-include src="'/wwh-wallet/pages/wallet/common/header.html'"></div>
+    <input id="selectedpage" type="hidden" value="share" />
+    <div class="banner-box share-bouns-bg">
+        <div class="m-box">
+            <div class="my-benefit-box adds">
+                <div class="fixed mb-box12-wrap">
+                    <div class="mb-box-1 fixed">
+                        <div class="mb-12-box fixed">
+                            <div class="mb-title01">我的分红（个）</div>
+                            <div class="mb-title02"><span>金币</span><label ng-bind="infodata.businessAmount  == null ? '00.00' : infodata.businessAmount | currency :'' "></label> </div>
+                        </div>
+                        <div class="mb-line"></div>
+                        <div class="mb-34-box fixed">
+                            <div class="mb-title03">已提现（个）</div>
+                            <br />
+                            <div class="mb-title04"><span>金币</span><label ng-bind="infodata.businessUsedAmount  == null ? '00.00' : infodata.businessUsedAmount | currency :'' "></label> </div>
+                        </div>
+                    </div>
+                    <div class="mb-box-2 fixed">
+                        <div class="mb-title05">
+                            今日分红：<label ng-bind="infodata.todayBusinessAmount  == null ? '00.00' : infodata.todayBusinessAmount | currency :'金币' "></label> 个
+                        </div>
+                        <div class="mb-title06">
+                            近一个月分红：<label ng-bind="infodata.nearlyThirtyDaysBusinessAmount  == null ? '00.00' : infodata.nearlyThirtyDaysBusinessAmount | currency :'金币' "></label> 个
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-box-3 fixed">
+                    <a href="/wwh-wallet/bankcard" class="mb-paycard"></a>
+                    <a href="/wwh-wallet/applywithdrawl" class="mb-takecash">提现</a>
+                    <a href="/wwh-wallet/chargedetail" class="mb-infodetail">查看提现明细</a>
+                </div>
+                <div class="zs-slider-box">
+                    <div class="zs-to-left"></div>
+                    <div class="zs-to-right"></div>
+                    <div class="zs-slider-wrap fixed">
+                        <div class="zs-shop-b zs-shop-0{{$index+1}} fixed selected" ng-class="{selected:$index==0}" ng-repeat="num in shopdata.data">
+                            <div class="zs-item-shop">
+                                <div class="zs-shop-log">
+                                    <img ng-src="http://img.vwhsc.com/image-server/{{num.logoPic}}" />
+                                </div>
+                                <div class="zs-shop-corp">{{num.sellerName}}</div>
+                                <div class="zs-shop-hot" style="display:none;">关注人气：1200人</div>
+                            </div>
+                            <div class="zs-item-list fixed">
+                                <div class="title">热销TOP5</div>
+                                <ul>
+                                    <li ng-repeat="n in num.itemInfo track by $index">
+                                        <a href="">
+                                            <img ng-src="http://img.vwhsc.com/image-server/{{n.defaultPicUrl}}" />
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="deals-details">
+        <div class="m-box fixed d-t-bg">
+            <div ng-controller="table1Ctrl">
+                <div class="">
+                    <div class="s-tab-w width1164">
+                        <div class="deals-title-wrap">
+                            <div class="deals-title selected s-tab s-tab-01 s-tab333" style="width:70px;">交易记录</div>
+                            <div class="mall-btn-select">
+                                <div class="btn-group">
+                                    <button data-toggle="dropdown"
+                                            class="btn btn-small btn-white dropdown-toggle">
+                                        <span class="dropdown-label">所有商家</span> <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-select">
+                                        <li class="active"><a href="#" ng-click='bussinessDropdownListClick("ALL")'><input type="radio" name="d-s-r" checked="">所有商家</a></li>
+                                        <li ng-repeat="x in bussinessDropdownList">
+                                            <a href="#" ng-click="bussinessDropdownListClick(x.businessUserId)">
+                                                <input type="radio" name="d-s-r" value="{{x.businessUserId}}">{{x.businessUserName}}
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="pb-table-wrap">
+                    <table class="pb-table">
+                        <tr>
+                            <th>交易时间</th>
+                            <th>订单编号</th>
+                            <th>使用积分</th>
+                            <th>订单金额</th>
+                            <th>招商分红</th>
+                            <th>状态</th>
+                        </tr>
+                        <tr ng-repeat="x in datasource1">
+                            <td class="td01" ng-bind="x.createdDate"></td>
+                            <td class="td02" ng-bind="x.orderNumber"></td>
+                            <td class="td03" ng-bind="x.scoreUsage"></td>
+                            <td class="td04" ng-bind="x.orderAmount"></td>
+                            <td class="td05" ng-bind="x.myProfitAmount"></td>
+                            <td class="td06" ng-bind="x.orderStatus == 'SUCCESSED' ? '成功' : '失败'"></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="page-position fixed">
+                    <div class="fixed float-R">
+                        <tm-pagination conf="paginationConf"></tm-pagination>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div ng-include src="'/wwh-wallet/pages/wallet/common/footer.html'"></div>
+    <script type="text/javascript">
+        var app = angular.module('myApp', ['tm.pagination']);
+        app.controller('siteCtrl1', function ($scope, $timeout, $http) {
+            var urlinx = '6';
+            $http({ url: 'createToken', data: $.param({ urlinx: urlinx }), method: 'POST', headers: { "Content-Type": "application/x-www-form-urlencoded" } }).success(function (response) {
+                var data = response.data;
+                if (urlinx == '5' || urlinx == '6') {
+                    $http({ url: 'noRedirect', data: $.param({ data: data.data, memberId: data.memberId, sign: data.sign, token: data.token, url: data.url, walletUrl: data.walletUrl }), method: 'POST', headers: { "Content-Type": "application/x-www-form-urlencoded" } }).success(function (repdata) {
+                        if (urlinx == '5') {
+                            $('#shoppingNum').val(repdata.data.ShoppingCartCount);
+                        }
+                        if (urlinx == '6') {
+                            if (repdata != null) {
+                                if (repdata != "nodata") {
+                                    $scope.shopdata = repdata;
+                                    if (repdata.data.length == 0) {
+                                        $(".zs-slider-box").html("").addClass('nodata');
+                                    }
+                                }
+                            }
+                            console.log(JSON.stringify(repdata));
+                        }
+                    })
+                } else {
+                    var jsonData = $.parseJSON(data.data);
+                    var de_memberId = decodeURI(data.memberId);
+                    var de_url = decodeURI(data.url);
+                    var de_data = decodeURI(jsonData.data);
+                    var form = $('<form action="' + data.walletUrl + '" method="post" target="_blank"></form>');
+                    form.append('<input type="hidden" name="memberId">');
+                    form.append('<input type="hidden" name="token">');
+                    form.append('<input type="hidden" name="url">');
+                    form.append('<input type="hidden" name="data">');
+                    form.append('<input type="hidden" name="sign">');
+                    form.find("input[name=memberId]").val(de_memberId);
+                    form.find("input[name=token]").val(data.token);
+                    form.find("input[name=url]").val(de_url);
+                    form.find("input[name=data]").val("{\"data\":\"" + de_data + "\"}");
+                    form.find("input[name=sign]").val(data.sign);
+                    form.submit();
+                }
+            });
+            $http.get("/wwh-wallet/business/getalldetail")
+				.success(function (response) {
+				    $scope.infodata = response.data;
+				});
+            $http.get("/wwh-wallet/earnings/platformprofit").success(function (response) {
+                $scope.data1 = response.data;
+                if (response != null) {
+                    $scope.ddsuccesscash = $scope.data1.businessTotalAmount * 100;
+                } else {
+                    $scope.ddsuccesscash = '00.00';
+                }
+            });
+        })
+        app.controller('table1Ctrl', function ($scope, $http) {
+            $scope.paginationConf = {   //交易记录
+                dropdownListValue: 'ALL', // dropdownListValue
+                currentPage: 1, //当前页
+                itemsPerPage: 5, //一页有多少数据显示
+                pagesLength: 3,
+                perPageOptions: [1],
+                onChange: function () {
+                    $http.get("/wwh-wallet/earnings/merchantssales/" + $scope.paginationConf.dropdownListValue + "/" + $scope.paginationConf.currentPage + "/5")
+                        .success(function (response) {
+                            $scope.paginationConf.totalItems = response.total;
+                            $scope.datasource1 = response.dataList;
+                        });
+                }
+            };
+            $http.get("/wwh-wallet/earnings/businessdetail")  //所有商家
+                .success(function (response) {
+                    $scope.bussinessDropdownList = response.dataList;
+                });
+            $scope.bussinessDropdownListClick = function (bussinessID) {
+                $scope.paginationConf.dropdownListValue = bussinessID;
+                $scope.paginationConf.currentPage = 1;
+                $scope.paginationConf.onChange();
+            }
+        })
+    </script>
+    <script type="text/javascript">
+        var oPlay = $('.zs-slider-wrap'),
+            paArray = document.getElementsByClassName('zs-shop-b'),
+            paIndexChild = $(paArray).find('.selected'),
+            iNow = 0,
+            leftBtn = $('.zs-to-left'),
+            rightBtn = $('.zs-to-right');
+        console.log($(paArray));
+        leftBtn.click(function () {
+            iNow--;
+            if (iNow < 0) {
+                iNow = 2;
+            }
+            $(paArray).eq(iNow).siblings().stop().animate({
+                opacity: 0
+            }, 500);
+            $(paArray).eq(iNow).stop().animate({
+                opacity: 1
+            }, 500);
+            $(paArray).eq(iNow).css('z-index', '2').siblings().css('z-index', '1');
+        });
+        rightBtn.click(function () {
+            iNow++;
+            if (iNow > 2) {
+                iNow = 0;
+            }
+            $(paArray).eq(iNow).siblings().stop().animate({
+                opacity: 0
+            }, 500);
+            $(paArray).eq(iNow).stop().animate({
+                opacity: 1
+            }, 500);
+            $(paArray).eq(iNow).css('z-index', '2').siblings().css('z-index', '1');
+        });
+        function move1() {
+            $(paArray).eq(iNow).siblings().stop().animate({
+                opacity: 0
+            }, 800);
+            $(paArray).eq(iNow).stop().animate({
+                opacity: 1
+            }, 800);
+        }
+        function run2() {
+            iNow++;
+            if (iNow > 2) {
+                iNow = 0;
+            }
+            move1();
+        }
+        timer = setInterval(run2, 2000);
+        $(".zs-slider-box").hover(function () {
+            clearInterval(timer);
+        }, function () {
+            timer = setInterval(run2, 2000);
+        });
+        console.log($('.zs-shop-b'));
+        console.log(document.getElementsByClassName("rmb"));
+    </script>
+</body>
+</html>

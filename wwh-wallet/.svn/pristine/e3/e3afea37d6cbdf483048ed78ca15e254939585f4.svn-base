@@ -1,0 +1,517 @@
+﻿<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+
+    <title>唯沃惠钱包后台管理系统</title>
+
+    <meta name="description" content="mobile first, app, web app, responsive, admin dashboard, flat, flat ui">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <link rel="stylesheet" href="/wwh-wallet/css/bootstrapadmin.css">
+
+    <link rel="stylesheet" href="/wwh-wallet/css/font-awesome.min.css">
+
+    <link rel="stylesheet" href="/wwh-wallet/css/styleadmin.css">
+
+    <link rel="stylesheet" href="/wwh-wallet/css/plugin.css">
+
+    <link rel="stylesheet" href="/wwh-wallet/css/landing.css">
+
+    <!--[if lt IE 9]>
+
+      <script src="js/ie/respond.min.js"></script>
+
+      <script src="js/ie/html5.js"></script>
+
+    <![endif]-->
+
+</head>
+
+<body>
+
+    <!-- header -->
+
+    <header id="header" class="navbar">
+
+        <ul class="nav navbar-nav navbar-avatar pull-right">
+
+            <li class="dropdown">
+                <div class="loginbox"><a>登录</a>&nbsp;/&nbsp;<a>注册</a></div>
+
+            </li>
+
+        </ul>
+
+        <a class="navbar-brand" href="#">唯沃惠钱包后台管理系统</a>
+
+    </header>
+
+    <!-- / header -->
+    <!-- nav -->
+
+    <nav id="nav" class="nav-primary visible-lg nav-vertical">
+
+        <ul class="nav" data-spy="affix" data-offset-top="50">
+
+            <li class="dropdown-submenu active">
+                <a href="index.html"><i class="icon-dashboard icon-xlarge"></i>后台首页</a>
+
+                <ul class="dropdown-menu">
+
+                    <li><a href="checkcash.html"><b class="badge bg-primary pull-right">2</b>提现审核</a></li>
+
+                </ul>
+
+            </li>
+
+            <li class="dropdown-submenu">
+
+                <a href="managepan.html"><i class="icon-th icon-xlarge"></i>盘管理</a>
+
+                <ul class="dropdown-menu">
+
+                    <li><a href="addpan.html">新增盘</a></li>
+
+                </ul>
+
+            </li>
+
+            <li class="dropdown-submenu">
+
+                <a href="usermanage.html"><i class="icon-list icon-xlarge"></i>用户管理</a>
+
+            </li>
+
+        </ul>
+
+    </nav>
+
+    <!-- / nav -->
+
+    <section id="content">
+        <div class="col-lg-12">
+
+            <!-- .breadcrumb -->
+
+            <ul class="breadcrumb">
+
+                <li><a href="index.html"><i class="icon-home"></i>后台首页</a></li>
+
+            </ul>
+
+            <!-- / .breadcrumb -->
+
+        </div>
+        <section class="main padder" style="background:#faf7f7;">
+
+            <div class="row">
+
+                <div class="col-6">
+                    <div style="margin-left:0px; margin-bottom:10px; background:#fff;">
+                        <div class="col-12" style="background:#fff;">
+                            <h4 class="text-center">注册用户分布图</h4>
+                            <div class="col-4">
+                                <section class="panel">
+                                    <header class="panel-heading bg-white">
+                                        <div class="text-center h5">体验系统共: <strong>5,000</strong></div>
+                                    </header>
+                                    <div class="pull-in text-center">
+                                        <div class="inline">
+                                            <div class="easypiechart easyPieChart" data-percent="75" data-bar-color="#F1C40F" style="width: 130px; height: 130px; line-height: 130px;">
+                                                <span class="h2" style="margin-left:10px;margin-top:10px;display:inline-block">75</span>%
+                                                <div class="easypie-text text-muted">new visits</div>
+                                                <canvas width="130" height="130"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+                            </div>
+                            <div class="col-4">
+                                <section class="panel">
+                                    <header class="panel-heading bg-white">
+                                        <div class="text-center h5">惠民系统共: <strong>5,000</strong></div>
+                                    </header>
+                                    <div class="pull-in text-center">
+                                        <div class="inline">
+                                            <div class="easypiechart easyPieChart" data-percent="75" data-bar-color="#1ABC9C" style="width: 130px; height: 130px; line-height: 130px;">
+                                                <span class="h2" style="margin-left:10px;margin-top:10px;display:inline-block">75</span>%
+                                                <div class="easypie-text text-muted">new visits</div>
+                                                <canvas width="130" height="130"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+                            </div>
+                            <div class="col-4">
+                                <section class="panel">
+                                    <header class="panel-heading bg-white">
+                                        <div class="text-center h5">富民系统共: <strong>5,000</strong></div>
+                                    </header>
+                                    <div class="pull-in text-center">
+                                        <div class="inline">
+                                            <div class="easypiechart easyPieChart" data-percent="75" data-bar-color="#2980B9" style="width: 130px; height: 130px; line-height: 130px;">
+                                                <span class="h2" style="margin-left:10px;margin-top:10px;display:inline-block">75</span>%
+                                                <div class="easypie-text text-muted">new visits</div>
+                                                <canvas width="130" height="130"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+                            </div>
+                            <p class="text-center"><label class="font-color-ALIZARIN text-center renshu">1565989</label>人</p>
+                            <h4 class="text-center">系统注册总人数</h4>
+                        </div>
+                        <div class="col-12" style="background:#fff;">
+                            <div class="col-4">
+                                <section class="panel">
+                                    <header class="panel-heading bg-white">
+                                        <div class="text-center h5">未充值人数: <strong>5,000</strong></div>
+                                    </header>
+                                    <div class="pull-in text-center">
+                                        <div class="inline">
+                                            <div class="easypiechart easyPieChart" data-percent="75" data-bar-color="#9B59B6" style="width: 130px; height: 130px; line-height: 130px;">
+                                                <span class="h2" style="margin-left:10px;margin-top:10px;display:inline-block">75</span>%
+                                                <div class="easypie-text text-muted">new visits</div>
+                                                <canvas width="130" height="130"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+                            </div>
+                            <div class="col-4">
+                                <section class="panel">
+                                    <header class="panel-heading bg-white">
+                                        <div class="text-center h5">进入系统人数: <strong>5,000</strong></div>
+                                    </header>
+                                    <div class="pull-in text-center">
+                                        <div class="inline">
+                                            <div class="easypiechart easyPieChart" data-percent="75" data-bar-color="#E74C3C" style="width: 130px; height: 130px; line-height: 130px;">
+                                                <span class="h2" style="margin-left:10px;margin-top:10px;display:inline-block">75</span>%
+                                                <div class="easypie-text text-muted">new visits</div>
+                                                <canvas width="130" height="130"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+                            </div>
+                            <div class="col-4">
+                                <section class="panel">
+                                    <header class="panel-heading bg-white">
+                                        <div class="text-center h5">已消费人数: <strong>5,000</strong></div>
+                                    </header>
+                                    <div class="pull-in text-center">
+                                        <div class="inline">
+                                            <div class="easypiechart easyPieChart" data-percent="75" data-bar-color="#E67E22" style="width: 130px; height: 130px; line-height: 130px;">
+                                                <span class="h2" style="margin-left:10px;margin-top:10px;display:inline-block">75</span>%
+                                                <div class="easypie-text text-muted">new visits</div>
+                                                <canvas width="130" height="130"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-6" style="padding-left:0px;">
+                    <div class="col-12 text-center" style="padding:38px 0px;background:#fff;margin-bottom:15px;">
+                        <div class="h3 text-center" style="margin-bottom:40px;">盘层级显示控制</div>
+                        <div style="margin:0px;background:#fff;">
+                            <p>层级状态:<label class="font-color-ALIZARIN openState">开放显示</label></p>
+                            <a class="btn btn-default cjState">关闭层级显示</a>
+                        </div>
+                    </div>
+                    <div class="col-12 text-center" style="padding-top:20px;background:#fff;">
+                        <div class="h3 text-center" style="margin-bottom:20px;">奖励积分设置</div>
+                        <div style="margin:0px;background:#fff;" class="formadmin">
+                            <section class="">
+                                <form class="form-horizontal" method="get" data-validate="parsley">
+                                    <div class="form-group">
+                                        <label class="col-lg-4 control-label">推荐注册积分奖励</label>
+                                        <div class="col-lg-5">
+                                            <input type="text" name="username" placeholder="100" data-required="true" class="form-control parsley-validated">
+                                        </div>
+                                        <div class="col-lg-2">
+                                            <a class="btn btn-info">确认修改</a>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-lg-4 control-label">体验系统推荐奖励</label>
+                                        <div class="col-lg-5">
+                                            <input type="text" name="username" placeholder="100" data-required="true" class="form-control parsley-validated">
+                                        </div>
+                                        <div class="col-lg-2">
+                                            <a class="btn btn-info">确认修改</a>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-lg-4 control-label">惠民系统推荐奖励</label>
+                                        <div class="col-lg-5">
+                                            <input type="text" name="username" placeholder="100" data-required="true" class="form-control parsley-validated">
+                                        </div>
+                                        <div class="col-lg-2">
+                                            <a class="btn btn-info">确认修改</a>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-lg-4 control-label">体验系统推荐奖励</label>
+                                        <div class="col-lg-5">
+                                            <input type="text" name="username" placeholder="100" data-required="true" class="form-control parsley-validated">
+                                        </div>
+                                        <div class="col-lg-2">
+                                            <a class="btn btn-info">确认修改</a>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-lg-4 control-label">惠民系统推荐奖励</label>
+                                        <div class="col-lg-5">
+                                            <input type="text" name="username" placeholder="100" data-required="true" class="form-control parsley-validated">
+                                        </div>
+                                        <div class="col-lg-2">
+                                            <a class="btn btn-info">确认修改</a>
+                                        </div>
+                                    </div>
+                                </form>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-12" style="margin-top:15px;">
+                    <section class="panel">
+                        <header class="panel-heading" style="padding-top:0px; padding-bottom:0px; line-height:43px;">
+                            充值记录
+                            <div class="pull-right">
+                                <div class="btn-group">
+                                    <button data-toggle="dropdown" class="btn btn-small btn-white dropdown-toggle" style="">
+                                        <span class="dropdown-label">全系统（默认）</span>
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-select">
+                                        <li class="active"><a href="#"><input type="radio" name="d-s-r" checked="">全系统（默认）</a></li>
+                                        <li><a href="#"><input type="radio" name="d-s-r">体验系统</a></li>
+                                        <li><a href="#"><input type="radio" name="d-s-r">惠民系统</a></li>
+                                        <li><a href="#"><input type="radio" name="d-s-r">富民系统</a></li>
+                                        <li><a href="#"><input type="radio" name="d-s-r">1-499元</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </header>                        
+                        <div class="pull-out m-t-small">
+                            <table class="table table-striped b-t text-small">
+                                <thead>
+                                    <tr>
+                                        <th width="13%">用户ID</th>
+                                        <th width="13%">充值金额</th>
+                                        <th width="13%">获得积分</th>
+                                        <th width="16%">所在系统</th>
+                                        <th width="13%">身份状态</th>
+                                        <th width="16%">充值时间</th>
+                                        <th width="16%">充值编号</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>张三</td>
+                                        <td>500.00</td>
+                                        <td>1000分</td>
+                                        <td>体验系统</td>
+                                        <td>盘外等待</td>
+                                        <td>2016-02-01 15:16:30</td>
+                                        <td>JFUJFJ55555</td>
+                                    </tr>
+                                    <tr>
+                                        <td>张三</td>
+                                        <td>500.00</td>
+                                        <td>1000分</td>
+                                        <td>体验系统</td>
+                                        <td>会员</td>
+                                        <td>2016-02-01 15:16:30</td>
+                                        <td>JFUJFJ55555</td>
+                                    </tr>
+                                    <tr>
+                                        <td>张三</td>
+                                        <td>500.00</td>
+                                        <td>1000分</td>
+                                        <td>体验系统</td>
+                                        <td>会员</td>
+                                        <td>2016-02-01 15:16:30</td>
+                                        <td>JFUJFJ55555</td>
+                                    </tr>
+                                    <tr>
+                                        <td>张三</td>
+                                        <td>500.00</td>
+                                        <td>1000分</td>
+                                        <td>体验系统</td>
+                                        <td>会员</td>
+                                        <td>2016-02-01 15:16:30</td>
+                                        <td>JFUJFJ55555</td>
+                                    </tr>
+                                    <tr>
+                                        <td>张三</td>
+                                        <td>500.00</td>
+                                        <td>1000分</td>
+                                        <td>体验系统</td>
+                                        <td>会员</td>
+                                        <td>2016-02-01 15:16:30</td>
+                                        <td>JFUJFJ55555</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <footer class="panel-footer">
+
+                            <div class="row">
+
+                                <div class="col-lg-12 text-right text-center-sm">
+
+                                    <ul class="pagination pagination-small m-t-none m-b-none">
+
+                                        <li><a href="#"><i class="icon-chevron-left"></i></a></li>
+
+                                        <li><a href="#">1</a></li>
+
+                                        <li><a href="#">2</a></li>
+
+                                        <li><a href="#">3</a></li>
+
+                                        <li><a href="#">4</a></li>
+
+                                        <li><a href="#">5</a></li>
+
+                                        <li><a href="#"><i class="icon-chevron-right"></i></a></li>
+
+                                    </ul>
+
+                                </div>
+
+                            </div>
+
+                        </footer>
+
+                    </section>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+    </section>
+
+    <!-- .modal -->
+
+    <div id="modal" class="modal fade">
+
+        <form class="m-b-none">
+
+            <div class="modal-dialog pos-abt" style="margin-top:-235px; top:50%">
+
+                <div class="modal-content">
+
+                    <div class="modal-header">
+
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="icon-remove"></i></button>
+
+                        <h4 class="modal-title" id="myModalLabel">Post your first idea</h4>
+
+                    </div>
+
+                    <div class="modal-body">
+
+                        <div class="block">
+
+                            <label class="control-label">Title</label>
+
+                            <input type="text" class="form-control" placeholder="Post title">
+
+                        </div>
+
+                        <div class="block">
+
+                            <label class="control-label">Content</label>
+
+                            <textarea class="form-control" placeholder="Content" rows="5"></textarea>
+
+                        </div>
+
+                        <div class="checkbox">
+
+                            <label>
+
+                                <input type="checkbox"> Share with all memebers of first
+
+                            </label>
+
+                        </div>
+
+                    </div>
+
+                    <div class="modal-footer">
+
+                        <button type="button" class="btn btn-small btn-default" data-dismiss="modal">Save</button>
+
+                        <button type="button" class="btn btn-small btn-primary" data-loading-text="Publishing...">Publish</button>
+
+                    </div>
+
+                </div><!-- /.modal-content -->
+
+            </div>
+
+        </form>
+
+    </div>
+
+    <!-- / .modal -->
+    <!-- footer -->
+
+    <footer id="footer">
+
+        <div class="text-center padder clearfix">
+
+            <p>
+
+                <small>&copy; 2016 唯沃惠.中国 粤 ICP 备 16056251 号 -1</small><br><br>
+
+            </p>
+
+        </div>
+
+    </footer>
+
+    <!-- / footer -->
+
+    <script src="/wwh-wallet/js/jquery.min.js"></script>
+    <script src="/wwh-wallet/js/bootstrap.js"></script>
+    <script src="/wwh-wallet/js/app.js"></script>
+    <script src="/wwh-wallet/js/app.plugin.js"></script>
+    <script src="/wwh-wallet/js/app.data.js"></script>
+    <script src="/wwh-wallet/js/charts/sparkline/jquery.sparkline.min.js"></script>
+    <script src="/wwh-wallet/js/charts/easypiechart/jquery.easy-pie-chart.js"></script>
+    <script src="/wwh-wallet/js/ie/excanvas.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.cjState').click(function () {
+                if ($(this).hasClass('btn-info')) {
+                    $(this).removeClass('btn-info').addClass('btn-default').text('关闭层级显示');
+                    $('.openState').text('开放显示');
+                } else {
+                    $(this).removeClass('btn-default').addClass('btn-info').text('开放层级显示'); //openState
+                    $('.openState').text('关闭显示');
+                }
+            })
+        });
+    </script>
+
+</body>
+
+</html>

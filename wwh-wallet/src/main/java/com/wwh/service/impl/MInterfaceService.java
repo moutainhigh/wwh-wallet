@@ -1,0 +1,214 @@
+package com.wwh.service.impl;
+
+import java.math.BigDecimal;
+import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.github.pagehelper.PageHelper;
+import com.wwh.common.DatabaseContextHolder;
+import com.wwh.common.PagedResult;
+import com.wwh.dao.IMInterfaceDao;
+import com.wwh.enums.DatabaseType;
+import com.wwh.service.IMInterfaceService;
+import com.wwh.util.BeanUtils;
+import com.wwh.util.MD5Utils;
+import com.wwh.vo.AwardDetailVO;
+import com.wwh.vo.MConsumptionDividendVO;
+import com.wwh.vo.MCounsumptionDetailVO;
+import com.wwh.vo.MGrapPointProfitVO;
+import com.wwh.vo.MPayRecordsVO;
+import com.wwh.vo.MmemberRoledVO;
+import com.wwh.vo.MpersonalCenterVO;
+import com.wwh.vo.MpersonalInfoVO;
+import com.wwh.vo.PersonalVO;
+import com.wwh.vo.PlatformProfitScoreVO;
+import com.wwh.vo.UserVO;
+
+@Service
+public class MInterfaceService implements IMInterfaceService {
+	private static Logger logger = LogManager.getLogger(MInterfaceService.class);
+
+	@Autowired
+	private IMInterfaceDao mInterfaceDao;
+
+	/**
+	 * 获取个人中心用户信息
+	 */
+	@Override
+	public MpersonalCenterVO getPersonalInfo(Long userId) {
+		return mInterfaceDao.getPersonalInfo(userId);
+	}
+
+	/**
+	 * 会员之路
+	 */
+	@Override
+	public MmemberRoledVO getMemberRoleInfo(String diskType, Long userId) {
+		logger.info("进入手机端的会员之路方法查询  diskType={},userId={}", diskType, userId);
+		MmemberRoledVO memberRole = new MmemberRoledVO();
+		Long user = mInterfaceDao.selectMilstoneInfo(diskType, userId);
+		if (null != user) {
+			memberRole.setMilstoneFlag(true);
+		}
+		// 做总监的次数
+		Integer disretorTimes = mInterfaceDao.getDirectorTimes(diskType, userId);
+		if (null != disretorTimes) {
+			memberRole.setDirectorCount(disretorTimes);
+		}
+		// 最大收益
+		BigDecimal maxProfit = mInterfaceDao.maxProfit(diskType, userId);
+		if (null != maxProfit) {
+			memberRole.setMaxProfitRecords(maxProfit);
+		}
+		// 满点晋升次数
+		Integer fullPointDirector = mInterfaceDao.fullPointsToDirector(diskType, userId);
+		if (null != fullPointDirector) {
+			memberRole.setPromotionTimes(fullPointDirector);
+		}
+		// 最短时间
+		Long shorTime = mInterfaceDao.shortestTimeInDisk(diskType, userId);
+		if (null != shorTime) {
+			memberRole.setTimesatamp(shorTime);
+		}
+		return memberRole;
+	}
+
+	/**
+	 * 获取用户个人信息
+	 */
+	@Override
+	public MpersonalInfoVO getPersonalInfomation(Long userId) {
+		return mInterfaceDao.selectPersonalInfo(userId);
+	}
+
+	/**
+	 * 获取平台积分收益记录
+	 */
+	@Override
+	public PagedResult<PlatformProfitScoreVO> getPlatformProfitScore(Long userId, Integer currentPage,
+			Integer pageSize) {
+		currentPage = currentPage == null ? 1 : currentPage;
+		pageSize = pageSize == null ? 10 : pageSize;
+		// startPage是告诉拦截器说我要开始分页了
+		PageHelper.startPage(currentPage, pageSize);
+		return BeanUtils.toPagedResult(mInterfaceDao.getPlatformProfitScore(userId));
+	}
+
+	/**
+	 * 获取支付记录
+	 */
+	@Override
+	public PagedResult<MPayRecordsVO> getPayRecordsInfo(Long userId, Integer currentPage, Integer pageSize) {
+		currentPage = currentPage == null ? 1 : currentPage;
+		pageSize = pageSize == null ? 10 : pageSize;
+		// startPage是告诉拦截器说我要开始分页了
+		PageHelper.startPage(currentPage, pageSize);
+		return BeanUtils.toPagedResult(mInterfaceDao.getPayRecordsInfo(userId));
+	}
+
+	@Override
+	public MConsumptionDividendVO getMConsumptionDividend(Long userId, Integer currentPage, Integer pageSize) {
+		logger.info("进入消费分红查询接口：userId={}", userId);
+		MConsumptionDividendVO mconsumptionDividend = new MConsumptionDividendVO();
+		// 获取总消费分红
+		BigDecimal totalCouns = mInterfaceDao.getTotalCounsumProfit(userId);
+		// 获取近一周消费分红
+		BigDecimal todayCouns = mInterfaceDao.getTodayCounsumProfit(userId);
+		// 近一月消费分红
+		BigDecimal monthCouns = mInterfaceDao.getMonthCounsumProfit(userId);
+		if (null != totalCouns) {
+			mconsumptionDividend.setConsumpAmount(totalCouns);
+		}
+		if (null != todayCouns) {
+			mconsumptionDividend.setTodayAmount(todayCouns);
+		}
+		if (null != monthCouns) {
+			mconsumptionDividend.setMouthAmount(monthCouns);
+		}
+		currentPage = currentPage == null ? 1 : currentPage;
+		pageSize = pageSize == null ? 10 : pageSize;
+		// startPage是告诉拦截器说我要开始分页了
+		PageHelper.startPage(currentPage, pageSize);
+		PagedResult<MCounsumptionDetailVO> counsumDetail = BeanUtils
+				.toPagedResult(mInterfaceDao.mCounsumptionDetail(userId));
+		mconsumptionDividend.setmCounsumptionDetail(counsumDetail);
+		return mconsumptionDividend;
+	}
+
+	@Override
+	public PagedResult<MGrapPointProfitVO> garpProfitDetail(Long userId, Integer currentPage, Integer pageSize) {
+		currentPage = currentPage == null ? 1 : currentPage;
+		pageSize = pageSize == null ? 10 : pageSize;
+		// startPage是告诉拦截器说我要开始分页了
+		PageHelper.startPage(currentPage, pageSize);
+		return BeanUtils.toPagedResult(mInterfaceDao.grapProfitDetail(userId));
+	}
+
+	/**
+	 * 获取用户的抢点信息
+	 */
+	@Override
+	public BigDecimal getTotalGrapDetail(Long userId) {
+		return mInterfaceDao.getTotalGrapDetail(userId);
+	}
+
+	/**
+	 * 获取用户信息
+	 */
+	@Override
+	public UserVO getUserInfo(String param) {
+		return mInterfaceDao.getUserInfo(param);
+	}
+
+	/**
+	 * 更新用户的密码
+	 */
+	@Override
+	public boolean updateUserPassword(String password, Long userId) {
+		String password1 = MD5Utils.encryptMD5(password);
+		Integer restult1 = mInterfaceDao.updateWpassword(password1, userId);
+		DatabaseContextHolder.setDatabaseType(DatabaseType.mallDataSource);
+		Integer restult2 = mInterfaceDao.updateCpassword(password1, userId);
+		DatabaseContextHolder.setDatabaseType(DatabaseType.walletdataSource);
+		if (restult1 >= 1 && restult2 >= 1) {
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public PersonalVO queryPersonalInfo(Long userId) {
+		PersonalVO personal = mInterfaceDao.queryPersonalInfo(userId);
+		List<String> list = mInterfaceDao.getMilestoneInfo(userId);
+		if (null != list) {
+			personal.setMemLevel(list);
+		}
+		return personal;
+	}
+
+	@Override
+	public String getPhoneByUserId(Long userId) {
+		String phone = mInterfaceDao.getPhoneById(userId);
+		return phone == null ? "" : phone;
+	}
+
+	@Override
+	public AwardDetailVO scoreDetial(Long id) {
+		return mInterfaceDao.scoreDetial(id);
+	}
+
+	@Override
+	public AwardDetailVO getSystemAward(Long id, Long userId) {
+		return mInterfaceDao.getSystemAward(id, userId);
+	}
+
+	@Override
+	public AwardDetailVO positionAward(Long id, Long userId, String diskType) {
+		return mInterfaceDao.positionAward(id, userId, diskType);
+	}
+
+}

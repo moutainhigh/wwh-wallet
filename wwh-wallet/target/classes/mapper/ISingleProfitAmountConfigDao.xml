@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wwh.dao.ISingleProfitAmountConfigDao" >
+  <resultMap id="BaseResultMap" type="com.wwh.vo.SingleProfitAmountConfigVO" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="disk_type" property="diskType" jdbcType="VARCHAR" />
+    <result column="role_id" property="roleId" jdbcType="BIGINT" />
+    <result column="amount" property="amount" jdbcType="DECIMAL" />
+    <result column="active_flag" property="activeFlag" jdbcType="CHAR" />
+    <result column="delete_flag" property="deleteFlag" jdbcType="CHAR" />
+    <result column="created_date" property="createdDate" jdbcType="TIMESTAMP" />
+    <result column="created_by" property="createdBy" jdbcType="BIGINT" />
+    <result column="last_updated_date" property="lastUpdatedDate" jdbcType="TIMESTAMP" />
+    <result column="last_updated_by" property="lastUpdatedBy" jdbcType="BIGINT" />
+  </resultMap>
+  
+  <insert id="insertSingleConfig" parameterType="com.wwh.vo.SingleProfitAmountConfigVO" >
+
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into wallet_disk_single_profit_amount_config_t (disk_type, role_id, amount, 
+      active_flag, delete_flag, created_date, 
+      created_by, last_updated_date, last_updated_by
+      )
+    values (#{diskType,jdbcType=VARCHAR}, 
+	#{roleId,jdbcType=BIGINT}, 
+	#{amount,jdbcType=DECIMAL}, 
+      #{activeFlag,jdbcType=CHAR}, 
+	  #{deleteFlag,jdbcType=CHAR}, 
+	  now(), 
+      #{createdBy,jdbcType=BIGINT}, 
+	  now(), 
+	  #{lastUpdatedBy,jdbcType=BIGINT}
+      )
+  </insert>
+  
+  <update id="updateSingleConfig" parameterType="com.wwh.vo.SingleProfitAmountConfigVO" >
+    update wallet_disk_single_profit_amount_config_t
+    <set >
+      <if test="diskType != null" >
+        disk_type = #{diskType,jdbcType=VARCHAR},
+      </if>
+      <if test="roleId != null" >
+        role_id = #{roleId,jdbcType=BIGINT},
+      </if>
+      <if test="amount != null" >
+        amount = #{amount,jdbcType=DECIMAL},
+      </if>
+      <if test="activeFlag != null" >
+        active_flag = #{activeFlag,jdbcType=CHAR},
+      </if>
+      <if test="deleteFlag != null" >
+        delete_flag = #{deleteFlag,jdbcType=CHAR},
+      </if>
+
+      <if test="last_updated_date != null" >
+        last_updated_date = now(),
+      </if>
+      <if test="lastUpdatedBy != null" >
+        last_updated_by = #{lastUpdatedBy,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
+  <select id="getAllConfig" resultMap="BaseResultMap" parameterType="com.wwh.vo.SingleProfitAmountConfigVO" >
+    select 
+    <include refid="Base_Column_List" />
+    from wallet_disk_single_profit_amount_config_t
+    where 1=1 
+    	<if test="id != null" >
+      and  id = #{id,jdbcType=BIGINT}
+      </if>
+    	<if test="diskType != null" >
+      and  disk_type = #{diskType,jdbcType=VARCHAR}
+      </if>
+      <if test="roleId != null" >
+      and  role_id = #{roleId,jdbcType=BIGINT}
+      </if>
+      <if test="amount != null" >
+      and  amount = #{amount,jdbcType=DECIMAL}
+      </if>
+      <if test="activeFlag != null" >
+      and  active_flag = #{activeFlag,jdbcType=CHAR}
+      </if>
+      <if test="deleteFlag != null" >
+       and delete_flag = #{deleteFlag,jdbcType=CHAR}
+      </if>
+
+  </select>
+  
+   <sql id="Base_Column_List" >
+    id as id,  
+    disk_type as diskType,  
+    role_id as roleId,  
+    amount as amount,  
+    active_flag as activeFlag,  
+    delete_flag as deleteFlag,  
+    created_date as createdDate,  
+    created_by as createdBy,  
+    last_updated_date as lastUpdatedDate,  
+    last_updated_by as  lastUpdatedBy
+  </sql>
+  </mapper>

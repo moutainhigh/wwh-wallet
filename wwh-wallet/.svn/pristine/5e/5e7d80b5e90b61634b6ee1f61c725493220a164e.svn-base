@@ -1,0 +1,1016 @@
+﻿<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>提现-唯沃惠</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="金融、钱包、理财、高收益">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="renderer" content="webkit" />
+    <link rel="stylesheet" href="/wwh-wallet/css/bootstrap.css">
+    <link rel="stylesheet" href="/wwh-wallet/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/wwh-wallet/css/plugin.css">
+    <link rel="stylesheet" href="/wwh-wallet/css/landing.css">
+    <link rel="stylesheet" href="/wwh-wallet/css/common.css">
+    <link href="/wwh-wallet/css/mall/private-benefit.css" rel="stylesheet" />
+    <script type="text/javascript" src="/wwh-wallet/js/jquery.min.js"></script>
+    <script src="/wwh-wallet/js/bootstrap.js"></script>
+    <script src="/wwh-wallet/js/app.js"></script>
+    <script src="/wwh-wallet/js/app.plugin.js"></script>
+    
+    <script src="/wwh-wallet/js/fuelux/fuelux.js"></script>
+    <script src="/wwh-wallet/js/datepicker/bootstrap-datepicker.js"></script>
+    <script src="/wwh-wallet/js/slider/bootstrap-slider.js"></script>
+    <script src="/wwh-wallet/js/file-input/bootstrap.file-input.js"></script>
+    <script src="/wwh-wallet/js/combodate/moment.min.js"></script>
+    <script src="/wwh-wallet/js/parsley/parsley.min.js"></script>
+    <script type="text/javascript" src="/wwh-wallet/js/jquery.min.js"></script>
+    <script src="/wwh-wallet/js/angular.js"></script>
+    <style>
+        .mui-input-row label{
+			line-height: none;
+			height: 100%;
+		}
+		.select {
+		    position: relative;
+		    display: inline-block;
+		}
+		.btn-group, .btn-group-vertical {
+		    position: relative;
+		    display: block;
+		    vertical-align: middle;
+		    margin:10px;
+		}
+		ul li {
+		    list-style: none;
+		}
+		.btn {
+		    display: inline-block;
+		    padding: 8px 12px;
+		    margin-bottom: 0;
+		    font-size: 14px;
+		    font-weight: 500;
+		    line-height: 1.428571429;
+		    text-align: center;
+		    white-space: nowrap;
+		    vertical-align: middle;
+		    cursor: pointer;
+		    border: 1px solid transparent;
+		    border-radius: 4px;
+		}
+		input, button, select, textarea {
+		    font-family: inherit;
+		    font-size: inherit;
+		    line-height: inherit;
+		}
+		button, html input[type="button"], input[type="reset"], input[type="submit"] {
+		    cursor: pointer;
+		    -webkit-appearance: button;
+		}
+		#mySelect1 .dropdown-label {
+		    height: 14px;
+		    display: inline-block;
+		}
+		.mall-btn-select2 .btn-white {
+		    padding: 2px 12px;
+		    box-shadow: none;
+		    border-width: 0px;
+		    border-color: #FFF;
+		    color: #e94949;
+		    background-color: #fff;
+		    border: 1px solid #EEE;
+		    min-width: 150px;
+		    margin-right: 10px;
+		}
+		
+		.mall-btn-select2 .btn-white {
+		    color: #e94949;
+		}
+		
+		.btn-small {
+		    padding: 5px 10px;
+		    font-size: 12px;
+		    line-height: 1.5;
+		    border-radius: 3px;
+		}
+		
+		.btn {
+		    display: inline-block;
+		    padding: 8px 12px;
+		    margin-bottom: 0;
+		    font-size: 14px;
+		    font-weight: 500;
+		    line-height: 1.428571429;
+		    text-align: center;
+		    white-space: nowrap;
+		    vertical-align: middle;
+		    cursor: pointer;
+		    border: 1px solid transparent;
+		    border-radius: 4px;
+		}
+		.mall-btn-select2 .btn .caret {
+		    border-top-color: #CCC;
+		}
+		.btn .caret {
+		    margin-left: 0;
+		}
+		.btn .caret {
+		    border-top-color: #ffffff;
+		}
+		.caret {
+		    display: inline-block;
+		    width: 0;
+		    height: 0;
+		    margin-left: 2px;
+		    vertical-align: middle;
+		    border-top: 4px solid #000000;
+		    border-right: 4px solid transparent;
+		    border-left: 4px solid transparent;
+		    content: "";
+		}
+		.mall-btn-select2 .dropdown-menu {
+		    padding: 0px 0px;
+		    max-height: 300px;
+		    overflow-y: auto;
+		}
+		.dropdown-menu {
+		    position: absolute;
+		    top: 25px;
+            left: 0;
+		    z-index: 1000;
+		    display: none;
+		    float: left;
+		    min-width: 160px;
+		    padding: 5px 0;
+		    margin: 2px 0 0;
+		    list-style: none;
+		    background-color: #ffffff;
+		    border: 1px solid #cccccc;
+		    border: 1px solid rgba(0, 0, 0, 0.15);
+		    border-radius: 4px;
+		    -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+		    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+		    background-clip: padding-box;
+		}
+		.dropdown-menu > .active > a, .dropdown-menu > .active > a:hover, .dropdown-menu > .active > a:focus {
+		    color: #ffffff;
+		    text-decoration: none;
+		    background-color: #357ebd;
+		    background-image: -webkit-gradient(linear, left 0%, left 100%, from(#428bca), to(#357ebd));
+		    background-image: -webkit-linear-gradient(top, #428bca, 0%, #357ebd, 100%);
+		    background-image: -moz-linear-gradient(top, #428bca 0%, #357ebd 100%);
+		    background-image: linear-gradient(to bottom, #428bca 0%, #357ebd 100%);
+		    background-repeat: repeat-x;
+		    outline: 0;
+		    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff428bca', endColorstr='#ff357ebd', GradientType=0);
+		}
+		.dropdown-menu > li > a {
+		    display: block;
+		    padding: 3px 20px;
+		    clear: both;
+		    font-weight: normal;
+		    line-height: 1.428571429;
+		    color: #333333;
+		    white-space: nowrap;
+		}
+		.open > .dropdown-menu {
+		    display: block;
+		}
+		.mall-btn-select2 .dropdown-menu > li > a:hover ,.mall-btn-select2 .dropdown-menu > li > a:hover, .mall-btn-select .dropdown-menu > li > a:focus, .mall-btn-select .dropdown-submenu:hover > a, .mall-btn-select .dropdown-submenu:focus > a, .mall-btn-select .dropdown-menu > .active > a, .mall-btn-select .dropdown-menu > .active > a:hover, .mall-btn-select .dropdown-menu > .active > a:focus{
+		    background-image: none;
+		    filter: none;
+		    background-color: #e94949;
+		    color: #fff;
+		}
+		.dropdown-menu > li > a:hover, .dropdown-menu > li > a:focus {
+		    color: #ffffff;
+		    text-decoration: none;
+		    background-color: #357ebd;
+		    background-image: -webkit-gradient(linear, left 0%, left 100%, from(#428bca), to(#357ebd));
+		    background-image: -webkit-linear-gradient(top, #428bca, 0%, #357ebd, 100%);
+		    background-image: -moz-linear-gradient(top, #428bca 0%, #357ebd 100%);
+		    background-image: linear-gradient(to bottom, #428bca 0%, #357ebd 100%);
+		    background-repeat: repeat-x;
+		    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff428bca', endColorstr='#ff357ebd', GradientType=0);
+		}
+</style>
+</head>
+<body>
+    <div ng-include src="'/wwh-wallet/pages/wallet/common/header.html'"></div>
+    <div class="charge-wrap fixed">
+        <div class="charge-box m-box fixed">
+            <div class="title-wrap">
+                <div class="title">提取金币到银行卡</div>
+                <div class="title-third">
+                    可提现：<span id="totalmount">0.00</span>个金币
+                </div>
+                <div class="title-second" style="display:none;">
+                    <a data-toggle="modal" href="#modal2">查看提现规则</a>
+                </div>
+            </div>
+            <div class="containner-middle fixed">
+                <div class="benifit-table-wrap">
+                    <table class="benifit-table wwh-table">
+                        <tr>
+                            <td class="td01">申请人：</td>
+                            <td class="td02" id="apply"></td>
+                        </tr>
+                        <tr>
+                            <td class="td01 vline-top"><span>*</span>选择银行：</td>
+                            <td class="td02">
+                                <div class="choose-bank-b fixed" id="bank">
+                                </div>
+                                <div class="errow" style="font-size:12px;" id="bankCarderrow">银行卡和微信号不能同时为空</div>
+                                <div class="fixed" style="margin-bottom:10px; color:black">
+                                    <a class="addcardico" href="/wwh-wallet/pages/wallet/charge/charge-step3.html">添加银行卡 </a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="td01" style="vertical-align:text-top; padding-top:4px;">
+                                <div><span>*</span>提现金额：</div>
+                                <div style="font-size:12px; color:#808080;">(至少填写一栏)</div>
+                            </td>
+                            <td class="td02">
+                                <div class="fixed errowrap01" style="margin-bottom:10px;">
+                                    <div class="fixed" style="float:left;">
+                                        <div class="after-ele input-wrap input-wrap-long">
+                                            <input placeholder="金额必须大于100且是100的倍数" type="text" id="busnissamount" />
+                                        </div>
+                                        <div class="errow" style="font-size:12px;">请正确输入金额</div>
+                                    </div>
+                                    <div class="after-input-w" style="color:#808080">(招商分红可提现<span id="busniss">0.00</span>个金币)</div>
+                                </div>
+                                
+                                <div class="fixed errowrap02" style="clear:both;margin-bottom:10px;" >
+                                    <div class="fixed" style="float:left;">
+                                        <div class="fixed">
+                                            <div class="after-ele input-wrap input-wrap-long">
+                                                <input placeholder="金额必须大于100且是100的倍数" type="text" id="menberamount" />
+                                            </div>
+                                            <div class="after-input-w" style="color:#808080">(会员收益可提现<span id="member">0.00</span>个金币)</div>
+                                        </div>
+                                        <div class="errow" style="font-size:12px;">请正确输入金额</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="fixed errowrap03" style="clear:both;margin-bottom:10px;">
+                                    <div class="fixed" style="float:left;">
+                                        <div class="fixed">
+                                            <div class="after-ele input-wrap input-wrap-long">
+                                                <input placeholder="金额必须大于100且是100的倍数" type="text" id="saveGoldamount" disabled=true value='${amount}'/>
+                                                <input type="hidden" id="diskTypeId" value="${diskType}"/>
+                                                
+                                            </div>
+                                            <div class="after-input-w" style="color:#808080">(储备金可提现金额<span id="saveGold">${amount}</span>个金币,储备金暂只支持一次提取完毕)</div>
+                                        </div>
+                                        <div class="errow" style="font-size:12px;">请正确输入金额</div>
+                                    </div>
+                                </div>
+                                <div class="errow errow3" style="font-size:12px;">至少填写一栏</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="td01"><span></span>微信名称：</td>
+                            <td class="td02">
+                                <div class="after-ele input-wrap weixinName-after">
+                                    <input placeholder="请输入微信名称"  id="weixinName"  disabled/>
+                                    <div class="errorinfo">请填写微信名称</div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="td01" style="vertical-align:text-top; padding-top:4px;"><span></span>微信号：</td>
+                            <td class="td02">
+                                <div class="input-wrap weixinNum-after">
+                                    <input placeholder="请输入微信号" id="weixinNum" disabled />
+                                    <div class="errorinfo">银行卡和微信号不能同时为空</div>
+                                </div>
+                                <br/>
+                                <div class="fixed" style="margin-bottom:10px; color:black">
+                                    <a class="addcardico" href="/wwh-wallet/pages/wallet/charge/charge-step5.html">添加微信号 </a>
+                                </div>
+                            </td>
+                           
+                        </tr>
+                        <tr>
+                            <td class="td01"><span>*</span>手机号：</td>
+                            <td class="td02">
+                            <!-- 添加选择银行 -->
+                            	<div id="mySelect1" class="select btn-group m-b mall-btn-select2" data-resize="auto">
+									<button type="button" data-toggle="dropdown" class="btn btn-white btn-small dropdown-toggle" onclick="initCountry()">
+                                        <span class="dropdown-label">中国 +86</span> <span class="caret"></span>
+                                     </button>
+									<ul class="dropdown-menu dropdown-select" id="countryListId">
+									</ul>
+								</div>
+                                <div class="after-ele input-wrap phonenum-after">
+                                    <input placeholder="银行预留手机号" type="text" id="phonenum" />
+                                    <div class="errorinfo">输入正确手机号码</div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="td01"><span>*</span>校验码：</td>
+                            <td class="td02">
+                                <div class="after-ele  input-wrap validcode-after">
+                                    <input placeholder="填写验证码" type="text" id="validcode" />
+                                    <div class="errorinfo">输入正确校验码</div>
+                                </div>
+                                <div class="check-code"><input type="button" id="btn" value="获取验证码" onclick="settime(this)" style="border:none; outline:none; background:none;" /></div>
+                                <script type="text/javascript">
+                                </script>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="td01"></td>
+                            <td class="td02">
+                                <div class="btn-yes" onclick="confirm()">确认申请</div>
+                                <input id="hiddensubmit" type="hidden" data-toggle="modal" href="#modal" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <div class="c-b-box-7 fixed">
+                                    温馨提示：<br /> 1、提现金币必须满100个才可以提现，且提现金币不能大于账户余额；<br />
+                            2、提现金额必须是100的整数倍，例如金币余额是228个，只能提现100个或者200个，剩余28金币继续保留；<br />
+                            3、金币与人民币的兑换比例是1:1，即1金币=1元人民币；<br />
+                            4、目前商城仅支持提现到会员本人的储蓄卡。<br />
+                            5、会员提交金币提现申请之后，提现一般在2-7个工作日内到帐，如果7个工作日未到帐，<br/>
+                                                                                           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;请及时与商城在线客服联系或拨打商城客服热线0755-86671456。<br />
+                            6、提现手续费将根据会员选择的提现到账银行账户官方规定收取。<br />
+                            7、积分只可用于商城购物，不可提现。<br />
+                            8、客服电话0755-86671456，服务时间：周一至周日0:00-24:00。
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div ng-include src="'/wwh-wallet/pages/wallet/common/footer.html'"></div>
+    <div id="modal" class="modal fade">
+        <form class="m-b-none">
+            <div class="modal-dialog pos-abt" style="margin-top:-235px; top:50%">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="icon-remove"></i></button>
+                        <h4 class="modal-title" id="myModalLabel">确认提取余额到银行卡</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="checkbox">
+                            <label>
+                                提交申请后1-3个工作日处理！
+                            </label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-small" data-dismiss="modal">取消</button>
+                        <button type="button" class="btn btn-small btn-primary" data-dismiss="modal" onclick="ok()">确认</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div>
+        </form>
+    </div>
+    <div id="modal2" class="modal fade">
+        <form class="m-b-none">
+            <div class="modal-dialog pos-abt" style="margin-top:-235px; top:50%; width:800px; margin-left:-400px;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="icon-remove"></i></button>
+                        <h4 class="modal-title" id="myModalLabel">提现规则</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="checkbox">
+                            1、提现金币必须满100个才可以提现，且提现金币不能大于账户余额；<br/>
+2、提现金额必须是100的整数倍，例如金币余额是228个，只能提现100个或者200个，剩余28金币继续保留；<br/>
+3、金币与人民币的兑换比例是1:1，即1金币=1元人民币；<br/>
+4、目前商城仅支持提现到会员本人的储蓄卡。<br/>
+5、会员提交金币提现申请之后，提现一般在2-7个工作日内到帐，如果7个工作日未到帐，<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;请及时与商城在线客服联系或拨打商城客服热线0755-86671456。<br/>
+6、提现手续费将根据会员选择的提现到账银行账户官方规定收取。<br/>
+7、积分只可用于商城购物，不可提现。<br/>
+8、客服电话0755-86671456，服务时间：周一至周日0:00-24:00。
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-small btn-primary" data-dismiss="modal">确认</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div>
+        </form>
+    </div>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            init();
+        });
+
+        function init() {
+            getWithdrawInfo();
+            getMyBankCard();
+            initEvent();
+            initWithdrawl();
+        }
+        
+        
+        function initWithdrawl(){
+        	var diskType = $("#diskTypeId").val();
+         	if(diskType !="no"){
+         		$("#busnissamount").attr("disabled",true);
+         		$("#menberamount").attr("disabled",true);
+        	}
+        }
+     
+        
+       
+        function getWithdrawInfo() {
+            $.ajax({     // 请求 ajax
+                url: "/wwh-wallet/withraw/getwithrawinfo",
+                type: "post",
+                data: "",
+                success: function (data) {
+                    if (data) {
+                        $("#totalmount").html(data.platformWithdrawalsAmount);
+                        $("#busniss").html(data.businessWithdrawalsAmount);
+                        $(".busniss").html(data.businessWithdrawalsAmount);
+                        $("#member").html(data.memberWithdrawalsAmount);
+                        $(".member").html(data.memberWithdrawalsAmount);
+                        $("#apply").html(data.realName);
+                        $("#weixinName").val(data.weixinName);
+                        $("#weixinNum").val(data.weixinNum);
+                    }
+                },
+            });
+        }
+        //查询我绑定的银行卡信息
+        function getMyBankCard() {
+            $.ajax({     // 请求 ajax
+                url: "/wwh-wallet/unionpay/queryBindingBankCard",
+                type: "post",
+                data: "",
+                error: function () {
+                    //alert("异常");
+                },
+                success: function (msg) {
+                    if (msg.data) {
+                         for (var i = 0; i < msg.data.length; i++) {
+                             initDom(msg.data[i], i);
+                         }
+                    }
+                   
+                },
+                complete: function () {
+                    //完成之后执行回调函数
+                },
+            });
+        }
+        function initDom(data, i) {
+            var dom = '<div class="bank-logo '+data.bankCardType+' norightm">' +
+					 '<i></i><span>尾号: ' + data.bankCardNumber.substring(data.bankCardNumber.length - 4) + '</span>' +
+					 '<input type="hidden" value="' + data.bankCardNumber + '">' +
+				     '</div>';
+            $("#bank").append(dom);
+
+            var bandSelected = $('.bank-logo');
+            if (i == 0) {
+                $(".bank-logo").addClass('selected');
+            }
+            bandSelected.click(function () {
+                $(this).addClass('selected').siblings().removeClass('selected');
+            });
+        }
+        
+     	//发送验证码信息
+        function settime(obj) {
+            $(".validcode-after").addClass('selected');
+            var resultnumber = vailPhone();
+            var phone = $("#phonenum").val();
+            var stateno = $(".dropdown-label").text().split("+")[1];
+            if (!resultnumber) {
+                return;
+            }
+            var countdown = 60;
+            $.ajax({     // 请求 ajax
+                url: "/wwh-wallet/msg/sendMsg",
+                type: "post",
+                data: {
+                    "msgType": "4",
+                    "tel": phone,
+                    "stateno" : stateno
+                },
+                error: function () {},
+                success: function (msg) {
+                    if (msg.returnCode == "0") {
+                        console.info(msg.returnMsg);
+                        validCode(obj, countdown);
+                    } else {
+                       
+                        $('.validcode-after').children('.errorinfo').text("验证码错误！").show();
+                    }
+                },
+                complete: function () {},
+            });
+        }
+     	
+        function validCode(obj, countdown) {
+            if (countdown == 0) {
+                obj.removeAttribute("disabled");
+                obj.value = "免费获取验证码";
+                countdown = 60;
+                return;
+            } else {
+                obj.setAttribute("disabled", true);
+                obj.value = "重新发送(" + countdown + ")";
+                countdown--;
+            }
+            setTimeout(function () {
+                validCode(obj, countdown)
+            }, 1000)
+        }
+     	
+        //点击确认体现按钮事件
+        function confirm() {
+        	if(!checknull()) return false;
+        	var withdrawVo = getWithdrawVO();
+        	if(!validWithdrawlsAmount(withdrawVo)) return false;
+        	//checkCode();
+        
+        }
+        
+        //点击ok事件
+        function ok(){
+        	var diskType = $("#diskTypeId").val();  //获取盘类型
+        	if(diskType =='no'){
+        		insert();
+        	}else{
+        	    saveGoledWithdral();
+        	}
+        	
+        }
+        
+        
+        function  checknull(){
+        	//获取银行卡信息是否为空
+        	var targetAccount = $('.bank-logo.selected input').val();
+        	var diskType = $("#diskTypeId").val();  //获取盘类型
+        	var weixinNum = $("#weixinNum").val();
+        	var flag1 = true;   //银行卡是否存在
+        	var flag2= true;    //手机号是否正确
+        	var flag3= true;    //可提现金额是否正确
+        	var flag4 = true;	//储备金填写是否正确
+        	var flag5 = true;   //标志验证码是否正确
+        	var flag6 = true;   //标志微信号有没有填写
+        	var flag7 = true;   //银行卡和微信号是否都有填写
+        	if(!targetAccount){
+        		$("#bankCarderrow").css('display','block');
+        		flag1 = false;
+        	}
+        	// 校验手机
+        	flag2 = vailPhone();
+        	//校验提现金额
+        	if(diskType =="no"){
+        		flag3 = validAmount(); 
+        	}else{
+        		flag4 = validSaveGoldAmount();
+        	}
+        	//校验验证码
+        	flag5 = code();
+        	
+        	if(weixinNum != ""){
+        		flag1 = true;
+        	}
+        	//校验微信和银行卡是否同时为空
+        	flag7 = validCardAndWeixin();
+        	if(flag1 && flag2 && flag3 && flag4 && flag5 && flag7){
+        		return true;
+        	}else{
+        		return 	false;
+        	}
+        }
+        
+        
+        function validCardAndWeixin(){
+        	var flag = true;
+         	var targetAccount = $('.bank-logo.selected input').val();
+        	var weixinNum = $("#weixinNum").val();
+        	if(""==targetAccount && weixinNum==""){
+        		 $('.weixinNum-after').children('.errorinfo').show();
+        		 $("#bankCarderrow").css('display','block');
+        		 flag = false;
+        	}
+        	return flag;
+        }
+        
+    	//校验手机号
+        function vailPhone() {
+            var phone = $("#phonenum").val();
+            var flag = true;
+            var message = "";
+            var myreg = new RegExp("^[0-9]*$");;
+            if (phone == '') {
+                message = "手机号码不能为空！";
+                $('.phonenum-after').children('.errorinfo').text(message).show();
+                flag =  false;
+            }else if (!myreg.test(phone)) {
+                message = "请输入有效的手机号码！";
+                $('.phonenum-after').children('.errorinfo').text(message).show(); 
+                flag =  false;
+            }
+            
+            return flag;
+        }
+
+
+        function validAmount() {  // 验证
+        	  var flag = true;
+        	  var bus_flag = true;
+        	  var meb_flag = true;
+        	  var busamount = $('#busnissamount').val();  //招商分红可提现金额
+        	  var menamount = $('#menberamount').val();   //会员收益可提现金额
+        	  
+        	  //先判断是否为空
+        	  if(!busamount && !menamount){
+        		  $('.errow3').css('display', 'block');
+        		  flag = false;
+        	  }
+        	 // 如果填写了招商分红信息       就去校验招商分红
+        	 if(busamount != ""){
+        		 flag = validBusnissAmount();
+        	 }
+        	 // 如果填写了会员收益      就去校验会员收益
+        	 if(menamount!= ""){
+        		 flag = validMemberAmount();
+        	 }
+        	 //只有两个都校验成功了才返回true  否则返回false
+        	 if( !bus_flag && !meb_flag ){
+        		 flag = false;
+        	 }
+        	 return flag
+        }
+        
+        //校验招商分红金额
+        function validBusnissAmount(){
+        	 var flag = true;
+        	 var busamount =$('#busnissamount').val();  //招商分红可提现金额
+           	  //如果招商分红不是数字
+           	  if(isNaN(busamount)){
+           		  $('.errowrap01 .errow').css('display', 'block').text('请正确输入金额！'); 
+           		  flag = false;
+           	  }else{
+           		  //先判断输入的数字小数点的位置是否正确
+           		  var bindex = busamount.indexOf(".");
+           		  if(bindex != -1){
+           			  var blength = bamount.substring(bindex).length;   //输入数字小数点后面的位数
+             		  if( blength >2 ){
+             			 $('.errowrap01 .errow').css('display', 'block').text('请正确输入金额！'); 
+             			 flag = false;
+             		  }
+           		  }
+           		  //判断输入数字的大小是否正确
+           		  var businessamount = parseFloat(busamount);
+           		  var bamount = parseFloat($('#busniss').text());
+           		  if(100>businessamount ||  businessamount>bamount || businessamount % 100 != 0){
+           			 $('.errowrap01 .errow').css('display', 'block').text('请正确输入金额！'); 
+           			 flag = false;
+           		  }
+           	  }
+        	 return flag;
+        }
+        
+        //校验会员收益金额
+        function validMemberAmount(){
+        	  var flag = true;
+        	  var menamount = $('#menberamount').val();   //会员收益可提现金额
+        	//如果会员收益不是数字
+        	  if(isNaN(menamount)){
+        		  $('.errowrap02 .errow').css('display', 'block').text('请正确输入金额！'); 
+        		  flag = false;
+        	  }else{
+        		 //先判断输入的数字小数点的位置是否正确
+        		  var mindex= menamount.indexOf(".");
+        		  if(mindex != -1){
+        			  var mlength=menamount.substring(mindex).length;  //输入数字小数点后面的位数
+            		  if(mlength >2){
+            			  $('.errowrap02 .errow').css('display', 'block').text('请正确输入金额！'); 
+                		  flag = false;
+            		  } 
+        		  }
+        		  //判断输入数字的大小是否正确  提现金额必须是100的倍数
+        		  var menmberamount= parseFloat(menamount);
+        		  var mamount = parseFloat($('#member').text());
+        		  if(100>menmberamount ||  menmberamount>mamount  || menmberamount%100 != 0){
+        			  $('.errowrap02 .errow').css('display', 'block').text('请正确输入金额！'); 
+            		  flag = false;
+        		  }
+        	  }  
+        	  return flag;
+       }
+        
+        //储备金提现金额校验
+        function validSaveGoldAmount(){
+        	var flag = true;
+        	var saveGoldAmount =$("#saveGoldamount").val() ;
+        	if(isNaN(saveGoldAmount)){
+        		  $('.errowrap03 .errow').css('display', 'block').text('请正确输入金额！'); 
+        		  flag = false;
+        	}else{
+        		//先判断输入的数字小数点的位置是否正确
+	      		  var mindex= saveGoldAmount.indexOf(".");
+	      		  if(mindex != -1){
+	      			  var mlength=menamount.substring(mindex).length;  //输入数字小数点后面的位数
+	          		  if(mlength >2){
+	          			  $('.errowrap03 .errow').css('display', 'block').text('请正确输入金额！'); 
+	              		  flag = false;
+	          		  } 
+	      		  }
+	      		  //判断输入数字的大小是否正确  提现金额必须是100的倍数
+        		  var menmberamount= parseFloat(saveGoldAmount);
+        		  var mamount = parseFloat($("#saveGold").val());
+        		  if(100>menmberamount ||  menmberamount>mamount  || menmberamount%100 != 0){
+        			  $('.errowrap03 .errow').css('display', 'block').text('请正确输入金额！'); 
+            		  flag = false;
+        		  }
+        	}
+        	return flag;
+        }
+        
+        
+        //验证码校验
+       function  code(){
+    	    var flag = true;
+    		var validCode = $("#validcode").val();
+        	if(!validCode){
+        		$('.validcode-after').children('.errorinfo').text("不能为空！").show();
+        		flag = false;
+        	}else if(validCode.length!=6){
+        		$('.validcode-after').children('.errorinfo').text("请填写正确的验证码！").show();
+        		flag = false;
+        	}
+        	return flag;
+       } 
+        
+        
+        
+       function initEvent() {
+           //鼠标移除处理
+           $('#busnissamount').focus(function () {
+               $('.errow3').css('display', 'none');
+               $('.errowrap01 .errow').css('display', 'none')
+           });
+           $('#menberamount').focus(function () {
+               $('.errow3').css('display', 'none');
+               $('.errowrap01 .errow').css('display', 'none')
+           });
+           $('#phonenum').focus(function () {
+               $('.phonenum-after .errorinfo').css('display', 'none')
+           });
+           $('#validcode').focus(function () {
+               $('.validcode-after .errorinfo').css('display', 'none')
+           });
+
+    	    //招商分红鼠标移除处理
+           $("#busnissamount").blur(function () {
+        	   var busamount = $('#busnissamount').val(); 
+        	   if(busamount != ""){
+        		   $('.errow3').css('display', 'none');
+        		   var flag = validBusnissAmount();
+        		   if(flag){
+        			   $('.errowrap01 .errow').css('display', 'none');
+        		   }
+        	   }
+           });
+           //会员收益鼠标移除处理
+           $("#menberamount").blur(function () {
+        	   var menamount = $("#menberamount").val()
+        	   if(menamount!= ""){
+        		   $('.errow3').css('display', 'none');
+        		   var flag = validMemberAmount();
+        		   if(flag){
+        			   $('.errowrap02 .errow').css('display', 'none');
+        		   }
+        	   }
+           });
+    
+    	   $("#phonenum").blur(function () {
+              var flag =  vailPhone();
+              if(flag){
+            	  $('.phonenum-after').children('.errorinfo').hide();
+              }
+           });
+           
+           $("#validcode").blur(function () {
+               var falg = code();
+               if(falg){
+            	   $('.validcode-after').children('.errorinfo').hide(); 
+               }
+           }); 
+       }
+       
+       function  checkCode(){
+    	   var code = $("#validcode").val();
+    	   var tel =  $("#phonenum").val();
+           $.ajax({     // 请求 ajax
+               url: "/wwh-wallet/msg/verifyMsg",
+               type: "post",
+               data: { "msgCode": code, "tel" : tel},
+               error: function () {
+                   //alert("异常");
+               },
+               success: function (msg) {
+                   if (msg.returnCode == "0") {
+                	   $("#hiddensubmit").trigger("click");
+                   } else {
+                	   $('.validcode-after').children('.errorinfo').text("请填写正确的验证码！").show();
+                   }
+               },
+               complete: function () {
+                   //完成之后执行回调函数
+               },
+           });  
+       }
+       
+       function insert() {
+         /*   var bus = $("#busniss").html();
+           var member = $("#member").html();
+           var buswithdrawalAmount = $("#busnissamount").val() == "" ? 0 : $("#busnissamount").val();
+           var memberwithdrawalAmount = $("#menberamount").val() == "" ? 0 : $("#menberamount").val();
+           var saveGoldWithdrawAmount = 0;
+           var targetAccount = $('.bank-logo.selected input').val();
+           var withdrawVo = {
+               "memberWithdrawAmount": memberwithdrawalAmount,
+               "busWithdrawAmount": buswithdrawalAmount,
+               "saveGoldWithdrawAmount" :saveGoldWithdrawAmount,
+               "withdrawalWay": "BABK",
+               "targetAccount": targetAccount,
+               "diskType" : ""
+           } */
+           
+           var withdrawVo = getWithdrawVO();
+           $.ajax({
+               url: "/wwh-wallet/withraw/insertwithrawinfo",
+               type: "post",
+               contentType: 'application/json',
+               dataType: 'json',
+               data: JSON.stringify(withdrawVo),
+               success: function (data) {
+                   if (data) {
+                       window.location.href = "/wwh-wallet/earnings";
+                   }
+               },
+           });
+       }
+       
+       
+       //储备金提现
+       function saveGoledWithdral(){
+           /*  var buswithdrawalAmount = 0;
+            var memberwithdrawalAmount = 0;
+            var saveGoldWithdrawAmount = $("#saveGoldamount").val();
+            var diskType = $("#diskTypeId").val();
+            var targetAccount = $('.bank-logo.selected input').val();
+            var withdrawVo = {
+                "memberWithdrawAmount": memberwithdrawalAmount,
+                "busWithdrawAmount": buswithdrawalAmount,
+                "saveGoldWithdrawAmount" :saveGoldWithdrawAmount,
+                "withdrawalWay": "BABK",
+                "targetAccount": targetAccount,
+                "diskType" : diskType
+            } */
+            
+            var withdrawVo = getWithdrawVO();
+            $.ajax({
+                url: "/wwh-wallet/withraw/insertwithrawinfo",
+                type: "post",
+                contentType: 'application/json',
+                dataType: 'json',
+                data: JSON.stringify(withdrawVo),
+                success: function (data) {
+                    if (data) {
+                        window.location.href = "/wwh-wallet/earnings";
+                    }
+                },
+            });
+       }
+       
+       
+       
+       //构建提现vo
+       function getWithdrawVO(){
+    	  var diskType = $("#diskTypeId").val();  //获取盘类型
+    	  var withdrawVo = {};
+       	  if(diskType =='no'){
+       		 var bus = $("#busniss").html();
+             var member = $("#member").html();
+             var buswithdrawalAmount = $("#busnissamount").val() == "" ? 0 : $("#busnissamount").val();
+             var memberwithdrawalAmount = $("#menberamount").val() == "" ? 0 : $("#menberamount").val();
+             var saveGoldWithdrawAmount = 0;
+             var targetAccount = $('.bank-logo.selected input').val();
+             var weixinName  = $("#weixinName").val();
+             var weixinNum = $("#weixinNum").val();
+             withdrawVo = {
+                 "memberWithdrawAmount": memberwithdrawalAmount,
+                 "busWithdrawAmount": buswithdrawalAmount,
+                 "saveGoldWithdrawAmount" :saveGoldWithdrawAmount,
+                 "withdrawalWay": "BABK",
+                 "targetAccount": targetAccount,
+                 "diskType" : "",
+                 "weixinName" : weixinName,
+                 "weixinNum"  : weixinNum
+             }
+       	  }else{
+       		  var buswithdrawalAmount = 0;
+              var memberwithdrawalAmount = 0;
+              var saveGoldWithdrawAmount = $("#saveGoldamount").val();
+              var diskType = $("#diskTypeId").val();
+              var targetAccount = $('.bank-logo.selected input').val();
+              withdrawVo = {
+                  "memberWithdrawAmount": memberwithdrawalAmount,
+                  "busWithdrawAmount": buswithdrawalAmount,
+                  "saveGoldWithdrawAmount" :saveGoldWithdrawAmount,
+                  "withdrawalWay": "BABK",
+                  "targetAccount": targetAccount,
+                  "diskType" : diskType,
+                  "weixinName" : weixinName,
+                  "weixinNum"  : weixinNum
+              }
+       	  }
+       	  return withdrawVo;
+       }
+       
+       
+       //后台校验提现金额信息
+       function validWithdrawlsAmount(withdrawVo){
+    	   var result=true;
+    	   $.ajax({
+               url: "/wwh-wallet/withraw/validWithdrawalAmount",
+               type: "post",
+               contentType: 'application/json',
+               dataType: 'json',
+               data: JSON.stringify(withdrawVo),
+               success: function (data) {
+            		if(data.returnCode !='404'){
+                		checkCode()
+                	}else{
+                		 $('.errow3').html(data.returnMsg);
+                		 $('.errow3').css('display', 'block');
+                		 result=false; 
+                	}
+               }
+           });
+    	   return result;
+       }
+       
+   //添加选择银行
+   function initCountry(){
+	 
+	   //var cityCode = $("#countryListId").attr('data-value');
+	   $.ajax({
+           url: "/wwh-wallet/msg/contrycode",
+           type: "post",
+           contentType: 'application/json',
+           dataType: 'json',
+           data: {},
+           success: function (data) {
+        		console.log(data);
+        		if (data && data.length > 0) {
+					var i = 0;
+					var dom = "";
+					$("#countryListId").empty();
+					for (i = 0; i < data.length; i++) {
+						dom = dom + '<li data-value="' + data[i].contryCode + '"><a href="#">' + data[i].contryName + "<i style='list-style:normal;color:#999;'> +" + data[i].contryCode  + '</i></a></li>';
+					}
+					$("#countryListId").append(dom);
+				} else {
+					$("#countryListId").append("");
+				}
+			}
+        
+       });
+   }
+  
+   var dom= $("#countryListId");
+   var idNum = "mySelect1";
+ //点击显示
+   dom.on("click", function(e) {
+		$("#" + idNum + " .dropdown-label").text($(e.target).text());
+		$("#" + idNum + " .dropdown-label").css("width","58%");
+		$("#" + idNum + " li").removeClass("active");
+		$(e.target).parent().addClass("active");
+		$("#" + idNum + "").removeClass("open");
+		var code=$(".dropdown-label").text().split("+")[1];
+		console.log(code);
+		return;
+	});
+//点击隐藏
+  /*dom.on("mouseleave", function() {
+		select.removeClass("open");
+	});*/
+
+    </script>
+    <script type="text/javascript">
+        var app = angular.module('myApp', []);
+    </script>
+</body>
+</html>

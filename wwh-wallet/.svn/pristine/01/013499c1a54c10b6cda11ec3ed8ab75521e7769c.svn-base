@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wwh.dao.IMInterfaceDao">
+	
+	<!--手机端得 个人中心 -->
+	<select id="getPersonalInfo" resultType="com.wwh.vo.MpersonalCenterVO">
+		SELECT
+	 		inv.invite_total_counter myRecorment,
+   			pro.platform_total_amount totalProfit
+		FROM
+			wallet_platform_invite_t inv,
+			wallet_platform_profit_t pro
+		WHERE
+			inv.invite_user_id = pro.user_id
+			AND inv.invite_user_id = #{userId}
+	</select>
+	
+	<!-- 查询用户成为总监得次数 -->
+	<select id="getDirectorTimes" resultType="java.lang.Integer">
+		select 
+			count(1)
+			from 
+			<choose>
+				<when test="diskType == 'TIYAN'">wallet_disk_relation_tiyan_t </when>
+				<when test="diskType == 'HUIMIN'">wallet_disk_relation_huimin_t </when>
+				<when test="diskType == 'FUMIN'">wallet_disk_relation_fumin_t </when>
+				<when test="diskType == 'XINGMIN'">wallet_disk_relation_xingmin_t </when>
+			</choose>
+			where role_id='1'
+			and disk_type='TIYAN'
+			AND disk_status='FINISHED'
+			and active_flag ='Y'
+			and delete_flag ='N'
+			and user_id=#{userId}
+	</select>
+	
+	<!-- 查询用户得最大收益记录 -->
+	<select id="maxProfit" resultType="java.math.BigDecimal">
+		select max(profit)
+			from (
+				select sum(pro.profit_amount) +  if(grp.profit_amount,null,0) profit
+				from 
+					<choose>
+						<when test="diskType == 'TIYAN'">wallet_profit_detail_tiyan_t  pro</when>
+						<when test="diskType == 'HUIMIN'">wallet_profit_detail_huimin_t  pro</when>
+						<when test="diskType == 'FUMIN'">wallet_profit_detail_fumin_t  pro</when>
+						<when test="diskType == 'XINGMIN'">wallet_profit_detail_xingmin_t  pro</when>
+					</choose>
+				left join wallet_grap_profit_detail_t grp on pro.profit_user_id = grp.profit_user_id  and grp.disk_seq = pro.disk_seq
+				where pro.profit_user_id=#{userId}
+			) a
+	</select>
+	
+	<!-- 查询用户满点晋升次数 -->
+	<select id="fullPointsToDirector" resultType="java.lang.Integer">
+		select 
+			count(1)
+			from 
+			<choose>
+				<when test="diskType == 'TIYAN'">wallet_disk_relation_tiyan_t re</when>
+				<when test="diskType == 'HUIMIN'">wallet_disk_relation_huimin_t re</when>
+				<when test="diskType == 'FUMIN'">wallet_disk_relation_fumin_t re</when>
+				<when test="diskType == 'XINGMIN'">wallet_disk_relation_xingmin_t re</when>
+			</choose>
+			left join wallet_point_grap_relation_t  pg on pg.disk_seq = re.disk_seq
+			where re.role_id='1'
+			AND re.disk_status='FINISHED'
+			and re.active_flag ='Y'
+			and re.delete_flag ='N'
+			and pg.profit_points ='3'
+			and re.user_id=#{userId}
+	</select>
+	
+	<!-- 查询用户用时最短完成得盘 -->
+	<select id="shortestTimeInDisk" resultType="java.lang.Long">
+		select min(UNIX_TIMESTAMP(d.last_updated_date) - UNIX_TIMESTAMP(d.created_date)) 
+			from wallet_disk_t d
+			left join 
+			<choose>
+				<when test="diskType == 'TIYAN'">wallet_disk_relation_tiyan_t r</when>
+				<when test="diskType == 'HUIMIN'">wallet_disk_relation_huimin_t r</when>
+				<when test="diskType == 'FUMIN'">wallet_disk_relation_fumin_t r</when>
+				<when test="diskType == 'XINGMIN'">wallet_disk_relation_xingmin_t r</when>
+			</choose>
+			on d.disk_seq = r.disk_seq
+			where d.disk_status ='FINISHED'
+			and d.active_flag='Y'
+			and d.delete_flag='N'
+			and d.disk_counter='40'
+			and r.role_id='1'
+			and user_id=#{userId}
+	</select>
+	
+	<!-- 查询用户的历程碑 -->
+	<select id="selectMilstoneInfo" resultType="java.lang.Long">
+		select user_id from wallet_member_milestone_t  where user_id= #{userId} and disk_type=#{diskType}
+	</select>
+	
+	<!-- 查询个人信息 -->
+	<select id="selectPersonalInfo" resultType="com.wwh.vo.MpersonalInfoVO">
+		select 
+			u.user_name as userName,
+			u.mobile_phone as phone,
+			u.email as email,
+			u.is_id_valid as isIdValid,
+			u.gender as gender,
+			u.birthday as  birthday,
+			CONCAT(
+					IFNULL(co.country_name, ''),
+					IFNULL(p.province_name, ''),
+					IFNULL(c.city_name, ''),
+					IFNULL(a.area_name, ''),
+					IFNULL(u.address, '')
+		  )  as address
+			from
+			wwh_user_t u
+	    LEFT JOIN wwh_area_relation_t re ON u.user_id = re.user_id
+			LEFT JOIN wwh_country_t co ON re.country_code = co.country_code
+			LEFT JOIN wwh_province_t p ON re.province_code = p.province_code
+			LEFT JOIN wwh_city_t c ON re.city_code = c.city_code
+			LEFT JOIN wwh_area_t a ON re.area_code = a.area_code
+		  where 
+		    u.user_id=#{userId}
+			and u.active_flag='Y'
+			and u.delete_flag ='N'
+	</select>
+	
+	<!--查询我的充值记录  -->
+	<select id="getPayRecordsInfo" resultType="com.wwh.vo.MPayRecordsVO">
+		select 
+			a .amount as chargeAmount,
+			a .score  as returnScore,
+			a .created_date as chargeDate,
+			a .pay_status as payStatus
+		from
+		(	
+			<include refid="Select_From_Huimin"/>
+			UNION ALL
+			<include refid="Select_From_Xinming"/>
+			UNION ALL
+			<include refid="Select_From_Fumin"/>
+			UNION ALL
+			<include refid="Select_From_Tiyan"/>
+			UNION ALL
+			<include refid="Select_From_Other"/> 
+		)a  
+	   	group by a.created_date
+	    order by a.created_date desc
+	</select>
+	
+	<!-- 积分收益记录 -->
+	<select id="getPlatformProfitScore" resultType="com.wwh.vo.PlatformProfitScoreVO">
+		SELECT
+			a.profit_score profitScore,
+			a.profit_score_type profitScoreType,
+			a.created_date createdDate,
+			a.source_user_id sourceUserId,
+			a.recharge_Amount rechargeAmount,
+			b.user_name nickName,
+			a.profit_score_remark  profitScoreRemark
+		FROM
+			wallet_platform_profit_score_t a
+		LEFT JOIN
+			wwh_user_t b
+		ON a.source_user_id = b.user_id
+		WHERE b.active_flag = 'Y'
+		AND b.delete_flag = 'N'
+		AND a.active_flag = 'Y'
+		AND a.delete_flag = 'N'	
+		AND a.user_id = #{userId}	
+		order by a.created_date desc
+	</select>
+	
+	<sql id="Select_From_Huimin">
+         select 
+			f.amount,
+			f.score,
+			f.created_date,
+			f.pay_status
+			from wallet_platform_pay_detail_huimin_t f
+			where 
+			f.active_flag='Y'
+			and f.delete_flag='N'
+			and f.user_id=#{userId}
+	</sql>
+	
+	<sql id="Select_From_Fumin">
+		select 
+			f.amount,
+			f.score,
+			f.created_date,
+			f.pay_status
+			from wallet_platform_pay_detail_fumin_t f
+			where 
+			f.active_flag='Y'
+			and f.delete_flag='N'
+			and f.user_id=#{userId}
+	</sql>
+	
+	<sql id="Select_From_Tiyan">
+		select 
+			f.amount,
+			f.score,
+			f.created_date,
+		    f.pay_status
+			from wallet_platform_pay_detail_tiyan_t f
+			where 
+			f.active_flag='Y'
+			and f.delete_flag='N'
+			and f.user_id=#{userId}
+	</sql>
+	
+	<sql id="Select_From_Xinming">
+		select 
+			f.amount,
+			f.score,
+			f.created_date,
+		    f.pay_status
+			from wallet_platform_pay_detail_xingmin_t f
+			where 
+			f.active_flag='Y'
+			and f.delete_flag='N'
+			and f.user_id=#{userId}
+	</sql>
+	
+	<sql id="Select_From_Other">
+	     select
+			f.amount,
+			f.score,
+			f.created_date,
+			f.pay_status
+		  	from wallet_platform_pay_detail_other_t f
+		  	where f.user_id=#{userId}
+	</sql>
+	
+	<!--总消费分红收益  -->
+	<select id="getTotalCounsumProfit" resultType="java.math.BigDecimal">
+		SELECT
+			sum(profit_amount)
+		    FROM
+			wallet_user_relation_profit_detail_t
+		    WHERE
+			user_id = #{userId}
+	</select>
+	
+	<!-- 近一月消费分红收益 -->
+	<select id="getMonthCounsumProfit" resultType="java.math.BigDecimal">
+		SELECT
+			sum(profit_amount)
+			FROM
+			wallet_user_relation_profit_detail_t
+			WHERE
+			user_id = #{userId}
+			AND DATE_SUB(CURDATE(), INTERVAL 30 DAY) &lt;= created_date 
+	</select>
+	
+	<!-- 近一周消费分红收益 -->
+	<select id="getTodayCounsumProfit" resultType="java.math.BigDecimal"> 
+		SELECT
+			sum(profit_amount)
+			FROM
+			wallet_user_relation_profit_detail_t
+			WHERE
+			user_id = #{userId}
+		    AND to_days(created_date)=to_days(now())
+	</select>
+	
+	<!--  消费收益详情-->
+	<select id="mCounsumptionDetail" resultType="com.wwh.vo.MCounsumptionDetailVO">
+		 SELECT
+			p.profit_amount,
+			p.customer_user_id,
+			p.created_date,
+			u.user_name,
+			p.order_amount
+			FROM
+			wallet_user_relation_profit_detail_t p
+			LEFT JOIN wwh_user_t u ON u.user_id = p.customer_user_id
+			WHERE
+			p.user_id = #{userId}
+	</select>
+	
+	<!-- 抢点收益记录  -->
+	<select id="grapProfitDetail" resultType="com.wwh.vo.MGrapPointProfitVO">
+		SELECT
+			g.profit_amount     as profitAmount,
+			g.pay_user_id       as user,
+			CONCAT(d.disk_head,'_',d.disk_tail)  as diskName,
+			g.created_date      as createDate,
+			u.user_name         as userName,
+			d.disk_counter      as diskCounter
+			FROM
+				wallet_grap_profit_detail_t g
+			LEFT JOIN wallet_disk_t d ON d.disk_seq = g.disk_seq
+			LEFT JOIN wwh_user_t u ON u.user_id = g.pay_user_id
+			WHERE
+			g.profit_user_id = #{userId}
+	</select>
+	
+	<!-- 获取总的抢点记录 -->
+	<select id="getTotalGrapDetail" resultType="java.math.BigDecimal">
+		select
+			sum(profit_amount)
+			from 
+			wallet_grap_profit_detail_t 
+			where profit_user_id=#{userId}
+	</select>
+	
+	<!-- 获取用户的手机号 -->
+	<select id="getUserInfo" resultType="com.wwh.vo.UserVO">
+		select 
+			user_id as userId,
+			mobile_phone as mobilePhone
+			FROM wwh_user_t 
+			where 
+			user_name = #{param}
+			or mobile_phone = #{param}
+			or email = #{param}
+	</select>
+	
+	<!-- 跟新钱包用户信息 -->
+	<update id="updateWpassword">
+		UPDATE wwh_user_t
+		SET password = #{0}
+		WHERE
+		user_id = #{1}
+	</update>
+	
+	<!-- 跟新商城用户信息 -->
+	<update id="updateCpassword">
+		UPDATE t_member
+			SET PASSWORD = #{0}
+			WHERE
+		    member_id = #{1}
+	</update>
+	
+	
+	<select id="queryPersonalInfo" resultType="com.wwh.vo.PersonalVO">
+		SELECT
+			u.user_name userName,
+			a.remain_score myScore,
+			p.platform_remain_amount myGoldCoin,
+			(
+				SELECT count(1) FROM wwh_user_t WHERE reference_id = #{userId}) myShare
+			FROM
+				wwh_user_t u
+			LEFT JOIN wallet_amount_t a ON u.user_id = a.user_id
+			LEFT JOIN wallet_platform_profit_t p ON p.user_id = u.user_id
+		WHERE
+			a.user_id = #{userId}
+	</select>
+	
+	<select id="getMilestoneInfo" resultType="java.lang.String">
+		SELECT disk_type FROM wallet_member_milestone_t WHERE user_id = #{userId}
+	</select>
+	
+	<!-- 根据用户id -->
+	<select id="getPhoneById" resultType="java.lang.String">
+			select 
+				mobile_phone as mobilePhone
+				FROM wwh_user_t 
+				where 
+				user_id = #{userId}
+	</select>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+</mapper>

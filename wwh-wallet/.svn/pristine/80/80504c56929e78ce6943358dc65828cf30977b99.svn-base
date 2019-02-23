@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wwh.dao.IWalletDiskWaittingDao" >
+
+<resultMap id="BaseResultMap" type="com.wwh.vo.WalletDiskWaittingVO" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="disk_type" property="diskType" jdbcType="VARCHAR" />
+    <result column="pay_user_id" property="payUserId" jdbcType="BIGINT" />
+    <result column="pay_id_card" property="payIdCard" jdbcType="VARCHAR" />
+    <result column="waitting_status" property="waittingStatus" jdbcType="VARCHAR" />
+   <result column="active_flag" property="activeFlag" jdbcType="CHAR" />
+    <result column="delete_flag" property="deletFlag" jdbcType="CHAR" />
+    <result column="created_date" property="createdDate" jdbcType="TIMESTAMP" />
+    <result column="created_by" property="createdBy" jdbcType="BIGINT" />
+    <result column="last_updated_date" property="lastUpdatedDate" jdbcType="TIMESTAMP" />
+    <result column="last_updated_by" property="lastUpdatedBy" jdbcType="BIGINT" />
+  </resultMap>
+
+  
+  <insert id="insert" parameterType="com.wwh.vo.WalletDiskWaittingVO" >
+  	INSERT INTO wallet_disk_waitting_t (
+			disk_type,
+			pay_user_id,
+			pay_id_card,
+			last_id_card,
+			waitting_status,
+			active_flag,
+			delete_flag,
+			created_date,
+			created_by,
+			last_updated_date,
+			last_updated_by
+		)
+		VALUES
+			(
+				#{diskType},
+				#{payUserId},
+				#{payIdCard},
+				#{lastIdCard},
+				#{waittingStatus},
+				'Y',
+				'N',
+				NOW(),
+				#{payUserId},
+				NOW(),
+				#{payUserId}
+			) 
+		ON DUPLICATE KEY UPDATE 
+		waitting_status = #{waittingStatus},
+		last_updated_date = NOW(),
+		last_updated_by = #{payUserId}
+  </insert>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.wwh.vo.WalletDiskWaittingVO" >
+    update wallet_disk_waitting_t
+    <set >
+      <if test="diskType != null" >
+        disk_type = #{diskType,jdbcType=VARCHAR},
+      </if>
+      <if test="payUserId != null" >
+        pay_user_id = #{payUserId,jdbcType=BIGINT},
+      </if>
+      <if test="payIdCard != null" >
+        pay_id_card = #{payIdCard,jdbcType=VARCHAR},
+      </if>
+      <if test="waittingStatus != null" >
+        waitting_status = #{waittingStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="activeFlag != null" >
+        active_flag = #{activeFlag,jdbcType=CHAR},
+      </if>
+      <if test="deleteFlag != null" >
+        delete_flag = #{deleteFlag,jdbcType=CHAR},
+      </if>
+      <if test="lastUpdatedDate != null" >
+        last_updated_date = #{lastUpdatedDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastUpdatedBy != null" >
+        last_updated_by = #{lastUpdatedBy,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
+  <insert id="addDiskTypeUpWaitting">
+  	INSERT INTO wallet_disk_type_up_waitting_t (
+		disk_type,
+		user_id,
+		id_card,
+		last_id_card,
+		waitting_status,
+		difference_amount,
+		system_give_amount,
+		active_flag,
+		delete_flag,
+		created_date,
+		created_by,
+		last_updated_date,
+		last_updated_by
+	)
+	VALUES
+		(
+			#{diskType},
+			#{userId},
+			#{idCard},
+			#{lastIdCard},
+			#{waittingStatus},
+			#{differenceAmount},
+			#{systemGiveAmount},
+			'Y',
+			'N',
+			NOW(),
+			#{createdBy},
+			NOW(),
+			#{lastUpdatedBy}
+		)
+  </insert>
+  
+  <select id="getDiskWaittingVOByUserId" resultType="com.wwh.vo.WalletDiskWaittingVO">
+	SELECT
+		disk_type diskType,
+		pay_user_id payUserId,
+		pay_id_card payIdCard,
+		last_id_card lastIdCard,
+		waitting_status waittingStatus,
+		created_date createdDate
+	FROM
+		wallet_disk_waitting_t
+	WHERE
+		pay_user_id = #{userId}
+	AND waitting_status = #{waittingStatus}
+	AND disk_type = #{diskType}
+	AND active_flag = 'Y'
+	AND delete_flag = 'N'
+	ORDER BY created_date ASC
+  </select>
+  
+  <update id="updateDiskWaittingVOByIdCard">
+	UPDATE wallet_disk_waitting_t
+	SET waitting_status = #{waittingStatus},
+	last_updated_date = NOW(),
+	 last_updated_by = #{lastUpdatedBy}
+	WHERE
+		pay_id_card = #{payIdCard}
+  </update>
+ </mapper>
+ 

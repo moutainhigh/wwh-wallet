@@ -1,0 +1,65 @@
+﻿<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>惠民系统介绍</title>
+    <meta charset="utf-8" />
+    <base href="/">
+    <meta name="description" content="金融、钱包、理财、高收益">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="renderer" content="webkit" />
+    <link rel="stylesheet" href="/wwh-wallet/css/bootstrap.css">
+    <link rel="stylesheet" href="/wwh-wallet/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/wwh-wallet/css/plugin.css">
+    <link rel="stylesheet" href="/wwh-wallet/css/landing.css">
+    <link rel="stylesheet" href="/wwh-wallet/css/common.css">
+    <link href="/wwh-wallet/css/mall/private-benefit.css" rel="stylesheet" />
+    <link href="/wwh-wallet/css/style.css" rel="stylesheet" />
+    <script type="text/javascript" src="/wwh-wallet/js/jquery.min.js"></script>
+    <script src="/wwh-wallet/js/bootstrap.js"></script>
+    <script src="/wwh-wallet/js/app.js"></script>
+    <script src="/wwh-wallet/js/app.plugin.js"></script>
+    <script src="/wwh-wallet/js/app.data.js"></script>
+    <script src="/wwh-wallet/js/fuelux/fuelux.js"></script>
+    <script src="/wwh-wallet/js/datepicker/bootstrap-datepicker.js"></script>
+    <script src="/wwh-wallet/js/slider/bootstrap-slider.js"></script>
+    <script src="/wwh-wallet/js/file-input/bootstrap.file-input.js"></script>
+    <script src="/wwh-wallet/js/combodate/moment.min.js"></script>
+    <script src="/wwh-wallet/js/combodate/combodate.js"></script>
+    <script src="/wwh-wallet/js/parsley/parsley.min.js"></script>
+    <script src="/wwh-wallet/js/angular.js"></script>
+    <script src="/wwh-wallet/js/tm.pagination.js"></script>
+</head>
+<body>
+    <div ng-include src="'/wwh-wallet/pages/wallet/common/header.html'"></div>
+    <div class="sys-tro-box systy">
+        <div class="sys-main-box fixed">
+            <div class="ty-img ty-box-1">
+                <img src="/wwh-wallet/images/regulation/tybg.png" />
+            </div>
+            <div class="sysbox tydetail ty-box-2">
+                <div class="titlesys">惠民系统介绍</div>
+                <div class="containsys">
+                    <div class="tyfont">
+                        消费者在唯沃惠商城通过充值500元，成为银卡会员，获得1000积分。<label>（1积分=1元）</label>
+                    </div>
+                    <div class="tyfont">
+                        积分用途：在商城购买商品时，<font>每次最多抵用商品金额的50%</font>。
+                    </div>
+                    <div class="tyfont">
+                        <label>当积分足够多时，每次购买任何商品都可以使用50%现金+50%积分来支付。</label>（例如：一盒同品牌面膜，<br />
+                        在其他商城和唯沃惠商城标价都是100元，那在其他商城购买，您需要支付100元现金，而在唯沃惠商<br />
+                        城您只需支付50元现金+50积分即可购买到价值为100元的同品牌面膜，从而得到真正的实惠）也就是<br />
+                        说在唯沃惠商城可以天天享受5折的优惠。<label>同时，通过分享还可以获得平台的分润，分享的会员越多，</label><br />
+                        <label>收益也会越多。</label>                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div ng-include src="'/wwh-wallet/pages/wallet/common/footer.html'"></div>
+    <script type="text/javascript">
+        var app = angular.module('myApp', []);
+    </script>
+</body>
+</html>

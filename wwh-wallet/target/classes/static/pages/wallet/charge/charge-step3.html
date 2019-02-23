@@ -1,0 +1,659 @@
+﻿<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>提现-唯沃惠</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="金融、钱包、理财、高收益">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="renderer" content="webkit" />
+    <link rel="stylesheet" href="/wwh-wallet/css/bootstrap.css">
+    <link rel="stylesheet" href="/wwh-wallet/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/wwh-wallet/css/plugin.css">
+    <link rel="stylesheet" href="/wwh-wallet/css/landing.css">
+    <link rel="stylesheet" href="/wwh-wallet/css/common.css">
+    <link href="/wwh-wallet/css/mall/private-benefit.css" rel="stylesheet" />
+    <script type="text/javascript" src="/wwh-wallet/js/jquery.min.js"></script>
+    <script src="/wwh-wallet/js/bootstrap.js"></script>
+    <script src="/wwh-wallet/js/app.js"></script>
+    <script src="/wwh-wallet/js/app.plugin.js"></script>
+    <script src="/wwh-wallet/js/app.data.js"></script>
+    <script src="/wwh-wallet/js/fuelux/fuelux.js"></script>
+    <script src="/wwh-wallet/js/datepicker/bootstrap-datepicker.js"></script>
+    <script src="/wwh-wallet/js/slider/bootstrap-slider.js"></script>
+    <script src="/wwh-wallet/js/file-input/bootstrap.file-input.js"></script>
+    <script src="/wwh-wallet/js/combodate/moment.min.js"></script>
+    <script src="/wwh-wallet/js/parsley/parsley.min.js"></script>
+    <script type="text/javascript" src="/wwh-wallet/js/jquery.validate.js"></script>
+    <script src="/wwh-wallet/js/angular.js"></script>
+</head>
+ <style>
+        .mui-input-row label{
+			line-height: none;
+			height: 100%;
+		}
+		.select {
+		    position: relative;
+		    display: inline-block;
+		}
+		.btn-group, .btn-group-vertical {
+		    position: relative;
+		    display: block;
+		    vertical-align: middle;
+		    margin:10px;
+		}
+		ul li {
+		    list-style: none;
+		}
+		.btn {
+		    display: inline-block;
+		    padding: 8px 12px;
+		    margin-bottom: 0;
+		    font-size: 14px;
+		    font-weight: 500;
+		    line-height: 1.428571429;
+		    text-align: center;
+		    white-space: nowrap;
+		    vertical-align: middle;
+		    cursor: pointer;
+		    border: 1px solid transparent;
+		    border-radius: 4px;
+		}
+		input, button, select, textarea {
+		    font-family: inherit;
+		    font-size: inherit;
+		    line-height: inherit;
+		}
+		button, html input[type="button"], input[type="reset"], input[type="submit"] {
+		    cursor: pointer;
+		    -webkit-appearance: button;
+		}
+		#mySelect1 .dropdown-label {
+		    height: 14px;
+		    display: inline-block;
+		}
+		.mall-btn-select2 .btn-white {
+		    padding: 2px 12px;
+		    box-shadow: none;
+		    border-width: 0px;
+		    border-color: #FFF;
+		    color: #e94949;
+		    background-color: #fff;
+		    border: 1px solid #EEE;
+		    min-width: 150px;
+		    margin-right: 10px;
+		}
+		
+		.mall-btn-select2 .btn-white {
+		    color: #e94949;
+		}
+		
+		.btn-small {
+		    padding: 5px 10px;
+		    font-size: 12px;
+		    line-height: 1.5;
+		    border-radius: 3px;
+		}
+		
+		.btn {
+		    display: inline-block;
+		    padding: 8px 12px;
+		    margin-bottom: 0;
+		    font-size: 14px;
+		    font-weight: 500;
+		    line-height: 1.428571429;
+		    text-align: center;
+		    white-space: nowrap;
+		    vertical-align: middle;
+		    cursor: pointer;
+		    border: 1px solid transparent;
+		    border-radius: 4px;
+		}
+		.mall-btn-select2 .btn .caret {
+		    border-top-color: #CCC;
+		}
+		.btn .caret {
+		    margin-left: 0;
+		}
+		.btn .caret {
+		    border-top-color: #ffffff;
+		}
+		.caret {
+		    display: inline-block;
+		    width: 0;
+		    height: 0;
+		    margin-left: 2px;
+		    vertical-align: middle;
+		    border-top: 4px solid #000000;
+		    border-right: 4px solid transparent;
+		    border-left: 4px solid transparent;
+		    content: "";
+		}
+		.mall-btn-select2 .dropdown-menu {
+		    padding: 0px 0px;
+		    max-height: 300px;
+		    overflow-y: auto;
+		}
+		.dropdown-menu {
+		    position: absolute;
+		    top: 25px;
+            left: 0;
+		    z-index: 1000;
+		    display: none;
+		    float: left;
+		    min-width: 160px;
+		    padding: 5px 0;
+		    margin: 2px 0 0;
+		    list-style: none;
+		    background-color: #ffffff;
+		    border: 1px solid #cccccc;
+		    border: 1px solid rgba(0, 0, 0, 0.15);
+		    border-radius: 4px;
+		    -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+		    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+		    background-clip: padding-box;
+		}
+		.dropdown-menu > .active > a, .dropdown-menu > .active > a:hover, .dropdown-menu > .active > a:focus {
+		    color: #ffffff;
+		    text-decoration: none;
+		    background-color: #357ebd;
+		    background-image: -webkit-gradient(linear, left 0%, left 100%, from(#428bca), to(#357ebd));
+		    background-image: -webkit-linear-gradient(top, #428bca, 0%, #357ebd, 100%);
+		    background-image: -moz-linear-gradient(top, #428bca 0%, #357ebd 100%);
+		    background-image: linear-gradient(to bottom, #428bca 0%, #357ebd 100%);
+		    background-repeat: repeat-x;
+		    outline: 0;
+		    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff428bca', endColorstr='#ff357ebd', GradientType=0);
+		}
+		.dropdown-menu > li > a {
+		    display: block;
+		    padding: 3px 20px;
+		    clear: both;
+		    font-weight: normal;
+		    line-height: 1.428571429;
+		    color: #333333;
+		    white-space: nowrap;
+		}
+		.open > .dropdown-menu {
+		    display: block;
+		}
+		.mall-btn-select2 .dropdown-menu > li > a:hover ,.mall-btn-select2 .dropdown-menu > li > a:hover, .mall-btn-select .dropdown-menu > li > a:focus, .mall-btn-select .dropdown-submenu:hover > a, .mall-btn-select .dropdown-submenu:focus > a, .mall-btn-select .dropdown-menu > .active > a, .mall-btn-select .dropdown-menu > .active > a:hover, .mall-btn-select .dropdown-menu > .active > a:focus{
+		    background-image: none;
+		    filter: none;
+		    background-color: #e94949;
+		    color: #fff;
+		}
+		.dropdown-menu > li > a:hover, .dropdown-menu > li > a:focus {
+		    color: #ffffff;
+		    text-decoration: none;
+		    background-color: #357ebd;
+		    background-image: -webkit-gradient(linear, left 0%, left 100%, from(#428bca), to(#357ebd));
+		    background-image: -webkit-linear-gradient(top, #428bca, 0%, #357ebd, 100%);
+		    background-image: -moz-linear-gradient(top, #428bca 0%, #357ebd 100%);
+		    background-image: linear-gradient(to bottom, #428bca 0%, #357ebd 100%);
+		    background-repeat: repeat-x;
+		    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff428bca', endColorstr='#ff357ebd', GradientType=0);
+		}
+		/*table覆盖*/
+		.cmx_table{
+			min-width:100%!important;
+		}
+</style>
+<body>
+    <div ng-include src="'/wwh-wallet/pages/wallet/common/header.html'"></div>
+    <div class="charge-wrap fixed">
+        <div class="charge-box m-box fixed">
+            <div class="title-wrap">
+                <div class="title">添加银行卡</div>
+            </div>
+            <div class="containner-middle fixed">
+                <div class="benifit-table-wrap">
+                    <!-- <form class="cmxform" id="signupForm" > -->
+                    <fieldset>
+                        <table class="benifit-table wwh-table cmx_table">
+                            <tr>
+                                <td class="td01"><span class="redmi">*</span>真实姓名：</td>
+                                <td class="td02">
+                                    <div class="input-wrap truename-after after-ele">
+                                        <input id="truename" name="truename" placeholder="输入真实姓名" type="text" />
+                                        <div class="errorinfo">输入正确真实姓名</div>
+                                    </div>
+                                    <div class="after-input-w fontsize12">真实姓名必须与银行卡信息一致</div>
+                                </td>
+                            </tr>
+                             <tr>
+                                <td class="td01"><span class="redmi">*</span>银行名称：</td>
+                                <td class="td02">
+                                    <div id="myBankSelect" class="select btn-group m-b mall-btn-select2" data-resize="auto">
+                                        <button data-toggle="dropdown" class="btn btn-small btn-white dropdown-toggle">
+                                            <span class="dropdown-label"></span>
+                                            <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-select">
+                                        </ul>
+                                    </div>
+                                    <div class="input-wrap longtext cardnum-after" style="display:none;">
+                                        <input id="bankname" name="cardnum" placeholder="银行名称:(招商银行)" type="text" />
+                                        <div class="errorinfo">输入正确银行名称</div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <!-- 
+                            <tr>
+                                <td class="td01"><span class="redmi">*</span>银行卡名称:</td>
+                                <td class="td02">
+                                    <div class="input-wrap longtext cardnum-after">
+                                        <input id="cardname" name="cardnum" placeholder="银行卡名称:(招商银行卡)" type="text" />
+                                        <div class="errorinfo">输入正确银行卡名称</div>
+                                    </div>
+                                </td>
+                            </tr>
+                             -->
+                            <tr>
+                                <td class="td01"><span class="redmi">*</span>银行卡号：</td>
+                                <td class="td02">
+                                    <div class="input-wrap longtext cardnum-after">
+                                        <input id="cardnum" name="cardnum" placeholder="输入银行卡号" type="text" />
+                                        <div class="errorinfo">输入正确银行卡号</div>
+                                    </div>
+                                </td>
+                            </tr>
+                            
+                            
+                        <tr>
+                            <td class="td01"><span>*</span>手机号：</td>
+                            <td class="td02">
+                            <!--选择国家 -->
+                            	<div id="mySelect1" class="select btn-group m-b mall-btn-select2" data-resize="auto">
+									<button type="button" data-toggle="dropdown" class="btn btn-white btn-small dropdown-toggle" onclick="initCountry()">
+                                        <span class="dropdown-label">中国 +86</span> <span class="caret"></span>
+                                     </button>
+									<ul class="dropdown-menu dropdown-select" id="countryListId">
+									</ul>
+								</div>
+								
+                                <div class="after-ele input-wrap phonenum-after">
+                                    <input placeholder="银行预留手机号" type="text" id="phonenum" />
+                                    <div class="errorinfo">输入正确手机号码</div>
+                                </div>
+                            </td>
+                        </tr>
+                            
+                         <!-- 
+                            <tr>
+                                <td class="td01"><span class="redmi">*</span>手机号：</td>
+                                <td class="td02">
+                                    <div class="after-ele input-wrap phonenum-after">
+                                        <input placeholder="输入手机号码" type="text" id="phonenum" />
+                                        <div class="errorinfo">输入正确手机号码</div>
+                                    </div>
+                                    <div class="after-input-w fontsize12">请填写该卡在银行预留的手机号</div>
+                                </td>
+                            </tr>
+                        -->
+                            <tr>
+                                <td class="td01"><span class="redmi">*</span>校验码：</td>
+                                <td class="td02">
+                                    <div class="after-ele  input-wrap validcode-after">
+                                        <input placeholder="" type="text" id="validcode" />
+                                        <div class="errorinfo">输入正确校验码</div>
+                                    </div>
+                                    <div class="check-code">
+                                    <input class="check-input" placeholder="" type="button" onclick="settime(this)" value="免费获取验证码" style="" />
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="td01"></td>
+                                <td class="td02">
+                                    <div class="attention marginb20">
+                                        <span>*</span>注意：<br />
+                                        填写真实信息资料<br />
+                                        仅支持储蓄卡，不支持信用卡
+                                    </div>
+                                    <div class="btn-yes-wrap"><input class="btn-yes" type="submit" onclick="submitbtn()" value="确定添加"></div>
+                                    <input id="onloadtriggerClick1" class="onloadtrigger3" data-toggle="modal" href="#modal" type="hidden" />
+                                </td>
+                            </tr>
+                        </table>
+                        <script type="text/javascript">
+                        
+                            $.ajax({     // 请求 ajax
+                                url: "/wwh-wallet/withraw/getbank",
+                                type: "get",
+                                error: function () {
+                                    //alert("异常");
+                                },
+                                success: function (msg) {
+                                    if (msg && msg.length>0) {
+                                    	var dom = "";
+                                    	for (var i = 0; i < msg.length; i++) {
+                                      // dom = dom + '<li data-value="'+data[i].countryCode+ '"><a href="#">'+data[i].countryName +'</a></li>';
+                                    	    dom = dom + '<li data-value="' + msg[i].bankType + '"><a href="#">' + msg[i].bankName + '</a></li>';
+                                    	//  dom = dom +	'<li data-value="'+msg[i].bankType +'"><a href="#">'+ msg[i].bankName +'</a></li>';
+                                    	}
+                                        $('#myBankSelect .dropdown-menu').html(dom);
+                                    }
+                                }
+                            });
+
+                            $("#truename").blur(function () {
+                                isTruename();
+                            });
+
+                            $("#truename").focus(function () {
+                                $('#truename').siblings('.errorinfo').hide();
+                            });
+
+                            function isTruename() {
+                            	var flag = true;
+                                if ($("#truename").val() == '') {
+                                    $('.truename-after').children('.errorinfo').show();
+                                    flag = false;
+                                }
+                                return flag;
+                            }
+
+                            $("#cardnum").blur(function () {
+                                isCardnum();
+                            });
+
+                            $("#cardnum").focus(function () {
+                                $('#cardnum').siblings('.errorinfo').hide();
+                            });
+
+                            function isCardnum() {
+                                if ((/^(\+|-)?\d+$/.test($("#cardnum").val())) && $("#cardnum").val() > 0) {
+                                    $('.cardnum-after').children('.errorinfo').hide();
+                                    return true;
+                                } else {
+                                    $('.cardnum-after').children('.errorinfo').show();
+                                    return false;
+                                }
+                            }
+
+                            function vailPhone() {
+                                var phone = $("#phonenum").val();
+                                var flag = false;
+                                var message = "";
+                            //    var myreg = /^1(3[0-9]|4[57]|5[0-35-9]|8[0-9]|70)\\d{8}$/;
+                                var myreg = /^1[34578]\d{9}$/;
+                                //    var myreg = /^(((13[0-9]{1})|(14[0-9]{1})|(17[0]{1})|(15[0-3]{1})|(15[5-9]{1})|(18[0-9]{1}))+\d{8})$/;  /^1[34578]\d{9}$/
+                                if (phone == '') {
+                                    message = "手机号码不能为空！";
+                                    $('.phonenum-after').children('.errorinfo').text(message).show(); return false;
+                                } else if (phone.length != 11) {
+                                    message = "请输入有效的手机号码！";
+                                    $('.phonenum-after').children('.errorinfo').text(message).show(); return false;
+                                } else if (!myreg.test(phone)) {
+                                    message = "请输入有效的手机号码！";
+                                    $('.phonenum-after').children('.errorinfo').text(message).show(); return false;
+                                } else {
+                                    return true;
+                                }
+                            }
+
+                            $("#phonenum").blur(function () {
+                                vailPhone();
+                            });
+                            $("#phonenum").focus(function () {
+                                $('#phonenum').siblings('.errorinfo').hide();
+                            });
+
+                            // validcode-after  isTruename();isCardnum();vailPhone();isValidcode();
+                            $("#validcode").blur(function () {
+                                isValidcode();
+                            });
+                            $("#validcode").focus(function () {
+                                $('#validcode').siblings('.errorinfo').hide();
+                            });
+
+                            function isValidcode() {
+                                if ($("#validcode").val() == "") {
+                                    $('.validcode-after').children('.errorinfo').text("请输入正确的验证码").show();
+                                    return false;
+                                }
+                                return true;
+                            }
+
+                            function settime(obj) {
+                                if (!vailPhone()) {
+                                    return;
+                                }
+                                var countdown = 60;
+                                var truename = $("#truename").val();
+                                var cardnum = $("#cardnum").val();
+                                var phonenum = $("#phonenum").val();
+                                var validcode = $("#validcode").val();
+                                var stateno = $(".dropdown-label").text().split("+")[1];
+                                $.ajax({     // 请求 ajax
+                                    url: "/wwh-wallet/ttmsg/sendMsg",
+                                    type: "post",
+                                    data: {
+                                        "msgType": "4",
+                                        "tel": phonenum,
+                                        "code": stateno
+                                    },
+                                    error: function () {
+                                        //alert("异常");
+                                    },
+                                    success: function (msg) {
+                                    	if(msg.returnCode == "0"){
+                                    		//发送验证码成功后开始倒计时
+                                            validCode(obj, countdown);
+                                    	}
+                                    },
+                                    complete: function () {
+                                        //完成之后执行回调函数
+                                    },
+                                });
+                            }
+
+                            function validCode(obj, countdown) {
+                                if (countdown == 0) {
+                                    obj.removeAttribute("disabled");
+                                    obj.value = "免费获取验证码";
+                                    countdown = 60;
+                                    return;
+                                } else {
+                                    obj.setAttribute("disabled", true);
+                                    obj.value = "重新发送(" + countdown + ")";
+                                    countdown--;
+                                }
+                                setTimeout(function () {
+                                    validCode(obj, countdown)
+                                }, 1000)
+                            }
+
+                            function code() {
+                                var flag = true;
+                                var validCode = $("#validcode").val();
+                                if (!validCode) {
+                                    $('.validcode-after').children('.errorinfo').text("不能为空！").show();
+                                    flag = false;
+                                } else if (validCode.length != 6) {
+                                    $('.validcode-after').children('.errorinfo').text("请填写正确的验证码！").show();
+                                    flag = false;
+                                }
+                                return flag;
+                            }
+
+							
+
+                            function submitbtn() {
+                                if (isTruename() && isCardnum() && vailPhone() && isValidcode() && validBanKard()) {
+                                	//当所有都正确了后就去校验验证码
+                                	validVerifyMsg();
+                                }else{
+                                	 return false;
+                                }
+                            }
+							
+                            
+                            function validBanKard(){
+                            	  var bankName = $('#myBankSelect .dropdown-label').html();  //银行名称
+                            	  if("" == bankName){
+                            		  return false;
+                            	  }else{
+                            		  return true;
+                            	  }
+                            }
+                            
+                            
+                            //校验验证码信息
+                            function validVerifyMsg(){
+                            	var phonenum = $("#phonenum").val();
+                                var msgCode = $("#validcode").val();
+                                var stateno = $(".dropdown-label").text().split("+")[1];
+                                $.ajax({     // 请求 ajax
+                                    url: "/wwh-wallet/ttmsg/verifyMsg",
+                                    type: "post",
+                                    data:{"msgCode":msgCode, "tel": phonenum,"code":stateno},
+                                    error: function () {
+                                        //alert("异常");
+                                    },
+                                    success: function (msg) {
+                                       if(msg.returnCode == "0"){
+                                    	   //验证吗校验成功后就去判断实名认证
+                                    	   getPhone();
+                                       }else{
+                                    	  alert(msg.returnMsg); 
+                                       }
+                                    },
+                                    complete: function () {
+                                        //完成之后执行回调函数
+                                    },
+                                });
+                            }
+                            
+							//新增银行卡信息
+                            function insertBankCard() {
+                                var cardNo = $("#cardnum").val(); //银行卡名称
+                                var phoneNumber = $("#phonenum").val();  //电话号码
+                                var userName =  $("#truename").val();   //真实姓名
+                                //var bankCardName= $("#cardname").val();
+                                var bankName = $('#myBankSelect .dropdown-label').html();  //银行名称
+                                var bankType = $('#myBankSelect .dropdown-menu li.active').attr('data-value');   //银行简称
+                                $.ajax({     // 请求 ajax
+                                    url: "/wwh-wallet/unionpay/addBindingCard",
+                                    type: "post",
+                                    contentType: 'application/json',
+                                    dataType: 'json',
+                                    data: JSON.stringify(bankCardVO = {
+                                        "bankCardName": bankType,
+                                        "bankCardNumber": cardNo,
+                                        "bankCardType": bankType,
+                                        "bankName": bankName,
+                                        "phoneNumber": phoneNumber,
+                                        "realName": userName
+                                    }),
+                                    error: function () {
+                                        //alert("异常");
+                                    },
+                                    success: function (msg) {
+                                        window.location.href = "/wwh-wallet/applywithdrawl";
+                                    },
+                                    complete: function () {
+                                        //完成之后执行回调函数
+                                    },
+                                });
+                            }
+                            
+							//判断是否实名认证
+                            function getPhone(){
+                           	 $.ajax({     // 请求 ajax
+                                    url: "/wwh-wallet/cretification/getphone",
+                                    type: "get",
+                                    data: "",
+                                    success: function (data) {
+                              			 if(data && data != ""){
+                              				 if(data.isIdValid == 1){
+                              					insertBankCard();
+                              				 }else{
+                              					 $('#onloadtriggerClick1').trigger('click');
+                              				 }
+                              			 }
+                                    }
+                                });         
+                           }
+							
+							
+                            
+                            //添加选择银行
+                            function initCountry(){
+                         	   //var cityCode = $("#countryListId").attr('data-value');
+                         	   $.ajax({
+                                    url: "/wwh-wallet/msg/contrycode",
+                                    type: "post",
+                                    contentType: 'application/json',
+                                    dataType: 'json',
+                                    data: {},
+                                    success: function (data) {
+                                 		console.log(data);
+                                 		if (data && data.length > 0) {
+                         					var i = 0;
+                         					var dom = "";
+                         					$("#countryListId").empty();
+                         					for (i = 0; i < data.length; i++) {
+                         						dom = dom + '<li data-value="' + data[i].contryCode + '"><a href="#">' + data[i].contryName + "<i style='list-style:normal;color:#999;'> +" + data[i].contryCode  + '</i></a></li>';
+                         					}
+                         					$("#countryListId").append(dom);
+                         				} else {
+                         					$("#countryListId").append("");
+                         				}
+                         			}
+                                 
+                                });
+                            }
+                           
+                            var dom= $("#countryListId");
+                            var idNum = "mySelect1";
+                          //点击显示
+                            dom.on("click", function(e) {
+                         		$("#" + idNum + " .dropdown-label").text($(e.target).text());
+                         		$("#" + idNum + " .dropdown-label").css("width","58%");
+                         		$("#" + idNum + " li").removeClass("active");
+                         		$(e.target).parent().addClass("active");
+                         		$("#" + idNum + "").removeClass("open");
+                         		var code=$(".dropdown-label").text().split("+")[1];
+                         		console.log(code);
+                         		return;
+                         	});  
+                            
+
+                        </script>
+                    </fieldset>
+                    <!-- </form>  -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+     <div id="modal" class="modal fade">
+        <form class="m-b-none">
+            <div class="modal-dialog pos-abt" style="margin-top:-235px; top:50%; width:800px; margin-left:-400px;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="icon-remove"></i></button>
+                        <h4 class="modal-title" id="myModalLabel">充值规则</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="checkbox">
+                            1、	真实姓名必须与银行卡信息一致<br/>
+							2、	实名认证后方可绑定银行卡（点击确认进行实名认证）<br/>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-small btn-primary" data-dismiss="modal">确认</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div>
+        </form>
+    </div>
+    
+    <div ng-include src="'/wwh-wallet/pages/wallet/common/footer.html'"></div>
+    <script type="text/javascript">
+        var app = angular.module('myApp', []);
+    </script>
+</body>
+</html>

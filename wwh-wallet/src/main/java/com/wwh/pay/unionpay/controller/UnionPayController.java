@@ -1,0 +1,889 @@
+package com.wwh.pay.unionpay.controller;
+
+import java.io.IOException;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.wordnik.swagger.annotations.ApiOperation;
+import com.wwh.common.PagedResult;
+import com.wwh.common.WWHResultData;
+import com.wwh.pay.unionpay.config.BaseProperties;
+import com.wwh.pay.unionpay.sdk.AcpService;
+import com.wwh.pay.unionpay.sdk.LogUtil;
+import com.wwh.pay.unionpay.sdk.SDKConfig;
+import com.wwh.pay.unionpay.sdk.SDKConstants;
+import com.wwh.service.impl.UnionPayService;
+import com.wwh.util.ReturnConstant;
+import com.wwh.vo.BankCardVO;
+import com.wwh.vo.WithdrawalLogVO;
+import com.wwh.vo.WithdrawalVO;
+
+/**
+ * 
+ * @ClassName: UnionPayController
+ * @Description: TODO
+ * @author: wwh
+ * @date: 2016年11月5日 下午5:34:39
+ */
+@Controller
+@RequestMapping("/unionpay")
+public class UnionPayController {
+
+	private static Logger logger = LogManager.getLogger(UnionPayController.class);
+
+	@Autowired
+	private UnionPayService unionPayService;
+
+	/**
+	 * 充值
+	 * 
+	 * @param req
+	 * @param resp
+	 * @throws ServletException
+	 * @throws IOException
+	 */
+	@ApiOperation(value = "充值")
+	@RequestMapping(value = "/recharge", method = RequestMethod.POST)
+	public void recharge(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+		String txnAmt = req.getParameter("txnAmt");
+		String issInsCode = req.getParameter("issInsCode");
+
+		Map<String, String> requestData = new HashMap<String, String>();
+		requestData.put("version", BaseProperties.version);
+		requestData.put("encoding", BaseProperties.encoding_UTF8);
+		requestData.put("signMethod", "01");
+		requestData.put("txnType", "01");
+		requestData.put("txnSubType", "01");
+		requestData.put("bizType", "000201");
+		requestData.put("channelType", "07");
+		requestData.put("issInsCode", issInsCode);
+		/*** 商户接入参数 ***/
+		requestData.put("merId", SDKConfig.getConfig().getMerId());
+		requestData.put("accessType", "0");
+		requestData.put("orderId", BaseProperties.getOrderId());
+		requestData.put("txnTime", BaseProperties.getCurrentTime());
+		requestData.put("currencyCode", "156");
+		requestData.put("txnAmt", txnAmt);
+
+		requestData.put("frontUrl", BaseProperties.frontUrl);
+		requestData.put("backUrl", BaseProperties.backUrl);
+
+		if (logger.isInfoEnabled()) {
+			logger.info("全渠道参数:" + requestData);
+		}
+
+		Map<String, String> submitFromData = AcpService.sign(requestData, BaseProperties.encoding_UTF8);
+
+		String requestFrontUrl = SDKConfig.getConfig().getFrontRequestUrl();
+		String html = AcpService.createAutoFormHtml(requestFrontUrl, submitFromData, BaseProperties.encoding_UTF8);
+
+		LogUtil.writeLog("打印请求HTML，此为请求报文，为联调排查问题的依据：" + html);
+		resp.getWriter().write(html);
+	}
+
+	/**
+	 * 充值状态查询
+	 * 
+	 * @param req
+	 * @param resp
+	 * @throws ServletException
+	 * @throws IOException
+	 */
+	@RequestMapping(value = "/rechargeQuery", method = RequestMethod.POST)
+	public void rechargeQuery(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+		String orderId = req.getParameter("orderId");
+		String txnTime = req.getParameter("txnTime");
+
+		Map<String, String> data = new HashMap<String, String>();
+		data.put("version", BaseProperties.version);
+		data.put("encoding", BaseProperties.encoding_UTF8);
+		data.put("signMethod", "01");
+		data.put("txnType", "00");
+		data.put("txnSubType", "00");
+		data.put("bizType", "000201");
+		/*** 商户接入参数 ***/
+		data.put("merId", SDKConfig.getConfig().getMerId());
+		data.put("accessType", "0");
+		data.put("orderId", orderId);
+		data.put("txnTime", txnTime);
+
+		Map<String, String> reqData = AcpService.sign(data, BaseProperties.encoding_UTF8);
+		String url = SDKConfig.getConfig().getSingleQueryUrl();
+		Map<String, String> rspData = AcpService.post(reqData, url, BaseProperties.encoding_UTF8);
+		if (!rspData.isEmpty()) {
+			if (AcpService.validate(rspData, BaseProperties.encoding_UTF8)) {
+				LogUtil.writeLog("验证签名成功");
+				if ("00".equals(rspData.get("respCode"))) {
+					// 处理被查询交易的应答码逻辑
+					String origRespCode = rspData.get("origRespCode");
+					if ("00".equals(origRespCode)) {
+						// 交易成功，更新商户订单状态
+					} else if ("03".equals(origRespCode) || "04".equals(origRespCode) || "05".equals(origRespCode)) {
+						// 需再次发起交易状态查询交易
+					} else {
+						// 其他应答码为失败请排查原因
+					}
+				} else {// 查询交易本身失败，或者未查到原交易，检查查询交易报文要素
+				}
+			} else {
+				LogUtil.writeErrorLog("验证签名失败");
+				// 检查验证签名失败的原因
+			}
+		} else {
+			// 未返回正确的http状态
+			LogUtil.writeErrorLog("未获取到返回报文或返回http状态码非200");
+		}
+		String reqMessage = BaseProperties.genHtmlResult(reqData);
+		String rspMessage = BaseProperties.genHtmlResult(rspData);
+		resp.getWriter().write("</br>请求报文:<br/>" + reqMessage + "<br/>" + "应答报文:</br>" + rspMessage + "");
+	}
+
+	/**
+	 * 交易说明：成功的交易才会发送后台通知，建议此交易与交易状态查询交易结合使用确定交易是否成功
+	 * 
+	 * @param req
+	 * @param resp
+	 * @throws IOException
+	 */
+	@RequestMapping(value = "/backRcvResponse", method = RequestMethod.POST)
+	public void backRcvResponse(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+		LogUtil.writeLog("BackRcvResponse接收后台通知开始******************");
+
+		String encoding = req.getParameter(SDKConstants.param_encoding);
+		// 获取银联通知服务器发送的后台通知参数
+		Map<String, String> reqParam = getAllRequestParam(req);
+
+		LogUtil.printRequestLog(reqParam);
+
+		Map<String, String> valideData = null;
+		if (null != reqParam && !reqParam.isEmpty()) {
+			Iterator<Entry<String, String>> it = reqParam.entrySet().iterator();
+			valideData = new HashMap<String, String>(reqParam.size());
+			while (it.hasNext()) {
+				Entry<String, String> e = it.next();
+				String key = (String) e.getKey();
+				String value = (String) e.getValue();
+				value = new String(value.getBytes(encoding), encoding);
+				valideData.put(key, value);
+			}
+		}
+
+		// 重要！验证签名前不要修改reqParam中的键值对的内容，否则会验签不过
+		if (!AcpService.validate(valideData, encoding)) {
+			LogUtil.writeLog("验证签名结果[失败].");
+			// 验签失败，需解决验签问题
+
+		} else {
+			LogUtil.writeLog("验证签名结果[成功].");
+			// 【注：为了安全验签成功才应该写商户的成功处理逻辑】交易成功，更新商户订单状态
+
+			String orderId = valideData.get("orderId"); // 获取后台通知的数据，其他字段也可用类似方式获取
+			String respCode = valideData.get("respCode"); // 获取应答码，收到后台通知了respCode的值一般是00，可以不需要根据这个应答码判断。
+			logger.info("后台通知:orderId=" + orderId + "respCode=" + respCode);
+		}
+		LogUtil.writeLog("BackRcvResponse接收后台通知结束");
+		// 返回给银联服务器http 200 状态码
+		resp.getWriter().print("ok");
+	}
+
+	/**
+	 * 交易说明：支付成功点击“返回商户”按钮的时候出现的处理页面示例
+	 * 
+	 * @param req
+	 * @param resp
+	 * @throws ServletException
+	 * @throws IOException
+	 */
+	@RequestMapping(value = "/frontRcvResponse", method = RequestMethod.POST)
+	public void frontRcvResponse(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
+		LogUtil.writeLog("FrontRcvResponse前台接收报文返回开始");
+
+		String encoding = req.getParameter(SDKConstants.param_encoding);
+		LogUtil.writeLog("返回报文中encoding=[" + encoding + "]");
+		String pageResult = "";
+		if (BaseProperties.encoding_UTF8.equalsIgnoreCase(encoding)) {
+			pageResult = "/utf8_result.jsp";
+		} else {
+			pageResult = "/gbk_result.jsp";
+		}
+		Map<String, String> respParam = getAllRequestParam(req);
+
+		// 打印请求报文
+		LogUtil.printRequestLog(respParam);
+
+		Map<String, String> valideData = null;
+		StringBuffer page = new StringBuffer();
+		if (null != respParam && !respParam.isEmpty()) {
+			Iterator<Entry<String, String>> it = respParam.entrySet().iterator();
+			valideData = new HashMap<String, String>(respParam.size());
+			while (it.hasNext()) {
+				Entry<String, String> e = it.next();
+				String key = (String) e.getKey();
+				String value = (String) e.getValue();
+				value = new String(value.getBytes(encoding), encoding);
+				page.append("<tr><td width=\"30%\" align=\"right\">" + key + "(" + key + ")</td><td>" + value
+						+ "</td></tr>");
+				valideData.put(key, value);
+			}
+		}
+		if (!AcpService.validate(valideData, encoding)) {
+			page.append("<tr><td width=\"30%\" align=\"right\">验证签名结果</td><td>失败</td></tr>");
+			LogUtil.writeLog("验证签名结果[失败].");
+		} else {
+			page.append("<tr><td width=\"30%\" align=\"right\">验证签名结果</td><td>成功</td></tr>");
+			LogUtil.writeLog("验证签名结果[成功].");
+			logger.info(valideData.get("orderId")); // 其他字段也可用类似方式获取
+		}
+		req.setAttribute("result", page.toString());
+		req.getRequestDispatcher(pageResult).forward(req, resp);
+
+		LogUtil.writeLog("FrontRcvResponse前台接收报文返回结束****************************");
+	}
+
+	/**
+	 * 获取请求参数中所有的信息
+	 * 
+	 * @param request
+	 * @return
+	 */
+	private Map<String, String> getAllRequestParam(final HttpServletRequest request) {
+		Map<String, String> res = new HashMap<String, String>();
+		Enumeration<?> temp = request.getParameterNames();
+		if (null != temp) {
+			while (temp.hasMoreElements()) {
+				String en = (String) temp.nextElement();
+				String value = request.getParameter(en);
+				res.put(en, value);
+				// 在报文上送时，如果字段的值为空，则不上送<下面的处理为在获取所有参数数据时，判断若值为空，则删除这个字段>
+				// System.out.println("ServletUtil类247行 temp数据的键=="+en+"
+				// 值==="+value);
+				if (null == res.get(en) || "".equals(res.get(en))) {
+					res.remove(en);
+				}
+			}
+		}
+		return res;
+	}
+
+	/**
+	 * 提现(确定交易成功机制：商户必须开发后台通知接口和交易状态查询接口)
+	 * 
+	 * @param req
+	 * @param resp
+	 * @throws ServletException
+	 * @throws IOException
+	 */
+	@RequestMapping(value = "/withdrawsCash", method = RequestMethod.POST)
+	public void withdrawsCash(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		String txnAmt = req.getParameter("txnAmt");
+		String orderId = req.getParameter("orderId");
+		String txnTime = req.getParameter("txnTime");
+
+		Map<String, String> contentData = new HashMap<String, String>();
+
+		/*** 银联全渠道系统，产品参数，除了encoding自行选择外其他不需修改 ***/
+		contentData.put("version", BaseProperties.version); // 版本号 全渠道默认值
+		contentData.put("encoding", BaseProperties.encoding_UTF8); // 字符集编码
+																	// 可以使用UTF-8,GBK两种方式
+		contentData.put("signMethod", "01"); // 签名方法 目前只支持01：RSA方式证书加密
+		contentData.put("txnType", "12"); // 交易类型 12：代付
+		contentData.put("txnSubType", "00"); // 默认填写00
+		contentData.put("bizType", "000401"); // 000401：代付
+		contentData.put("channelType", "07"); // 渠道类型
+
+		/*** 商户接入参数 ***/
+		contentData.put("merId", SDKConfig.getConfig().getMerId()); // 商户号码，请改成自己申请的商户号或者open上注册得来的777商户号测试
+		contentData.put("accessType", "0"); // 接入类型，商户接入填0 ，不需修改（0：直连商户， 1： 收单机构
+											// 2：平台商户）
+		contentData.put("orderId", orderId); // 商户订单号，8-40位数字字母，不能含“-”或“_”，可以自行定制规则
+		contentData.put("txnTime", txnTime); // 订单发送时间，取系统时间，格式为YYYYMMDDhhmmss，必须取当前时间，否则会报txnTime无效
+		contentData.put("accType", "01"); // 账号类型 01：银行卡02：存折03：IC卡帐号类型(卡介质)
+
+		////////// 如果商户号开通了 商户对敏感信息加密的权限那么，需要对 卡号accNo加密使用：
+		contentData.put("encryptCertId", AcpService.getEncryptCertId()); // 上送敏感信息加密域的加密证书序列号
+		String accNo = AcpService.encryptData("6216261000000000018", BaseProperties.encoding_UTF8); // 这里测试的时候使用的是测试卡号，正式环境请使用真实卡号
+		contentData.put("accNo", accNo);
+		//////////
+
+		///////// 商户未开通敏感信息加密的权限那么不对敏感信息加密使用：
+		// contentData.put("accNo", "6216261000000000018");
+		///////// //这里测试的时候使用的是测试卡号，正式环境请使用真实卡号
+		////////
+
+		// 代收交易的上送的卡验证要素为：姓名或者证件类型+证件号码
+		Map<String, String> customerInfoMap = new HashMap<String, String>();
+		customerInfoMap.put("certifTp", "01"); // 证件类型
+		customerInfoMap.put("certifId", "341126197709218366"); // 证件号码
+		// customerInfoMap.put("customerNm", "全渠道"); //姓名
+		String customerInfoStr = AcpService.getCustomerInfo(customerInfoMap, "6216261000000000018",
+				BaseProperties.encoding_UTF8);
+
+		contentData.put("customerInfo", customerInfoStr);
+		contentData.put("txnAmt", txnAmt); // 交易金额 单位为分，不能带小数点
+		contentData.put("currencyCode", "156"); // 境内商户固定 156 人民币
+		// contentData.put("reqReserved", "透传字段");
+		// //商户自定义保留域，如需使用请启用即可；交易应答时会原样返回
+
+		// 后台通知地址（需设置为外网能访问 http
+		// https均可），支付成功后银联会自动将异步通知报文post到商户上送的该地址，【支付失败的交易银联不会发送后台通知】
+		// 后台通知参数详见open.unionpay.com帮助中心 下载 产品接口规范 网关支付产品接口规范 消费交易 商户通知
+		// 注意:1.需设置为外网能访问，否则收不到通知 2.http https均可 3.收单后台通知后需要10秒内返回http200或302状态码
+		// 4.如果银联通知服务器发送通知后10秒内未收到返回状态码或者应答码非http200或302，那么银联会间隔一段时间再次发送。总共发送5次，银联后续间隔1、2、4、5
+		// 分钟后会再次通知。
+		// 5.后台通知地址如果上送了带有？的参数，例如：http://abc/web?a=b&c=d
+		// 在后台通知处理程序验证签名之前需要编写逻辑将这些字段去掉再验签，否则将会验签失败
+		contentData.put("backUrl", BaseProperties.backUrl);
+
+		/** 对请求参数进行签名并发送http post请求，接收同步应答报文 **/
+		Map<String, String> reqData = AcpService.sign(contentData, BaseProperties.encoding_UTF8); // 报文中certId,signature的值是在signData方法中获取并自动赋值的，只要证书配置正确即可。
+		String requestBackUrl = SDKConfig.getConfig().getBackRequestUrl(); // 交易请求url从配置文件读取对应属性文件acp_sdk.properties中的
+																			// acpsdk.backTransUrl
+
+		Map<String, String> rspData = AcpService.post(reqData, requestBackUrl, BaseProperties.encoding_UTF8); // 发送请求报文并接受同步应答（默认连接超时时间30秒，读取返回结果超时时间30秒）;这里调用signData之后，调用submitUrl之前不能对submitFromData中的键值对做任何修改，如果修改会导致验签不通过
+		/** 对应答码的处理，请根据您的业务逻辑来编写程序,以下应答码处理逻辑仅供参考-------------> **/
+		// 应答码规范参考open.unionpay.com帮助中心 下载 产品接口规范 《平台接入接口规范-第5部分-附录》
+		if (!rspData.isEmpty()) {
+			if (AcpService.validate(rspData, BaseProperties.encoding_UTF8)) {
+				LogUtil.writeLog("验证签名成功");
+				String respCode = rspData.get("respCode");
+				if (("00").equals(respCode)) {
+					// 交易已受理(不代表交易已成功），等待接收后台通知确定交易成功，也可以主动发起 查询交易确定交易状态。
+					// TODO
+
+					// 如果返回卡号且配置了敏感信息加密，解密卡号方法：
+					// String accNo1 = resmap.get("accNo");
+					// String accNo2 = AcpService.decryptPan(accNo1, "UTF-8");
+					// //解密卡号使用的证书是商户签名私钥证书acpsdk.signCert.path
+					// LogUtil.writeLog("解密后的卡号："+accNo2);
+				} else if (("03").equals(respCode) || ("04").equals(respCode) || ("05").equals(respCode)
+						|| ("01").equals(respCode) || ("12").equals(respCode) || ("34").equals(respCode)
+						|| ("60").equals(respCode)) {
+					// 后续需发起交易状态查询交易确定交易状态。
+					// TODO
+				} else {
+					// 其他应答码为失败请排查原因
+					// TODO
+				}
+			} else {
+				LogUtil.writeErrorLog("验证签名失败");
+				// TODO 检查验证签名失败的原因
+			}
+		} else {
+			// 未返回正确的http状态
+			LogUtil.writeErrorLog("未获取到返回报文或返回http状态码非200");
+		}
+
+		String reqMessage = BaseProperties.genHtmlResult(reqData);
+		String rspMessage = BaseProperties.genHtmlResult(rspData);
+		resp.getWriter().write("代付交易</br>请求报文:<br/>" + reqMessage + "<br/>" + "应答报文:</br>" + rspMessage + "");
+	}
+
+	/**
+	 * 提现查询 (交易说明：代付同步返回00，如果未收到后台通知建议3分钟后发起查询交易，可查询N次（不超过6次），
+	 * 每次时间间隔2N秒发起,即间隔1，2，4，8，16，32S查询（查询到03 04 05 01 12 34
+	 * 60继续查询，否则终止查询）。【如果最终尚未确定交易是否成功请以对账文件为准】 代付同步返03 04 05 01 12 34
+	 * 60响应码及未得到银联响应（读超时）建议3分钟后发起查询交易，可查询N次（不超过6次），
+	 * 每次时间间隔2N秒发起,即间隔1，2，4，8，16，32S查询（查询到03 04 05 01 12 34
+	 * 60继续查询，否则终止查询）。【如果最终尚未确定交易是否成功请以对账文件为准】)
+	 * 
+	 * @param req
+	 * @param resp
+	 * @throws ServletException
+	 * @throws IOException
+	 */
+	@RequestMapping(value = "/withdrawsCashQuery", method = RequestMethod.POST)
+	public void withdrawsCashQuery(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
+		String orderId = req.getParameter("orderId");
+		String txnTime = req.getParameter("txnTime");
+
+		Map<String, String> data = new HashMap<String, String>();
+
+		/*** 银联全渠道系统，产品参数，除了encoding自行选择外其他不需修改 ***/
+		data.put("version", BaseProperties.version); // 版本号
+		data.put("encoding", BaseProperties.encoding_UTF8); // 字符集编码
+															// 可以使用UTF-8,GBK两种方式
+		data.put("signMethod", "01"); // 签名方法 目前只支持01-RSA方式证书加密
+		data.put("txnType", "00"); // 交易类型 00-默认
+		data.put("txnSubType", "00"); // 交易子类型 默认00
+		data.put("bizType", "000401"); // 业务类型 代付
+
+		/*** 商户接入参数 ***/
+		data.put("merId", SDKConfig.getConfig().getMerId()); // 商户号码，请改成自己申请的商户号或者open上注册得来的777商户号测试
+		data.put("accessType", "0"); // 接入类型，商户接入固定填0，不需修改
+
+		/*** 要调通交易以下字段必须修改 ***/
+		data.put("orderId", orderId); // ****商户订单号，每次发交易测试需修改为被查询的交易的订单号
+		data.put("txnTime", txnTime); // ****订单发送时间，每次发交易测试需修改为被查询的交易的订单发送时间
+
+		/** 请求参数设置完毕，以下对请求参数进行签名并发送http post请求，接收同步应答报文-------------> **/
+
+		Map<String, String> reqData = AcpService.sign(data, BaseProperties.encoding_UTF8); // 报文中certId,signature的值是在signData方法中获取并自动赋值的，只要证书配置正确即可。
+		String url = SDKConfig.getConfig().getSingleQueryUrl(); // 交易请求url从配置文件读取对应属性文件acp_sdk.properties中的
+																// acpsdk.singleQueryUrl
+		Map<String, String> rspData = AcpService.post(reqData, url, BaseProperties.encoding_UTF8); // 发送请求报文并接受同步应答（默认连接超时时间30秒，读取返回结果超时时间30秒）;这里调用signData之后，调用submitUrl之前不能对submitFromData中的键值对做任何修改，如果修改会导致验签不通过
+
+		/** 对应答码的处理，请根据您的业务逻辑来编写程序,以下应答码处理逻辑仅供参考-------------> **/
+
+		// 应答码规范参考open.unionpay.com帮助中心 下载 产品接口规范 《平台接入接口规范-第5部分-附录》
+		if (!rspData.isEmpty()) {
+			if (AcpService.validate(rspData, BaseProperties.encoding_UTF8)) {
+				LogUtil.writeLog("验证签名成功");
+				if (("00").equals(rspData.get("respCode"))) {// 如果查询交易成功
+					String origRespCode = rspData.get("origRespCode");
+					// 处理被查询交易的应答码逻辑
+					if (("00").equals(origRespCode) || ("A6").equals(origRespCode)) {
+						// A6代付交易返回，参与清算，商户应该算成功交易，根据成功的逻辑处理
+						// 交易成功，更新商户订单状态
+						// TODO
+					} else if (("03").equals(origRespCode) || ("04").equals(origRespCode) || ("05").equals(origRespCode)
+							|| ("01").equals(origRespCode) || ("12").equals(origRespCode) || ("34").equals(origRespCode)
+							|| ("60").equals(origRespCode)) {
+						// 订单处理中或交易状态未明，需稍后发起交易状态查询交易 【如果最终尚未确定交易是否成功请以对账文件为准】
+						// TODO
+					} else {
+						// 其他应答码为交易失败
+						// TODO
+					}
+				} else if (("34").equals(rspData.get("respCode"))) {
+					// 订单不存在，可认为交易状态未明，需要稍后发起交易状态查询，或依据对账结果为准
+
+				} else {// 查询交易本身失败，如应答码10/11检查查询报文是否正确
+						// TODO
+				}
+			} else {
+				LogUtil.writeErrorLog("验证签名失败");
+				// TODO 检查验证签名失败的原因
+			}
+		} else {
+			// 未返回正确的http状态
+			LogUtil.writeErrorLog("未获取到返回报文或返回http状态码非200");
+		}
+
+		String reqMessage = BaseProperties.genHtmlResult(reqData);
+		String rspMessage = BaseProperties.genHtmlResult(rspData);
+		resp.getWriter().write("交易状态查询交易</br>请求报文:<br/>" + reqMessage + "<br/>" + "应答报文:</br>" + rspMessage + "");
+	}
+
+	/**
+	 * 批量提现 交易说明: 1)确定批量结果请调用批量交易状态查询交易,无后台通知。 2)批量文件格式请参考 《全渠道平台接入接口规范 第3部分
+	 * 文件接口》（4.批量文件基本约定）
+	 * 3）批量代付文件示例DF00000000777290058110097201507140002I.txt，注意：
+	 * 使用的时候需修改文件内容的批次号，日期（与txnTime前八位相同）总笔数，
+	 * 总金额等于下边参数中batchNo，txnTime，totalQty，totalAmt设定的一致。
+	 * 
+	 * @param req
+	 * @param resp
+	 * @throws ServletException
+	 * @throws IOException
+	 */
+	@RequestMapping(value = "/batchWithdrawsCash", method = RequestMethod.POST)
+	public void batchWithdrawsCash(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
+		String txnTime = req.getParameter("txnTime");
+		Map<String, String> contentData = new HashMap<String, String>();
+
+		/*** 银联全渠道系统，产品参数，除了encoding自行选择外其他不需修改 ***/
+		contentData.put("version", BaseProperties.version); // 版本号
+		contentData.put("encoding", BaseProperties.encoding_UTF8); // 字符集编码
+																	// 可以使用UTF-8,GBK两种方式
+		contentData.put("signMethod", "01"); // 签名方法 目前只支持01-RSA方式证书加密
+		contentData.put("txnType", "21"); // 取值：21 批量交易
+		contentData.put("txnSubType", "03"); // 填写：01：退货02：代收03：代付
+		contentData.put("bizType", "000401"); // 代付 000401
+		contentData.put("channelType", "07"); // 渠道类型
+
+		/*** 商户接入参数 ***/
+		contentData.put("accessType", "0"); // 接入类型，商户接入填0 ，不需修改（0：直连商户 2：平台商户）
+		contentData.put("merId", SDKConfig.getConfig().getMerId()); // 商户号码，请改成自己申请的商户号，【测试777开通的商户号不支持代收产品】
+
+		/** 与批量文件内容相关的参数 **/
+		contentData.put("batchNo", "0007"); // 批量交易时填写，当天唯一,0001-9999，商户号+批次号+上交易时间确定一笔交易
+		contentData.put("txnTime", txnTime); // 前8位需与文件中的委托日期保持一致
+		contentData.put("totalQty", "10"); // 批量交易时填写，填写批量文件中总的交易比数
+		contentData.put("totalAmt", "1000"); // 批量交易时填写，填写批量文件中总的交易金额
+
+		// 使用DEFLATE压缩算法压缩后，Base64编码的方式传输经压缩编码的文件内容，文件中的商户号必须与merId一致
+		// 示例文件位置在src/assets下
+		contentData.put("fileContent", AcpService.enCodeFileContent(
+				"E://certs//DF00000000777290058110097201507140002I.txt", BaseProperties.encoding_UTF8));
+		// contentData.put("reqReserved", "透传字段");
+		// //商户自定义保留域，如需使用请启用即可；交易应答时会原样返回
+
+		/** 对请求参数进行签名并发送http post请求，接收同步应答报文 **/
+		String requestBatchTransUrl = SDKConfig.getConfig().getBatchTransUrl(); // 交易请求url从配置文件读取对应属性文件acp_sdk.properties中的acpsdk.batchTransUrl
+		Map<String, String> reqData = AcpService.sign(contentData, BaseProperties.encoding_UTF8); // 报文中certId,signature的值是在signData方法中获取并自动赋值的，只要证书配置正确即可。
+
+		Map<String, String> rspData = AcpService.post(reqData, requestBatchTransUrl, BaseProperties.encoding_UTF8); // 发送请求报文并接受同步应答（默认连接超时时间30秒，读取返回结果超时时间30秒）;这里调用signData之后，调用submitUrl之前不能对submitFromData中的键值对做任何修改，如果修改会导致验签不通过
+
+		/** 对应答码的处理，请根据您的业务逻辑来编写程序,以下应答码处理逻辑仅供参考-------------> **/
+		// 应答码规范参考open.unionpay.com帮助中心 下载 产品接口规范 《平台接入接口规范-第5部分-附录》
+		if (!rspData.isEmpty()) {
+			if (AcpService.validate(rspData, BaseProperties.encoding_UTF8)) {
+				LogUtil.writeLog("验证签名成功");
+				String respCode = rspData.get("respCode");
+				if (("00").equals(respCode) || ("03").equals(respCode) || ("04").equals(respCode)
+						|| ("05").equals(respCode)) {
+					// 00：交易已受理
+					// 其他：03 04 05
+					// 都需发起交易批量状态查询交易（Form10_6_6_BatchQuery）确定交易状态【建议1小时后查询】
+					// TODO
+				} else {
+					// 其他应答码为失败请排查原因
+					// TODO
+				}
+			} else {
+				LogUtil.writeErrorLog("验证签名失败");
+				// TODO 检查验证签名失败的原因
+			}
+		} else {
+			// 未返回正确的http状态
+			LogUtil.writeErrorLog("未获取到返回报文或返回http状态码非200");
+		}
+
+		String reqMessage = BaseProperties.genHtmlResult(reqData);
+		String rspMessage = BaseProperties.genHtmlResult(rspData);
+		resp.getWriter().write("批量代付交易</br>请求报文:<br/>" + reqMessage + "<br/>" + "应答报文:</br>" + rspMessage + "");
+	}
+
+	/**
+	 * 批量查询 交易说明: 1)确定批量结果请调用此交易。 2)批量文件格式请参考 《全渠道平台接入接口规范 第3部分
+	 * 文件接口》（4.批量文件基本约定） 3)批量交易状态查询的时间机制：建议间隔1小时后查询。 4)批量查询成功的情况下对一笔批量交易只能查询5次。
+	 * 
+	 * @param req
+	 * @param resp
+	 * @throws ServletException
+	 * @throws IOException
+	 */
+	@RequestMapping(value = "/batchWithdrawsCashQuery", method = RequestMethod.POST)
+	public void batchWithdrawsCashQuery(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
+		String batchNo = req.getParameter("batchNo");
+		String txnTime = req.getParameter("txnTime");
+
+		Map<String, String> contentData = new HashMap<String, String>();
+		/*** 银联全渠道系统，产品参数，除了encoding自行选择外其他不需修改 ***/
+		contentData.put("version", BaseProperties.version); // 版本号
+		contentData.put("encoding", BaseProperties.encoding_UTF8); // 字符集编码
+																	// 可以使用UTF-8,GBK两种方式
+		contentData.put("signMethod", "01"); // 签名方法 目前只支持01-RSA方式证书加密
+		contentData.put("txnType", "22"); // 交易类型 22 批量查询
+		contentData.put("txnSubType", "03"); // 交易子类 03 代付
+		contentData.put("bizType", "000401"); // 代付 000401
+		contentData.put("channelType", "07"); // 渠道类型
+
+		/*** 商户接入参数 ***/
+		contentData.put("accessType", "0"); // 接入类型，商户接入填0 ，不需修改（0：直连商户 2：平台商户）
+		contentData.put("merId", SDKConfig.getConfig().getMerId());// 商户号码，请改成自己申请的商户号，【测试777开通的商户号不支持代收产品】
+		// contentData.put("reqReserved", "11111");
+		// //请求方保留域，如需使用请启用即可；透传字段（可以实现商户自定义参数的追踪）本交易的后台通知,对本交易的交易状态查询交易、对账文件中均会原样返回，商户可以按需上传，长度为1-1024个字节
+
+		/** 与批量查询相关的参数 **/
+		contentData.put("batchNo", batchNo); // 被查询批量交易批次号
+		contentData.put("txnTime", txnTime); // 原批量代收请求的交易时间
+
+		/** 对请求参数进行签名并发送http post请求，接收同步应答报文 **/
+		String requestBatchQueryUrl = SDKConfig.getConfig().getBatchTransUrl(); // 交易请求url从配置文件读取对应属性文件acp_sdk.properties中的acpsdk.batchTransUrl
+		Map<String, String> reqData = AcpService.sign(contentData, BaseProperties.encoding_UTF8); // 报文中certId,signature的值是在signData方法中获取并自动赋值的，只要证书配置正确即可
+		// 如果这里通讯读超时（30秒），需发起交易状态查询交易
+		Map<String, String> rspData = AcpService.post(reqData, requestBatchQueryUrl, BaseProperties.encoding_UTF8); // 发送请求报文并接受同步应答（默认连接超时时间30秒，读取返回结果超时时间30秒）;这里调用signData之后，调用submitUrl之前不能对submitFromData中的键值对做任何修改，如果修改会导致验签不通过
+
+		// 应答码规范参考open.unionpay.com帮助中心 下载 产品接口规范 《平台接入接口规范-第5部分-附录》
+		if (!rspData.isEmpty()) {
+			if (AcpService.validate(rspData, BaseProperties.encoding_UTF8)) {
+				LogUtil.writeLog("验证签名成功");
+				if (("00").equals(rspData.get("respCode"))) {
+					// 成功
+					// 落地查询结果样例
+					String fileContent = rspData.get("fileContent");
+					String queryResult = AcpService.getFileContent(fileContent, BaseProperties.encoding_UTF8);
+					System.out.println("查询结果文件内容：\n" + queryResult);
+					// 批量应答如果提示某笔交易查询超时处理机制：
+					// 需要对单笔交易发起交易状态查询，查询机制参考单笔代付查询机制
+				} else {
+					// 其他应答码为失败请排查原因
+					// TODO
+				}
+			} else {
+				LogUtil.writeErrorLog("验证签名失败");
+				// TODO 检查验证签名失败的原因
+			}
+		} else {
+			// 未返回正确的http状态
+			LogUtil.writeErrorLog("未获取到返回报文或返回http状态码非200");
+		}
+
+		String reqMessage = BaseProperties.genHtmlResult(reqData);
+		String rspMessage = BaseProperties.genHtmlResult(rspData);
+		resp.getWriter().write("批量代付查询交易</br>请求报文:<br/>" + reqMessage + "<br/>" + "应答报文:</br>" + rspMessage + "");
+	}
+
+	/**
+	 * 预备提现
+	 * 
+	 * @param req
+	 * @param resp
+	 */
+	@Transactional
+	@RequestMapping(value = "/prepareWithdrawsCash", method = RequestMethod.POST)
+	public void prepareWithdrawsCash(WithdrawalVO withdrawalVO, HttpServletRequest req, HttpServletResponse resp) {
+		String withdrawalId = BaseProperties.getOrderId();
+		withdrawalVO.setWithdrawalId(withdrawalId);
+		withdrawalVO.setWithdrawalStatus("NO");
+		unionPayService.addPrepareWithdrawsCash(withdrawalVO);
+		WithdrawalLogVO withdrawalLogVO = new WithdrawalLogVO();
+		withdrawalLogVO.setWithdrawalId(withdrawalVO.getWithdrawalId());
+		withdrawalLogVO.setWithdrawalWay(withdrawalVO.getWithdrawalWay());
+		withdrawalLogVO.setOperation("NO");
+		unionPayService.addFinanceDetailLog(withdrawalLogVO);
+	}
+
+	/**
+	 * 确认提现
+	 * 
+	 * @param req
+	 * @param resp
+	 */
+	@Transactional
+	@RequestMapping(value = "/confirmWithdrawsCash", method = RequestMethod.POST)
+	public void confirmWithdrawsCash(WithdrawalLogVO withdrawalLogVO, HttpServletRequest req,
+			HttpServletResponse resp) {
+		long userId = Long.parseLong(req.getSession().getAttribute("CURRENT_USER").toString());
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("withdrawalStatus", "YES");
+		map.put("lastUpdatedBy", userId); // "当前登陆人"
+		map.put("withdrawalId", withdrawalLogVO.getWithdrawalId());
+		map.put("userId", withdrawalLogVO.getUserId());
+		unionPayService.updateWithdrawsCash(map);
+		unionPayService.addFinanceDetailLog(withdrawalLogVO);
+	}
+
+	/**
+	 * 暂停提现
+	 * 
+	 * @param req
+	 * @param resp
+	 */
+	@Transactional
+	@RequestMapping(value = "/pauseWithdrawsCash", method = RequestMethod.POST)
+	public void pauseWithdrawsCash(WithdrawalLogVO withdrawalLogVO, HttpServletRequest req, HttpServletResponse resp) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("withdrawalStatus", "WAIT");
+		map.put("lastUpdatedBy", ""); // "当前登陆人"
+		map.put("withdrawalId", withdrawalLogVO.getWithdrawalId());
+		map.put("userId", withdrawalLogVO.getUserId());
+		unionPayService.updateWithdrawsCash(map);
+		unionPayService.addFinanceDetailLog(withdrawalLogVO);
+	}
+
+	/**
+	 * 提现审核列表
+	 * 
+	 * @param req
+	 * @param resp
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/financeDetailLogList", method = RequestMethod.POST)
+	public WWHResultData<PagedResult<WithdrawalVO>> financeDetailLogList(PagedResult<WithdrawalVO> rs,
+			HttpServletRequest req, HttpServletResponse resp) {
+		long currentPage = 1;
+		currentPage = rs.getCurrentPage() > 0 ? rs.getCurrentPage() : currentPage;
+		long pageSize = 10;
+		pageSize = rs.getPageSize() > 0 ? rs.getPageSize() : pageSize;
+		long pages = 0;
+		long startNumber = (currentPage - 1) * pageSize;
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("withdrawalStatus", "NO");
+		map.put("startNumber", startNumber);
+		map.put("pageSize", pageSize);
+		List<WithdrawalVO> list = unionPayService.queryPrepareWithdrawsCash(map);
+		long total = unionPayService.queryPrepareWithdrawsCashCount(map);
+		pages = total > 0 ? total / pageSize + 1 : pages;
+		PagedResult<WithdrawalVO> pagedResult = new PagedResult<WithdrawalVO>();
+		pagedResult.setCurrentPage(currentPage);
+		pagedResult.setPageSize(pageSize);
+		pagedResult.setTotal(total);
+		pagedResult.setPages(pages);
+		pagedResult.setDataList(list);
+		WWHResultData<PagedResult<WithdrawalVO>> data = new WWHResultData<PagedResult<WithdrawalVO>>();
+		data.setCode(ReturnConstant.RETURN_CODE_200);
+		data.setMsg(ReturnConstant.RETURN_STATUS_SUCCESS);
+		data.setData(pagedResult);
+		return data;
+	}
+
+	/**
+	 * 实名认证
+	 * 
+	 * @param bankCardVO
+	 * @param req
+	 * @param resp
+	 * @throws ServletException
+	 * @throws IOException
+	 */
+	@RequestMapping(value = "/RealAuthBack", method = RequestMethod.GET)
+	public void RealAuthBack(BankCardVO bankCardVO, HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
+		String orderId = req.getParameter("orderId");
+		String txnTime = req.getParameter("txnTime");
+
+		Map<String, String> contentData = new HashMap<String, String>();
+
+		/*** 银联全渠道系统，产品参数，除了encoding自行选择外其他不需修改 ***/
+		contentData.put("version", BaseProperties.version); // 版本号
+		contentData.put("encoding", BaseProperties.encoding_UTF8); // 字符集编码
+																	// 可以使用UTF-8,GBK两种方式
+		contentData.put("signMethod", "01"); // 签名方法 目前只支持01-RSA方式证书加密
+		contentData.put("txnType", "72"); // 交易类型 11-代收
+		contentData.put("txnSubType", "01"); // 交易子类型 01-实名认证
+		contentData.put("bizType", "000501"); // 业务类型 代收产品
+		contentData.put("channelType", "07"); // 渠道类型07-PC
+
+		/*** 商户接入参数 ***/
+		contentData.put("merId", SDKConfig.getConfig().getMerId()); // 商户号码（商户号码777290058110097仅做为测试调通交易使用，该商户号配置了需要对敏感信息加密）测试时请改成自己申请的商户号，【自己注册的测试777开头的商户号不支持代收产品】
+		contentData.put("accessType", "0"); // 接入类型，商户接入固定填0，不需修改
+		contentData.put("orderId", orderId); // 商户订单号，8-40位数字字母，不能含“-”或“_”，可以自行定制规则
+		contentData.put("txnTime", txnTime); // 订单发送时间，格式为YYYYMMDDhhmmss，必须取当前时间，否则会报txnTime无效
+		contentData.put("accType", "01"); // 账号类型
+
+		// 【实名认证的customerInfo送什么验证要素是配置到银联后台到商户号上的，这些验证要素可以在商户的《全渠道入网申请表》中找到，也可以请咨询您的业务人员或者银联业务运营接口人】
+		// 以下上送要素是参考《测试商户号777290058110097代收、实名认证交易必送验证要素配置说明.txt》借记卡（实名认证交易-后台）部分
+		Map<String, String> customerInfoMap = new HashMap<String, String>();
+		customerInfoMap.put("certifTp", "01"); // 证件类型
+		customerInfoMap.put("certifId", "341126197709218366"); // 证件号码
+		customerInfoMap.put("customerNm", "全渠道"); // 姓名
+		customerInfoMap.put("phoneNo", "13552535506"); // 手机号
+		// customerInfoMap.put("cvn2", "123"); //卡背面的cvn2三位数字
+		// customerInfoMap.put("expired", "1711"); //有效期 年在前月在后
+
+		//////////// 如果商户号开通了【商户对敏感信息加密】的权限那么需要对
+		//////////// accNo，pin和phoneNo，cvn2，expired加密（如果这些上送的话），对敏感信息加密使用：
+		String accNo = AcpService.encryptData("6221558812340000", "UTF-8"); // 这里测试的时候使用的是测试卡号，正式环境请使用真实卡号
+		contentData.put("accNo", accNo);
+		contentData.put("encryptCertId", AcpService.getEncryptCertId()); // 加密证书的certId，配置在acp_sdk.properties文件
+																			// acpsdk.encryptCert.path属性下
+		String customerInfoStr = AcpService.getCustomerInfoWithEncrypt(customerInfoMap, null,
+				BaseProperties.encoding_UTF8);
+		//////////
+
+		///////// 如果商户号未开通【商户对敏感信息加密】权限那么不需对敏感信息加密使用：
+		// contentData.put("accNo", "6216261000000000018");
+		///////// //这里测试的时候使用的是测试卡号，正式环境请使用真实卡号
+		// String customerInfoStr =
+		///////// DemoBase.getCustomerInfo(customerInfoMap,null);
+		////////
+
+		contentData.put("customerInfo", customerInfoStr);
+		// contentData.put("reqReserved", "透传字段");
+		// //请求方保留域，透传字段（可以实现商户自定义参数的追踪）本交易的后台通知,对本交易的交易状态查询交易、对账文件中均会原样返回，商户可以按需上传，长度为1-1024个字节
+
+		/** 对请求参数进行签名并发送http post请求，接收同步应答报文 **/
+		Map<String, String> reqData = AcpService.sign(contentData, BaseProperties.encoding_UTF8); // 报文中certId,signature的值是在signData方法中获取并自动赋值的，只要证书配置正确即可。
+		String requestBackUrl = SDKConfig.getConfig().getBackRequestUrl(); // 交易请求url从配置文件读取对应属性文件acp_sdk.properties中的
+																			// acpsdk.backTransUrl
+		Map<String, String> rspData = AcpService.post(reqData, requestBackUrl, BaseProperties.encoding_UTF8); // 发送请求报文并接受同步应答（默认连接超时时间30秒，读取返回结果超时时间30秒）;这里调用signData之后，调用submitUrl之前不能对submitFromData中的键值对做任何修改，如果修改会导致验签不通过
+
+		/** 对应答码的处理，请根据您的业务逻辑来编写程序,以下应答码处理逻辑仅供参考-------------> **/
+		// 应答码规范参考open.unionpay.com帮助中心 下载 产品接口规范 《平台接入接口规范-第5部分-附录》
+		if (!rspData.isEmpty()) {
+			if (AcpService.validate(rspData, BaseProperties.encoding_UTF8)) {
+				LogUtil.writeLog("验证签名成功");
+				String respCode = rspData.get("respCode");
+				if (("00").equals(respCode)) {
+					// 成功
+					// TODO
+				} else {
+					// 其他应答码为失败请排查原因或做失败处理
+					// TODO
+				}
+			} else {
+				LogUtil.writeErrorLog("验证签名失败");
+				// TODO 检查验证签名失败的原因
+			}
+		} else {
+			// 未返回正确的http状态
+			LogUtil.writeErrorLog("未获取到返回报文或返回http状态码非200");
+		}
+		String reqMessage = BaseProperties.genHtmlResult(reqData);
+		String rspMessage = BaseProperties.genHtmlResult(rspData);
+		resp.getWriter().write("请求报文:<br/>" + reqMessage + "<br/>" + "应答报文:</br>" + rspMessage + "");
+	}
+
+	/**
+	 * 绑定卡
+	 * 
+	 * @param req
+	 * @param resp
+	 */
+	@Transactional
+	@ResponseBody
+	@RequestMapping(value = "/addBindingCard", method = RequestMethod.POST)
+	public WWHResultData<Object> addBindingCard(@RequestBody BankCardVO bankCardVO, HttpServletRequest req,
+			HttpServletResponse resp) {
+		// String bankCardNumber = bankCardVO.getBankCardNumber();
+		// bankCardNumber 需要调接口 实名认证
+		WWHResultData<Object> data = new WWHResultData<Object>();
+		long userId = Long.parseLong(req.getSession().getAttribute("CURRENT_USER").toString());
+		String bankCardId = String.valueOf(Math.floor(Math.random() * 1000000000));
+		BankCardVO bankCard = unionPayService.queryBankCardInfo(userId, bankCardVO.getBankCardNumber());
+		if (null != bankCard) {
+			data.setCode(ReturnConstant.RETURN_CODE_402);
+			data.setMsg(ReturnConstant.RETURN_MSG_402);
+			return data;
+		}
+		bankCardVO.setUserId(userId);
+		bankCardVO.setCreatedBy(userId);
+		bankCardVO.setLastUpdatedBy(userId);
+		bankCardVO.setBankCardId(bankCardId);
+		int i = 0, j = 0;
+		i = unionPayService.addBankCard(bankCardVO);
+		j = unionPayService.addBindingBankCard(bankCardVO);
+
+		data.setCode(ReturnConstant.RETURN_CODE_200);
+		data.setMsg(ReturnConstant.RETURN_STATUS_SUCCESS);
+		if (i + j < 2) {
+			data.setCode(ReturnConstant.RETURN_CODE_500);
+			data.setMsg(ReturnConstant.RETURN_MSG_500);
+		}
+		return data;
+	}
+
+	/**
+	 * 查询绑定的卡
+	 * 
+	 * @param req
+	 * @param resp
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/queryBindingBankCard", method = RequestMethod.POST)
+	public WWHResultData<List<BankCardVO>> queryBindingBankCard(HttpServletRequest req, HttpServletResponse resp) {
+		long userId = Long.parseLong(req.getSession().getAttribute("CURRENT_USER").toString());
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("userId", userId);
+		List<BankCardVO> list = unionPayService.queryBindingBankCard(map);
+		WWHResultData<List<BankCardVO>> data = new WWHResultData<List<BankCardVO>>();
+		data.setCode(ReturnConstant.RETURN_CODE_200);
+		data.setMsg(ReturnConstant.RETURN_STATUS_SUCCESS);
+		data.setData(list);
+		return data;
+	}
+}

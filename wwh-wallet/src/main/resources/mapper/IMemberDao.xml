@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wwh.dao.IMemberDao">
+	<!-- 根据充值唯一编号和充值类型，获取用户ID -->
+	<select id="getMemberById"  parameterType="long"  resultType="java.util.Map">
+		SELECT
+			t.MEMBER_ID memberId,
+			t.MEMBER_NAME memberName,
+			t. PASSWORD password,
+			t.mobile_phone mobilePhone,
+			t.NICK_NAME nickName,
+			IFNULL(t.PIC_URL,'default') picUrl,
+			t.BIRTHDAY birthday,
+			t.GENDER gender,
+			t.REFERENCE_ID referenceId
+		FROM
+			t_member t
+		WHERE
+			t.IS_BLACKLIST = 0
+		AND t.MEMBER_ID = #{memberId}
+	</select>
+	<select id="getMemberByCondition"  parameterType="String"  resultType="java.util.Map">
+		SELECT
+			t.MEMBER_ID memberId,
+			t.MEMBER_NAME memberName,
+			t. PASSWORD password,
+			t.mobile_phone mobilePhone,
+			t.NICK_NAME nickName,
+			IFNULL(t.PIC_URL,'default') picUrl,
+			t.BIRTHDAY birthday,
+			t.GENDER gender,
+			t.REFERENCE_ID referenceId,
+			t.MOBILE_PHONE mobilePhone,
+			t.EMAIL email
+		FROM
+			t_member t
+		WHERE
+			t.IS_BLACKLIST = 0
+		AND (t.MEMBER_NAME = #{condition} or t.EMAIL = #{condition} or t.mobile_phone =  #{condition})
+	</select>
+</mapper>  

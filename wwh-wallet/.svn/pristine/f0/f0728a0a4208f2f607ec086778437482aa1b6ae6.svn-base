@@ -1,0 +1,1147 @@
+﻿﻿﻿
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>我的积分</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="金融、钱包、理财、高收益">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="/wwh-wallet/css/bootstrap.css">
+    <link rel="stylesheet" href="/wwh-wallet/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/wwh-wallet/css/plugin.css">
+    <link rel="stylesheet" href="/wwh-wallet/css/landing.css">
+    <link rel="stylesheet" href="/wwh-wallet/css/common.css">
+    <link href="/wwh-wallet/css/mall/private-benefit.css" rel="stylesheet" />
+    <script type="text/javascript" src="/wwh-wallet/js/jquery.min.js"></script>
+    <script src="/wwh-wallet/js/bootstrap.js"></script>
+    <script src="/wwh-wallet/js/app.js"></script>
+    <script src="/wwh-wallet/js/app.plugin.js"></script>
+    <script src="/wwh-wallet/js/app.data.js"></script>
+    <script src="/wwh-wallet/js/fuelux/fuelux.js"></script>
+    <script src="/wwh-wallet/js/datepicker/bootstrap-datepicker.js"></script>
+    <script src="/wwh-wallet/js/slider/bootstrap-slider.js"></script>
+    <script src="/wwh-wallet/js/file-input/bootstrap.file-input.js"></script>
+    <script src="/wwh-wallet/js/combodate/moment.min.js"></script>
+    <script src="/wwh-wallet/js/angular.js"></script>
+    <script src="/wwh-wallet/js/tm.pagination.js"></script>
+    <script>
+        var a = document.body.innerHTML;
+        document.body.innerHTML = a.replace(/\ufeff/g, '');
+    </script>
+</head>
+<body ng-app="myApp">
+    <div ng-include src="'/wwh-wallet/pages/wallet/common/header.html'"></div>
+    <input id="selectedpage" type="hidden" value="bonus" />
+    <div id="myboundinfo" class="bonus-box" ng-controller="myboundinfoCtrl">
+    	<!-- 
+	      <div id="modal3" class="modal fade">
+	        <form class="m-b-none">
+	            <div class="modal-dialog pos-abt" style="margin-top:-235px; top:50%; width:800px; margin-left:-400px;">
+	                <div class="modal-content">
+	                    <div class="modal-header">
+	                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="icon-remove"></i></button>
+	                        <h4 class="modal-title" id="myModalLabel">确认提醒：</h4>
+	                    </div>
+	                    <div class="modal-body">
+	                        <div class="checkbox" style="text-align:center">
+	                          	请先实名认证
+	                        </div>
+	                    </div>
+	                    <div class="modal-footer">
+	                        <button type="button" class="btn btn-small btn-primary" data-dismiss="modal">确认</button>
+	                    </div>
+	                </div>
+	            </div>
+	        </form>
+	    </div>
+	     --> 
+        <div class="m-box fixed">
+            <div class="bonus-wrap">
+                <div class="bonus-pos1">
+                    <div class="font01">剩余积分</div>
+                    <div class="font02" ng-bind="remainScore | currency :''"></div>
+                </div>
+                <div class="bonus-pos2">
+                    <div class="font01">已用积分</div>
+                    <div class="font02" ng-bind="usedScore | currency :''"></div>
+                </div>
+                <div class="takecash-line">
+                </div>
+                <div class="takecash-w">
+                	<form id="goto_chargeStep1" action="/wwh-wallet/choose" method="post">
+                	     <input type="hidden" name="amount" value="0"/>
+                   		 <a style="cursor:pointer;" class="mb-takecash22" ng-click="gotoChargeStep1()">我要充值</a>
+                    </form>
+                </div>
+                <div class="smrz-pos">
+                	<a data-toggle="modal"  href="#modal2" ng-click="initInfo()"> 实名认证  </a>
+                	<!-- 
+                	<span style="font-size:14px;color:#FFF">(首次实名认证后可赠送100积分)</span>
+                	 -->
+                	<input id="onloadtriggerClick1" class="onloadtrigger3" data-toggle="modal" href="#modal3" type="hidden" />
+                </div>
+                
+            </div>
+            <div class="honour-wrap">
+                <div class="line-title-wrap">
+                    <div class="left-line"></div>
+                    <div class="right-line"></div>
+                    <div class="title">我的徽章</div>
+                </div>
+                <div class="grade-honner">
+                    <div class="g-h g-h-1" ng-class="tiyan">
+                        <div class="title">银卡会员</div>
+                    </div>
+                    <div class="g-h g-h-2" ng-class="huimin">
+                        <div class="title">白金会员</div>
+                    </div>
+                    <div class="g-h g-h-3" ng-class="fumin">
+                        <div class="title">钻石会员</div>
+                    </div>
+                    <div class="g-h g-h-4" ng-class="xingmin">
+                        <div class="title">至尊会员</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="m-tools-box">
+        <div class="m-box bgfafaf"></div>
+    </div>
+    <div class="deals-details bgfafaf">
+        <div class="m-box fixed d-t-bg">
+            <div class="s-tab-wrap">
+                <div class="s-tab-w">
+                    <div class="s-tab s-tab-01 selected">充值记录</div>
+                    <div class="s-tab s-tab-02">积分使用记录</div>
+                    <div class="s-tab s-tab-03">注册收益记录</div>
+                    <div class="s-tab s-tab-04 last">充值收益记录</div>
+                </div>
+                <div class="s-sub-w">
+                    <div class="s-sub s-sub-00 selected">
+                        <div id="myApp1" class="fixed" ng-controller="siteCtrl1" ng-class="currentGradeCss">
+                            <div class="dm-table-wrap">
+                                <table class="dm-table sy-table01">
+                                    <tr>
+                                        <th>充值时间</th>
+                                        <th>充值金额</th>
+                                        <th>获赠积分</th>
+                                        <th>充值编号</th>
+                                        <th>充值状态</th>
+                                    </tr>
+                                    <tr ng-repeat="x in names">
+                                        <td class="td01">{{x.createdDate}}</td>
+                                        <td class="td02">{{x.amount}}</td>
+                                        <td class="td03">{{x.score}}</td>
+                                        <td class="td04">{{x.paySeq}}</td>
+                                        <td class="td05 paystatue"><div ng-bind="x.payStatusName" ng-click="prePay(x)" ng-class="{selected: x.payStatus == 'PAYPREED'}"></div></td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="page-position fixed">
+                                <div class="fixed float-R">
+                                    <tm-pagination conf="paginationConf"></tm-pagination>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="s-sub s-sub-01">
+                        <div id="myApp2" class="dm-table-wrap" ng-controller="siteCtrl2" ng-class="currentGradeCss">
+                            <div class="dm-table-wrap">
+                                <table class="dm-table sy-table02">
+                                    <tr>
+                                        <th>使用日期</th>
+                                        <th>订单总额</th>
+                                        <th>订单金额</th>
+                                        <th>使用积分</th>
+                                        <th>订单编号</th>
+                                        <th>交易状态</th>
+                                    </tr>
+                                    <tr ng-repeat="x in names">
+                                        <td style="width:240px;" class="td01">{{x.createdDate}}</td>
+                                        <td style="width:240px;" class="td02">{{x.orderAmount + x.uasgeScore}}</td>
+                                        <td style="width:240px;" class="td03">{{x.orderAmount}}</td>
+                                        <td style="width:240px;" class="td04">{{x.uasgeScore}}</td>
+                                        <td style="width:240px;" class="td05">{{x.orderNumber}}</td>
+                                        <td style="width:100px; text-align:center;" class="td06">{{x.uasgeScoreStatus == 'Y' ? '成功' : '失败'}}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="page-position fixed">
+                                <div class="fixed float-R">
+                                    <tm-pagination conf="paginationConf"></tm-pagination>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="s-sub s-sub-02">
+                        <div id="myApp3" class="dm-table-wrap" ng-controller="siteCtrl3" ng-class="currentGradeCss">
+                            <div class="dm-table-wrap">
+                                <table class="dm-table sy-table03">
+                                    <tr>
+                                        <th>注册日期</th>
+                                        <th>注册用户</th>
+                                        <th>获赠积分</th>
+                                        <th>收益状态</th>
+                                    </tr>
+                                    <tr ng-repeat="x in names">
+                                        <td class="td01">{{x.createdDate}}</td>
+                                        <td class="td02">{{x.nickName}}</td>
+                                        <td class="td03">{{x.profitScore}}</td>
+                                        <td class="td05">成功</td>
+                                    </tr>
+                                </table>
+                                </div>
+                                <div class="page-position fixed">
+                                    <div class="fixed float-R">
+                                        <tm-pagination conf="paginationConf"></tm-pagination>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                    <div class="s-sub s-sub-03">
+                        <div id="myApp4" class="dm-table-wrap" ng-controller="siteCtrl4" ng-class="currentGradeCss">
+                            <div class="dm-table-wrap">
+                                <table class="dm-table sy-table04">
+                                    <tr>
+                                        <th>充值日期</th>
+                                        <th>充值用户</th>
+                                        <th>获赠积分</th>
+                                        <th>收益状态</th>
+                                    </tr>
+                                    <tr ng-repeat="x in names">
+                                        <td class="td01">{{x.createdDate}}</td>
+                                        <td class="td02">{{x.nickName}}</td>
+                                        <td class="td03">{{x.profitScore}}</td>
+                                        <td class="td05">成功</td>
+                                    </tr>
+                                </table>
+                            </div>
+                                <div class="page-position fixed">
+                                    <div class="fixed float-R">
+                                        <tm-pagination conf="paginationConf"></tm-pagination>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                    
+                     <!--只用于提交数据用 -->
+                     <form action="/wwh-wallet/pay/alipayhtml" method="post" id="prepayform">
+	                   	<input type="hidden" name="payOrderType" id="payOrderType"> 
+	                   	<input type="hidden" name="amount" id="amount"> 
+	                   	<input type="hidden" name="payAmountType" id="payAmountType">
+	                   	<input type="hidden" name="paySeq" id="paySeq"> 
+                     </form>    
+                </div>
+                <script type="text/javascript">
+                    console.log(sessionStorage.nickName);
+                    console.log(sessionStorage.islogined);
+                    var app = angular.module('myApp', ['tm.pagination']);
+                    app.controller('myboundinfoCtrl', function ($scope, $http) {
+                        $http.get("/wwh-wallet/score/userwalletdetail")
+							.success(function (response) {
+							    $scope.remainScore = response.data.remainScore;
+							    $scope.usedScore = response.data.usedScore;
+							    if (response.data.tiyan) {
+							        $scope.tiyan = "selected";
+							    } else {
+							        $scope.tiyan = "";
+							    }
+							    if (response.data.huimin) {
+							        $scope.huimin = "selected";
+							    } else {
+							        $scope.huimin = "";
+							    }
+							    if (response.data.fumin) {
+							        $scope.fumin = "selected";
+							    } else {
+							        $scope.fumin = "";
+							    }
+							    if (response.data.xingmin) {
+							        $scope.xingmin = "selected";
+							    } else {
+							        $scope.xingmin = "";
+							    }
+							});
+                        
+                    	//用于页面跳转
+                        $scope.gotoChargeStep1 = function(){
+                        	var formObj = $("#goto_chargeStep1");
+                            formObj.attr("method", "post");
+                            formObj.submit();
+                        } 
+                    	
+                       //点击实名认证的同时初始话实名认证框框的数据
+                       $scope.initInfo = function(){
+                    
+                    	   $http.get("/wwh-wallet/cretification/getphone")
+   						   .success(function (data) {
+   							 if(data && data != ""){
+   								if(data && data != ""){
+   									var userNameId=data.userName;
+   									if(userNameId && userNameId != ""){
+                      					$("#userNameId").val(userNameId);
+                              			$("#userNameId").attr("disabled",true);
+                      				}
+                      				 if(data.isIdValid == 1){
+                          				 var realName = data.realName;
+	                       				 var idCardNo = data.idCardNo;
+	                       				 var referenceName=data.referenceName; 
+                          				if(realName && realName != ""){
+                              				 $("#truename").val(realName);
+                                  			 $("#truename").attr("disabled",true);
+                          				}
+                          				if(idCardNo && idCardNo != ""){
+                              				 $("#idCardNo").val(idCardNo);
+                                  			 $("#idCardNo").attr("disabled",true);
+                          				}
+                          				
+                          				if(data.address && data.address != ""){
+                          					$("#address").val(data.address);
+                          				}
+                              			// $("#referenceId").val(data.referencePhone ==null ? "" : data.referencePhone);
+                              			 $("#mySelect1 .dropdown-label").text(data.countryName==null?"":data.countryName);
+                              			 $("#mySelect2 .dropdown-label").text(data.provinceName==null ? "" : data.provinceName);
+                              			 $("#mySelect3 .dropdown-label").text(data.cityName == null ? "" : data.cityName);
+                              			 $("#mySelect4 .dropdown-label").text(data.areaName == null ? "" : data.areaName);
+                              			 //$("#address").val(data.address);
+                      				 }
+                      			 }
+                      			 var phone = data.mobilePhone;
+                  				 if(phone && phone != ""){
+                  					 $("#phonenum").val(phone);
+                      				 $("#phonenum").attr("disabled",true);
+                  				 }
+                  				
+                					if(data.referencePhone && data.referencePhone != ""){
+                     					 $("#referenceId").val(data.referencePhone);
+                         				 $("#referenceId").attr("disabled",true);
+                         				 //推荐人
+                         			 $(".referenceTip").show();
+                       				 $(".referenceName").show();
+                       				 $(".referenceName").val(data.referenceName);
+                       				 $(".referenceName").attr("disabled",true);
+                     				 }
+                				
+                            }	 
+   						});
+                       }
+                    })
+                    app.controller('siteCtrl1', function ($scope, $timeout, $http) {
+                        $scope.prePay = function (x) {
+                            if (x.payStatus == "PAYPREED") {
+                                $("#payOrderType").val("WWHCHONGZHI");
+                                $("#amount").val(x.amount);
+                                $("#payAmountType").val(x.payAmountType);
+                                $("#paySeq").val(x.paySeq);
+                            	 var formObj = $("#prepayform");
+                            	 formObj.submit();
+                                  // window.location.href = '/wwh-wallet/pages/wallet/charge/charge-step2.html?payOrder=' + x.paySeq + '&needPayMoney=' + x.amount + '&payAmountType=' + x.payAmountType;
+                            }
+                        }
+
+                        $scope.bussinessDropdownListClick = function (bussinessID) {
+                            $scope.paginationConf.dropdownListValue = bussinessID;
+                            $scope.paginationConf.currentPage = 1;
+                            $scope.paginationConf.onChange();
+                        }
+                        $scope.paginationConf = {
+                            currentPage: 1,
+                            itemsPerPage: 5,
+                            pagesLength: 15,
+                            perPageOptions: [5],
+                            onChange: function () { // 系统筛选分类**************************************************************************************
+                                $http.get("/wwh-wallet/score/rechargelist/ALL/" + $scope.paginationConf.currentPage + "/5")
+									.success(function (response) {
+									    $scope.paginationConf.totalItems = response.total;
+									    $scope.names = response.dataList;
+									    console.log(response.dataList);
+									    function getCssNum() {
+									        if (response.dataList.length == 0) {
+									            return 'tablenodataselected';
+									        }
+									    }
+									    $scope.currentGradeCss = getCssNum();
+									});
+                            }
+                        };
+                    })
+                    app.controller('siteCtrl2', function ($scope, $timeout, $http) {
+
+                        
+                        $scope.paginationConf = {
+                            currentPage: 1, // 当前第几页
+                            itemsPerPage: 5, // 每一页有多少条数据 //不需要这个变量，总共多少页
+                            pagesLength: 5, //
+                            perPageOptions: [1],
+                            onChange: function () {
+                                $http.get("/wwh-wallet/score/scoreusagelist/" + $scope.paginationConf.currentPage + "/5")
+									.success(function (response) {
+									    $scope.paginationConf.totalItems = response.total;
+									    $scope.paginationConf.itemsPerPage = 5;
+									    $scope.names = response.dataList;
+									    function getCssNum() {
+									        if (response.dataList.length == 0) {
+									            return 'tablenodataselected';
+									        } 
+									    }
+									    $scope.currentGradeCss = getCssNum();
+									});
+                            }
+                        };
+                    })
+                    app.controller('siteCtrl3', function ($scope, $timeout, $http) {
+                        $scope.paginationConf = {
+                            currentPage: 1,
+                            totalItems: 60,
+                            itemsPerPage: 5,
+                            pagesLength: 5,
+                            perPageOptions: [1],
+                            onChange: function () {  // 注册(REGISTERPROFIT)还是充值(INVIITEPROFIT)
+                                $http.get("/wwh-wallet/score/registscoreprofitlist/" + $scope.paginationConf.currentPage + "/5")
+									.success(function (response) {
+									    $scope.paginationConf.totalItems = response.total;
+									    $scope.paginationConf.itemsPerPage = 5;
+									    $scope.names = response.dataList;
+									    function getCssNum() {
+									        if (response.dataList.length == 0) {
+									            return 'tablenodataselected';
+									        }
+									    }
+									    $scope.currentGradeCss = getCssNum();
+									});
+                            }
+                        };
+                    })
+                    app.controller('siteCtrl4', function ($scope, $timeout, $http) {
+                        $scope.paginationConf = {
+                            currentPage: 1,
+                            totalItems: 60,
+                            itemsPerPage: 5,
+                            pagesLength: 5,
+                            perPageOptions: [1],
+                            onChange: function () {   //充值(RECHARGEPROFIT)
+                                $http.get("/wwh-wallet/score/chargescoreprofitlist/" + $scope.paginationConf.currentPage + "/5")
+									.success(function (response) {
+									    $scope.paginationConf.totalItems = response.total;
+									    $scope.paginationConf.itemsPerPage = 5;
+									    $scope.names = response.dataList;
+									    function getCssNum() {
+									        if (response.dataList.length == 0) {
+									            return 'tablenodataselected';
+									        }
+									    }
+									    $scope.currentGradeCss = getCssNum();
+									});
+                            }
+                        };
+                    })
+                </script>
+            </div>
+            <script type="text/javascript">
+                var tabsNodes = $('.s-tab-w'),
+					tabsLists = tabsNodes.find('.s-tab')
+                index = 0,
+				subNodes = $('.s-sub');
+                tabsLists.click(function () {
+                    index = $(this).index();
+                    $(this).addClass('selected').siblings().removeClass('selected');
+                    $('.s-sub-0' + index).addClass('selected').siblings().removeClass('selected');
+                });
+            </script>
+            <style>
+                .page-total {
+                    display: none;
+                }
+
+                .page-list .pagination {
+                    float: left;
+                }
+
+                    .page-list .pagination span {
+                        cursor: pointer;
+                    }
+
+                    .page-list .pagination .separate span {
+                        cursor: default;
+                        border-top: none;
+                        border-bottom: none;
+                    }
+
+                        .page-list .pagination .separate span:hover {
+                            background: none;
+                        }
+
+                .page-list .page-total {
+                    float: left;
+                    margin: 7px 20px;
+                }
+
+                    .page-list .page-total input, .page-list .page-total select {
+                        height: 26px;
+                        border: 1px solid #ddd;
+                    }
+
+                    .page-list .page-total input {
+                        width: 40px;
+                        padding-left: 3px;
+                    }
+
+                    .page-list .page-total select {
+                        width: 50px;
+                    }
+            </style>
+        </div>
+    </div>
+       <div id="modal2" class="modal fade" >
+        <form class="m-b-none">
+            <div class="modal-dialog pos-abt" style="margin-top:-235px; top:150px; width:800px; margin-left:-400px;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="icon-remove"></i></button>
+                        <h4 class="modal-title" id="myModalLabel">身份认证</h4>
+                    </div>
+                    <div class="modal-body smrz">
+                        <table class="benifit-table wwh-table">
+                            <tbody>
+                                <tr>
+                                    <td class="td01"><span class="redmi">*</span>真实姓名：</td>
+                                    <td class="td02">
+                                        <div class="input-wrap truename-after">
+                                            <input id="truename" name="truename" placeholder="输入真实姓名" type="text">
+                                            <div class="errorinfo">真实姓名为中文或英文格式且不能为空（长度为２－３０个字符）</div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="td01"><span class="redmi">*</span>用户名：</td>
+                                    <td class="td02">
+                                        <div class="input-wrap username-after">
+                                            <input id="userNameId" name="truename" placeholder="输入用户名" type="text">
+                                            <div class="errorinfo">用户名为中英文+数字+下划线（不可为纯数字或纯下划线、长度为４－１６个字符）</div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="td01"><span class="redmi"></span>推荐人：</td>
+                                    <td class="td02">
+                                    	
+                                        <div class="input-wrap referencePhone-after">
+                                            <input id="referenceId" name="referencePhone" placeholder="请填写推荐人手机号" type="text">
+                                      
+                                            <div class="errorinfo"></div>
+                                            
+                                        </div>
+                                        <span class="referenceTip">&</span><input class="referenceName" name="referenceName">
+                                        
+                                    </td>
+                                </tr>
+                                <tr>
+                                	<td class="td01" ><span class="redmi">*</span>证件号码：</td>
+                                    <td class="td02">
+                                        <div class="input-wrap longtext idCardNo-after">
+                                            <input id="idCardNo" name="idCardNo" placeholder="" type="text">
+                                            <div class="errorinfo">请输入与真实姓名相匹配的身份证号码</div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="td01"><span class="redmi"></span>当前居住地：</td>
+                                    <td class="td02" colspan="3">
+                                        <div id="mySelect1" class="select btn-group m-b mall-btn-select2" data-resize="auto">
+                                            <button type="button" data-toggle="dropdown" class="btn btn-white btn-small dropdown-toggle" onclick="initCountry()">
+                                                <span class="dropdown-label"></span> <span class="caret"></span>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-select" id="countryListId">
+                                            </ul>
+                                        </div>
+                                        <div id="mySelect2" class="select btn-group m-b mall-btn-select2" data-resize="auto">
+                                            <button type="button" data-toggle="dropdown" class="btn btn-white btn-small dropdown-toggle" onclick="initProvince()">
+                                                <span class="dropdown-label"></span> <span class="caret"></span>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-select" id="provinceListId">
+                                             
+                                            </ul>
+                                        </div>
+                                        <div id="mySelect3" class="select btn-group m-b mall-btn-select2" data-resize="auto">
+                                            <button type="button" data-toggle="dropdown" class="btn btn-white btn-small dropdown-toggle" onclick="initCity()">
+                                                <span class="dropdown-label "></span> <span class="caret"></span>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-select" id="cityListId">
+                                                
+                                            </ul>
+                                        </div>
+                                         <div id="mySelect4" class="select btn-group m-b mall-btn-select2" data-resize="auto" >
+                                            <button type="button" data-toggle="dropdown" class="btn btn-white btn-small dropdown-toggle" onclick="initArea()">
+                                                <span class="dropdown-label"></span> <span class="caret"></span>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-select" id="areaListId">
+                                              
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="td01"><span class="redmi"></span>详细地址：</td>
+                                    <td class="td02" colspan="3">
+                                        <div class="input-wrap longtext address-after">
+                                            <input id="address" name="cardnum" placeholder="" type="text">
+                                            <div class="errorinfo">地址信息不能为空</div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="td01"><span class="redmi">*</span>手机号：</td>
+                                    <td class="td02" colspan="3">
+                                        <div class="after-ele input-wrap phonenum-after">
+                                            <input placeholder="输入手机号码" type="text" id="phonenum">
+                                            <div class="errorinfo">输入正确手机号码</div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="td01"></td>
+                                    <td class="td02" colspan="3">
+                                    	
+                                        <div class="btn-yes-wrap" style="float:left;background:#efefef; margin-right:10px;">
+                                        <input class="btn-yes" style="background:#efefef; color:#808080;" type="submit"  data-dismiss="modal" value="取消" id="cancelId"></div>
+                                        <div class="btn-yes-wrap confirm" style="float:left"><input class="btn-yes" type="submit" onclick="submitbtn()" value="确定"></div>
+                                        <input class="onloadtrigger3" data-dismiss="modal" type="hidden" value="dkfkk" />
+                                        
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                      <script type="text/javascript">
+                        $(document).ready(function () {
+                        	init();
+                        });
+                        
+                        function init(){
+                        	//getPhone();
+                        } 
+                        $(".referenceTip").hide();
+          				 $(".referenceName").hide();
+                        function getPhone(){
+                        	 $.ajax({     // 请求 ajax
+                                 url: "/wwh-wallet/cretification/getphone",
+                                 type: "get",
+                                 data: "",
+                                 success: function (data) {
+                                	 //console.log(data);
+                           			 if(data && data != ""){
+                           				var userNameId=data.userName;
+                           				if(userNameId && userNameId != ""){
+                           					$("#userNameId").val(userNameId);
+                                   			$("#userNameId").attr("disabled",true);
+                           				}
+                           				 if(data.isIdValid == 1){
+                               				var realName = data.realName;
+                            				 var idCardNo = data.idCardNo;
+                            				 var referenceName=data.referenceName;
+                            				 
+                               				if(realName && realName != ""){
+	                               				 $("#truename").val(realName);
+	                                   			 $("#truename").attr("disabled",true);
+                               				}
+                               				if(idCardNo && idCardNo != ""){
+	                               				 $("#idCardNo").val(idCardNo);
+	                                   			 $("#idCardNo").attr("disabled",true);
+                               				}
+                               			
+                               				if(data.address && data.address != ""){
+                               					$("#address").val(userNameId);
+	                                   		
+                               				}
+                                   			// $("#referenceId").val(data.referencePhone ==null ? "" : data.referencePhone);
+                                   			 $("#mySelect1 .dropdown-label").text(data.countryName==null?"":data.countryName);
+                                   			 $("#mySelect2 .dropdown-label").text(data.provinceName==null ? "" : data.provinceName);
+                                   			 $("#mySelect3 .dropdown-label").text(data.cityName == null ? "" : data.cityName);
+                                   			 $("#mySelect4 .dropdown-label").text(data.areaName == null ? "" : data.areaName);
+                                   			 //$("#address").val(data.address);
+                           				 }
+                           			 }
+                           			 var phone = data.mobilePhone;
+                       				 if(phone && phone != ""){
+                       					 $("#phonenum").val(phone);
+                           				 $("#phonenum").attr("disabled",true);
+                       				 }
+                       				
+                     					if(data.referencePhone && data.referencePhone != ""){
+                          					 $("#referenceId").val(data.referencePhone);
+                              				 $("#referenceId").attr("disabled",true);
+                              				 //推荐人
+                              				$(".referenceTip").show();
+                            				 $(".referenceName").show();
+                            				 $(".referenceName").val(data.referenceName);
+                            				 $(".referenceName").attr("disabled",true);
+                          				 }
+                     				 
+                                 }
+                             });         
+                        }
+                        
+                       	//初始化国家
+                        function initCountry(){
+                            $.ajax({     // 请求 ajax
+                                url: "/wwh-wallet/cretification/countrylist",
+                                type: "get",
+                                data: "",
+                                success: function (data) {
+                                    if (data && data.length>0) {
+                                    	var i = 0;
+                                    	var dom = "";
+                                    	$("#countryListId").empty();
+                                    	$("#mySelect2 .dropdown-label").text('');
+                                    	$("#mySelect3 .dropdown-label").text('');
+                                    	$("#mySelect4 .dropdown-label").text('');
+                                    	for(i=0;i<data.length;i++){
+                                    		dom = dom + '<li data-value="'+data[i].countryCode+ '"><a href="#">'+data[i].countryName +'</a></li>';
+                                    	}
+                                    	$("#countryListId").html(dom);
+                                	}
+                                }
+                            });           
+                        }
+                       	
+                        //初始化省份
+                        function initProvince(){
+                   		     var countryCode =$("#mySelect1 .dropdown-menu li.active").attr('data-value');
+                       		 $.ajax({     // 请求 ajax
+                                    url: "/wwh-wallet/cretification/provincelist/"+countryCode,
+                                    type: "post",
+                                    data: { },
+                                    success: function (data) {
+                                        if (data && data.length>0) {
+                                        	var i = 0;
+                                        	var dom = "";
+                                        	$("#provinceListId").empty();
+                                          	$("#mySelect3 .dropdown-label").text('');
+                                       	    $("#mySelect4 .dropdown-label").text('');
+                                        	for(i=0;i<data.length;i++){
+                                        		dom = dom + '<li data-value="'+data[i].provinceCode+ '"><a href="#">'+data[i].provinceName +'</a></li>' ;
+                                        	}
+                                        	$("#provinceListId").html(dom);
+                                    	}else{
+                                    		$("#provinceListId").html("");
+                                    	}
+                                    }
+                                });              
+                        }
+                        
+                        //初始城市
+                        function initCity(){
+                        	       var provinceCode =$("#mySelect2 .dropdown-menu li.active").attr('data-value');
+                            		 $.ajax({     // 请求 ajax
+                                         url: "/wwh-wallet/cretification/citylist/"+provinceCode,
+                                         type: "post",
+                                         data: {},
+                                         success: function (data) {
+                                             if (data && data.length>0) {
+                                             	var i = 0;
+                                             	var dom = "";
+                                             	$("#cityListId").empty();
+                                            	$("#mySelect4 .dropdown-label").text('');
+                                             	for(i=0;i<data.length;i++){
+                                             		dom  = dom +'<li data-value="'+data[i].cityCode+ '"><a href="#">'+data[i].cityName +'</a></li>';
+                                             	}
+                                             	$("#cityListId").html(dom);
+                                         	}else{
+                                         		$("#cityListId").html("");
+                                         	}
+                                         }
+                               });              
+                        }
+                        
+                        
+                        //初始地区
+                        function initArea(){
+                        		 var cityCode =$("#mySelect3 .dropdown-menu li.active").attr('data-value');
+                           		 $.ajax({     // 请求 ajax
+                                        url: "/wwh-wallet/cretification/arealist/"+cityCode,
+                                        type: "post",
+                                        data: {},
+                                        success: function (data) {
+                                            if (data && data.length>0) {
+                                            	var i = 0;
+                                            	var dom = "";
+                                            	$("#areaListId").empty();
+                                            	for(i=0;i<data.length;i++){
+                                            		dom = dom +  '<li data-value="'+data[i].areaCode+ '"><a href="#">'+data[i].areaName +'</a></li>';
+                                            	}
+                                            	$("#areaListId").append(dom);
+                                        	}else{
+                                        		$("#areaListId").append("");
+                                        	}
+                                        }
+                              });              
+                        }
+                        
+                        $('#truename').focus(function () {
+                            $('.truename-after .errorinfo').hide();
+                        });
+                        $('#userNameId').focus(function () {
+                        	$('.userName-after .errorinfo').hide();
+                        });
+                        $('#idCardNo').focus(function () {
+                            $('.idCardNo-after .errorinfo').hide();
+                        });
+                        $('#address').focus(function () {
+                            $('.address-after .errorinfo').hide();
+                        });
+                        $('#phonenum').focus(function () {
+                            $('.phonenum-after .errorinfo').hide();
+                        });
+                        /*失去焦点时，每个文本框里的验证*/
+                         /*truename真实姓名*/
+                         $("#truename").blur(function(){
+                        	 var reg = /^([\u4e00-\u9fa5]|[a-zA-Z]){2,30}$/;
+ 	                       	if($("#truename").val() != ""){
+ 		                       	 if(!reg.test($("#truename").val())){
+ 		                       		 $('.truename-after .errorinfo').show().text("真实姓名格式错误!(中文或英文格式，长度限制为2-30个字符)");                        		
+	                        	}else{
+	                        		 $('.truename-after .errorinfo').hide();  
+	                        		 
+	                        	}
+                        	}
+                        }); 
+                         /*userNameId用户名*/
+                        $("#userNameId").blur(function(){
+                        	var reg = /^([\u4e00-\u9fa5]|[a-zA-Z]|[0-9]){1,16}$/;
+                        	var reg1= /^\d{1,16}$/;
+                        	var reg2= /^_{1,16}$/;
+                        	if($("#userNameId").val() != ""){
+                        		if(!reg.test($("#userNameId").val())||reg1.test($("#userNameId").val())||reg2.test($("#userNameId").val())){
+                                    $('.username-after .errorinfo').show().text("用户名格式错误!(只能为中英文,数字下划线,不可为纯数字或纯下划线、长度为1-16个字符，纯中文为8个字符)");
+                    		    }else if(/^[\u4e00-\u9fa5]+$/i.test($("#userNameId").val())){
+	   	                       		 if($("#userNameId").val().length>8){
+	   	                       			$('.username-after .errorinfo').show().text("用户名格式错误!(只能为中英文,数字下划线,不可为纯数字或纯下划线、长度为1-16个字符，纯中文为8个字符)");
+	   	                       		 }
+                        	    }else{
+	                       			$('.username-after .errorinfo').hide(); 
+	                       	    }
+                        	
+                        	}
+	                       	
+                        });
+                        /*referenceId推荐人*/
+                        $("#referenceId").blur(function(){
+                        	var reg = /^[0-9]{1,15}$/;
+                        	var phonenum=$("#phonenum").val();
+                        	var referenceId=$("#referenceId").val();
+                        	console.log(phonenum);
+                        	if($("#referenceId").val() != ""){
+	                        	if(!reg.test($("#referenceId").val())){
+	                                $('.referencePhone-after .errorinfo').show().text("推荐人必须为纯数字，长度为15个字符以内");
+	                        	}else{
+	                        		$('.referencePhone-after .errorinfo').hide();
+	                        	}
+	                        	if(phonenum==referenceId){
+	                        		$('.referencePhone-after .errorinfo').show().text("输入推荐人的手机号不能与本人的一致！"); 
+	                        	}else{
+	                        		$('.referencePhone-after .errorinfo').hide();
+	                        	}
+	                        	if(referenceId=="-999999"){
+	                        		$('.referencePhone-after .errorinfo').show().text("不能填入-999999！"); 
+	                        		$("#referenceId").val("");
+	                        	}else{
+	                        		$('.referencePhone-after .errorinfo').hide();
+	                        	}
+                        	}
+                        });
+                        /*idCardNo身份证号码*/
+                        $("#idCardNo").blur(function(){
+                        	var reg = /^([0-9]|[a-zA-Z]|[0-9a-zA-Z]){5,18}$/;
+                        	if($("#idCardNo").val() != ""){
+                        		if(!reg.test($("#idCardNo").val())){
+		                            $('.idCardNo-after .errorinfo').show().text("证件号必须为数字、字母或字母+数字组合，长度为5-18个字符");
+		                        }else{
+		                        	$('.idCardNo-after .errorinfo').hide();  
+		                       
+		                        }
+                        	}
+                        });
+                        /*address详细地址*/
+                        $("#address").blur(function(){
+                        	var reg = /^(?!\d+$)[\da-zA-Z\u4e00-\u9fa5]{3,50}$/;
+                        	if($("#address").val() != ""){
+                        		if(!reg.test($("#address").val())){
+	                            	$('.address-after .errorinfo').show().text("详细地址为中英文+数字，不可为纯数字，长度为3-50个字符");
+		                        }else{
+		                        	$('.address-after .errorinfo').hide();  
+		                        	
+		                        }
+                        	}
+                        });
+                        function nullValid(){
+                        	var flag = true;
+                        	 
+                        	if ($('#truename').val() == '') {
+                                  flag = false;
+                                  $('.truename-after .errorinfo').show().text("真实姓名不能为空!");
+                              }
+                              if ($('#idCardNo').val() == '') {
+                                  flag = false;
+                                  $('.idCardNo-after .errorinfo').show().text("证件号不能为空!");
+                              }
+                              /* if ($('#address').val() == '') {
+                                  flag = false;
+                                  $('.address-after .errorinfo').show();
+                              }*/
+                              /*if($("#phonenum").val() == ''){
+                            	  flag = false;  
+                            	  $('.phonenum-after .errorinfo').show();
+                              }*/
+                              if($("#userNameId").val() == ''){
+                            	  flag = false;  
+                            	  $('.username-after .errorinfo').show().text("用户名不能为空!");
+                              }
+                             //若用户只填写推荐人或用户名时，则不做其它项的必填校验
+                              if($("#userNameId").val() != ''||$("#referenceId").val() != ''){
+                            	  return flag;
+                              }
+                              return flag;
+                        }
+                        
+                        /*truename真实姓名*/
+                        function istruename(truename)  {  
+                        	var flag = true;
+                           // 中文或英文格式，长度限制为2-30个字符
+                           var reg = /^([\u4e00-\u9fa5]|[a-zA-Z]){2,30}$/;
+	                       	if($("#truename").val() != ""){
+		                       	 if(!reg.test($("#truename").val())){
+		                               $('.truename-after .errorinfo').show().text("真实姓名格式错误!(中文或英文格式，长度限制为2-30个字符)");                        		
+		                               flag=false;
+		                       	 }else{
+		                       		 $('.truename-after .errorinfo').hide();  
+		                       		
+		                       	}
+	                  	    }
+                       	    return  flag;
+                        }
+                        /*userNameId用户名*/
+                        function isuserNameId(userNameId)  {  
+                        	var flag = true;
+                        	var reg = /^([\u4e00-\u9fa5a-zA-Z0-9_]){1,16}$/;
+                    		var reg1= /^\d{1,16}$/;
+                    		var reg2= /^_{1,16}$/;
+                        	if($("#userNameId").val() != ""){
+	                        	 if(!reg.test($("#userNameId").val())||reg1.test($("#userNameId").val())||reg2.test($("#userNameId").val())){
+	                                $('.username-after .errorinfo').show().text("用户名格式错误!(只能为中英文,数字下划线,不可为纯数字或纯下划线、长度为1-16个字符，纯中文为8个字符)");
+                    		     	flag=false;
+		                       	 }else if(/^[\u4e00-\u9fa5]+$/i.test($("#userNameId").val())){
+		                       		 if($("#userNameId").val().length>8){
+		                       			$('.username-after .errorinfo').show().text("用户名格式错误!(只能为中英文,数字下划线,不可为纯数字或纯下划线、长度为1-16个字符，纯中文为8个字符)");
+		                       			flag=false;
+		                       		 }
+		                       	}else{
+		                       		$('.username-after .errorinfo').hide(); 
+		                       	}
+		                  	}
+                       	    return  flag;
+                        }  
+                        /*referenceId推荐人*/
+                        function isreferenceId(referenceId)  {  
+                        	var flag = true;
+	                        var reg = /^[0-9]{1,15}$/;
+	                        var phonenum=$("#phonenum").val();
+	                    	var referenceId=$("#referenceId").val();
+	                       	if($("#referenceId").val() != ""){
+	                       		if(!reg.test($("#referenceId").val())){
+	                                $('.referencePhone-after .errorinfo').show().text("推荐人必须为纯数字，长度为15个字符以内");
+	                                flag=false;
+	                       		}else{
+	                        		$('.referencePhone-after .errorinfo').hide();
+	                        	}
+	                       		if(phonenum==referenceId){
+	                        		$('.referencePhone-after .errorinfo').show().text("输入推荐人的手机号不能与本人的一致！"); 
+	                        		flag=false;
+	                       		}else{
+	                        		$('.referencePhone-after .errorinfo').hide();
+	                        	}
+	                       		if(referenceId=="-999999"){
+	                        		$('.referencePhone-after .errorinfo').show().text("不能填入-999999！"); 
+	                        		$("#referenceId").val("");
+	                        	}else{
+	                        		$('.referencePhone-after .errorinfo').hide();
+	                        	}
+	                       	}
+                        
+                       	    return  flag;
+                        }   
+
+                        /*idCardNo身份证号码*/
+                        function isidCardNo(idCardNo)  {  
+                        	var flag = true;
+                           // 身份证号码为数字、字母或字母+数字组合。身份证号码长度限制为5-18个字符
+	                        var reg = /^([0-9]|[a-zA-Z]|[0-9a-zA-Z]){5,18}$/;
+	                       	if($("#idCardNo").val() != ""){
+
+	                       		if(!reg.test($("#idCardNo").val())){
+		                            $('.idCardNo-after .errorinfo').show().text("证件号必须为数字、字母或字母+数字组合，长度为5-18个字符");
+		                            flag=false;
+	                       		}else{
+		                        	$('.idCardNo-after .errorinfo').hide();  
+		                        
+		                        }
+	                       	}
+
+                       	    return  flag;
+                        }  
+                        /*address详细地址*/
+                        function isaddress(address)  {  
+                        	var flag = true;
+                       
+	                        var reg = /^(?!\d+$)[\da-zA-Z\u4e00-\u9fa5]{3,50}$/;
+	                        
+	                       	if($("#address").val() != ""){
+	                       		if(!reg.test($("#address").val())){
+		                            	$('.address-after .errorinfo').show().text("详细地址为中英文+数字，不可为纯数字，长度为3-50个字符");
+		                            	flag=false;
+			                        }else{
+			                        	$('.address-after .errorinfo').hide();  
+			                        }
+	                       	}
+                          
+                       	    return  flag;
+                        }          
+                        
+                      
+                        function submitbtn() {
+                        	//校验必填
+                      		var flag = nullValid();
+                      		if(!flag){
+                      			return flag;
+                      		}
+                      		//校验真实姓名是否正确
+                      	 	var validtruename = istruename($("#truename").val());
+                      		if(!validtruename){
+                      			 $('.truename-after .errorinfo').show();
+                      			 return validtruename;
+                      		} 
+                      		//校验userNameId用户名
+                      	 	var validuserNameId = isuserNameId($("#userNameId").val());
+                      		if(!validuserNameId){
+                      			 $('.userNameId-after .errorinfo').show();
+                      			 return validuserNameId;
+                      		} 
+                      		//校验referenceId推荐人
+                      	 	var validreferenceId = isreferenceId($("#referenceId").val());
+                      		if(!validreferenceId){
+                      			 $('.referenceId-after .errorinfo').show();
+                      			 return validreferenceId;
+                      		} 
+                      		//校验idCardNo身份证号码*/
+                      	 	var validIdCard = isidCardNo($("#idCardNo").val());
+                      		if(!validIdCard){
+                      			 $('.idCardNo-after .errorinfo').show();
+                      			 return validIdCard;
+                      		} 
+                      		//校验address详细地址
+                      	 	var validaddress = isaddress($("#address").val());
+                      		if(!validaddress){
+                      			 $('.idaddress-after .errorinfo').show();
+                      			 return validaddress;
+                      		} 
+                      	  
+                            $('.onloadtrigger2').trigger('click');
+                        	var realName = $("#truename").val();
+                        	var idCardNo = $("#idCardNo").val();
+                        	var userName = $("#userNameId").val();
+                        	var referencePhone = $("#referenceId").val();
+                        	var countryCode = $('#mySelect1 .dropdown-menu li.active').attr('data-value');
+                        	var provinceCode = $('#mySelect2 .dropdown-menu li.active').attr('data-value');
+                        	var cityCode = $('#mySelect3 .dropdown-menu li.active').attr('data-value');
+                        	var areaCode = $('#mySelect4 .dropdown-menu li.active').attr('data-value');
+                        	var address = $("#address").val();
+                        	var mobilePhone= $("#phonenum").val();
+                        	
+                        	 //如果真实姓名不为空&身份证号码为空，那身份证号码必填2017/3/2
+	                          /*if(realName!=""&&idCardNo==""){
+	                          	//idCardNo.attr(required,true);
+	                          	//$('.idCardNo-after').parent().prev(".td01").find(".redmi").show();
+	                          	$('.idCardNo-after .errorinfo').show().text("请填写正确的身份证号码");
+	                          }else if(idCardNo!=""&&realName==""){
+	                        	    //realName.attr(required,true);
+	                        		//$('.truename-after').parent().prev(".td01").find(".redmi").show();
+		                          	$('#truename-after .errorinfo').show().text("请填写正确的真实姓名");
+		                      }*/
+	                       
+	                         
+	                         // 当用户已填写真实姓名 ||身份证号时，单机确定时则校验其它项（真实姓名、用户名、证件号）是否填写，若未填写则分别提示（请填写正确的 “真实姓名”||“用户名”||“身份证号码”）
+	                          if(realName!=""||idCardNo!=""){
+	                        	  if(userName==""){
+		                        	  $('.userName-after .errorinfo').show().text("请填写正确的用户名"); 
+		                        	  return false;
+	                        	  }
+	                        	  if(idCardNo==""){
+	                        		  $('.idCardNo-after .errorinfo').show().text("请填写正确的身份证号码");
+		                        	  return false;
+	                        	  }
+	                        	  if(realName==""){
+	                        		  $('.truename-after .errorinfo').show().text("请填写正确的真实姓名"); 
+		                        	  return false;
+	                        	  }
+		                      }     
+								
+                        	var userVo = {
+                        			"realName" : realName,
+                        			"userName" : userName,
+                        			"idCardNo" : idCardNo,
+                        			"countryCode" : countryCode,
+                        			"referencePhone" : referencePhone,
+                        			"provinceCode" : provinceCode,
+                        			"cityCode" : cityCode,
+                        			"areaCode" : areaCode,
+                        			"address" : address,
+                        			"mobilePhone" : mobilePhone
+                        	}
+                        	/*if((realName!=""&&!($("#truename").prop("disabled")))||
+                        	   (userName!=""&&!($("#userNameId").prop("disabled")))||
+                        	   (referencePhone!=""&&!($("#referenceId").prop("disabled")))||
+                        	   (idCardNo!=""&&!($("#idCardNo").prop("disabled")))||
+                        	   (mobilePhone!=""&&!($("#phonenum").prop("disabled")))){*/
+                        		$.ajax({     // 请求 ajax
+                                    url: "/wwh-wallet/cretification/updateuserinfo",
+                                    type: "post",
+                                    contentType: 'application/json',
+                                    dataType: 'json',
+                                    data:JSON.stringify(userVo) ,
+                                    success: function (data) {
+                                   	//身份证号码做唯一性校验，若身份证号码已存在，则提示（该证件号码已存在，请重新输入！）
+                                   	 if(data && data.returnCode=="0"){
+                                   		 $('.close').trigger('click');
+                                   	 }else if(data && data.returnCode=="1"){
+                                   		 $('.username-after .errorinfo').show().text("用户名已经存在!");
+                                   	 }else if(data && data.returnCode=="2"){
+                                   		 $('.referencePhone-after .errorinfo').show().text("推荐人不存在!");
+                                   	 }else if(data && data.returnCode=="3"){
+                                   		 $('.idCardNo-after .errorinfo').show().text("身份证已经存在!");
+                                   	 }
+                                    }
+                           	 });
+                        	/*}else{
+                        		$(".confirm").attr("disabled",true);;
+                        	}*/
+                        	
+                        
+                        	
+                        	
+                        	 
+                        }
+                     </script>
+                    
+                    
+                    <div class="modal-footer">
+                    </div>
+                </div><!-- /.modal-content -->
+            </div>
+        </form>
+    </div>
+    <div ng-include src="'/wwh-wallet/pages/wallet/common/footer.html'"></div>
+</body>
+</html>

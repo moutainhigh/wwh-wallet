@@ -1,0 +1,79 @@
+﻿<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>自动进入下一系统规则介绍</title>
+    <meta charset="utf-8" />
+    <base href="/">
+    <meta name="description" content="金融、钱包、理财、高收益">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="renderer" content="webkit" />
+    <link rel="stylesheet" href="/wwh-wallet/css/bootstrap.css">
+    <link rel="stylesheet" href="/wwh-wallet/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/wwh-wallet/css/plugin.css">
+    <link rel="stylesheet" href="/wwh-wallet/css/landing.css">
+    <link rel="stylesheet" href="/wwh-wallet/css/common.css">
+    <link href="/wwh-wallet/css/mall/private-benefit.css" rel="stylesheet" />
+    <link href="/wwh-wallet/css/style.css" rel="stylesheet" />
+    <script type="text/javascript" src="/wwh-wallet/js/jquery.min.js"></script>
+    <script src="/wwh-wallet/js/bootstrap.js"></script>
+    <script src="/wwh-wallet/js/app.js"></script>
+    <script src="/wwh-wallet/js/app.plugin.js"></script>
+    <script src="/wwh-wallet/js/app.data.js"></script>
+    <script src="/wwh-wallet/js/fuelux/fuelux.js"></script>
+    <script src="/wwh-wallet/js/datepicker/bootstrap-datepicker.js"></script>
+    <script src="/wwh-wallet/js/slider/bootstrap-slider.js"></script>
+    <script src="/wwh-wallet/js/file-input/bootstrap.file-input.js"></script>
+    <script src="/wwh-wallet/js/combodate/moment.min.js"></script>
+    <script src="/wwh-wallet/js/combodate/combodate.js"></script>
+    <script src="/wwh-wallet/js/parsley/parsley.min.js"></script>
+    <script src="/wwh-wallet/js/angular.js"></script>
+    <script src="/wwh-wallet/js/tm.pagination.js"></script>
+</head>
+<body>
+    <div ng-include src="'/wwh-wallet/pages/wallet/common/header.html'"></div>
+    <div class="sys-tro-box intro2sys-box">
+        <div class="sys-main-box fixed intro2sys">
+            <div class="bt-sys2intro">自动进入下一系统规则介绍</div>
+
+            <div class="systile st01">体验系统</div>
+            <div class="systile st02">惠民系统</div>
+            <div class="systile st03">富民系统</div>
+            <div class="systile st04">兴民系统</div>
+            <div class="sysctain sc01">
+                <div class="tyfont">
+                    消费者在唯沃惠商城通过充值500元，成为银卡会员，获得1000积分，进入体验系统会员层。
+                </div>
+                <div class="tyfont">
+                    体验系统按照分享分润的模式由1位总监3位经理9位规划师共计13人组成，共同去分享27位银卡会员。
+                </div>
+                <div class="tyfont">
+                    经过分享裂变后，会员从会员层无条件晋升到规划师，规划师无条件晋升到经理，经理达成架构1+6晋升到总监，获得约10000元收<br />
+                    益之后，可以提现约5000元，另外5000元收益自动充值获得10000积分，进入惠民系统，成为白金会员。
+                </div>
+            </div>
+            <div class="sysctain sc02">
+                <div class="tyfont">
+                    白金会员在惠民系统按照时间先后顺序排列在会员层，经过1位总监3位经理9位规划师共计13人组成，共同去分享满27位白金会员后，<br />
+                    白金会员从会员层无条件晋升到规划师、规划师无条件晋升到经理、经理达成架构1+6晋升到总监，获得约10万元收益；此时可以<br />
+                    提现约5万元，另外5万元收益自动充值获得10万积分。进入富民系统，成为钻石会员。
+                </div>
+            </div>
+            <div class="sysctain sc03">
+                <div class="tyfont">
+                    钻石会员在富民系统按照时间先后顺序排列在会员层，经过1位总监3位经理9位规划师共计13人组成，共同去分享满27位钻石会员后，<br />
+                    钻石会员从会员层无条件晋升到规划师、规划师无条件晋升到经理、经理达成架构1+6晋升到总监，获得约100万元收益；此时可以<br />
+                    提现约50万元，另外50万元可参与公司项目众筹，或者申请再提现，或者自动充值获得100万积分，进入兴民系统，成为至尊会员。
+                </div>
+            </div>
+            <div class="sysctain sc04">
+                兴民系统暂未开放
+            </div>
+        </div>
+    </div>
+    <div ng-include src="'/wwh-wallet/pages/wallet/common/footer.html'"></div>
+    <script type="text/javascript">
+        var app = angular.module('myApp', []);
+    </script>
+</body>
+</html>
